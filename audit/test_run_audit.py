@@ -1,4 +1,5 @@
 import json
+import time
 import unittest
 from unittest import mock
 
@@ -183,6 +184,38 @@ class SimilarityTest(unittest.TestCase):
     def _page(self, id_, theme, region, language, text):
         return {"id": id_, "theme": theme, "region": region, "language": language, "_text": text}
 
+    def test_large_theme_group_stays_fast(self):
+        # Regression test for the run that spent 38+ minutes stuck in this
+        # function with zero output and was killed by the CI job timeout
+        # before writing any report. A naive all-pairs comparison here is
+        # O(n^2) in page count AND O(n^2) in text length for realistic
+        # (highly repetitive) article text, difflib's worst case. 80 pages
+        # in one theme with repetitive ~1500-char bodies must still finish
+        # in well under the old per-run timeout.
+        boilerplate = "このテーマの定型文です。出典は公式統計です。地域ごとに比較できます。" * 20
+        pages = [
+            self._page(f"p{i}", "population", "kanto" if i else "national", "ja",
+                       boilerplate + f" 固有コメント{i}")
+            for i in range(80)
+        ]
+        start = time.time()
+        result, budget_exceeded = compute_similarity(pages)
+        elapsed = time.time() - start
+        self.assertFalse(budget_exceeded)
+        self.assertLess(elapsed, 15, f"took {elapsed:.1f}s — comparison bounding regressed")
+        for p in result:
+            self.assertLessEqual(p["theme_peer_count"], 79)
+
+    def test_time_budget_exceeded_still_returns_all_pages_with_defaults(self):
+        pages = [self._page(f"p{i}", "population", "kanto", "ja", "text " * 50) for i in range(5)]
+        with mock.patch.object(run_audit, "SIMILARITY_TIME_BUDGET_SECONDS", -1):
+            result, budget_exceeded = compute_similarity(pages)
+        self.assertTrue(budget_exceeded)
+        self.assertEqual(len(result), 5)
+        for p in result:
+            self.assertEqual(p["max_similarity_in_theme"], 0.0)
+            self.assertIsNone(p["similarity_to_national"])
+
     def test_national_comparison_only_matches_same_language(self):
         pages = [
             self._page("ja-national", "population", "national", "ja", "全国の人口統計データです。 " * 10),
@@ -190,7 +223,8 @@ class SimilarityTest(unittest.TestCase):
             self._page("en-national", "population", "national", "en", "National population statistics for Japan. " * 10),
             self._page("en-kanto", "population", "kanto", "en", "National population statistics for Japan. Kanto region is dense. " * 10),
         ]
-        result = compute_similarity(pages)
+        result, budget_exceeded = compute_similarity(pages)
+        self.assertFalse(budget_exceeded)
         by_id = {p["id"]: p for p in result}
 
         # ja-kanto must compare against ja-national, not en-national
@@ -207,7 +241,7 @@ class SimilarityTest(unittest.TestCase):
             self._page("ja-national", "population", "national", "ja", "text"),
             self._page("ja-kanto", "population", "kanto", "ja", "text"),
         ]
-        result = compute_similarity(pages)
+        result, _ = compute_similarity(pages)
         national = next(p for p in result if p["id"] == "ja-national")
         self.assertIsNone(national["similarity_to_national"])
 
@@ -222,7 +256,7 @@ class HomepageItemTest(unittest.TestCase):
         pages = [
             {**homepage_item(), "_text": "Visible World by Data homepage text."},
         ]
-        result = compute_similarity(pages)
+        result, _ = compute_similarity(pages)
         self.assertEqual(result[0]["theme_peer_count"], 0)
         self.assertEqual(result[0]["max_similarity_in_theme"], 0.0)
         self.assertIsNone(result[0]["similarity_to_national"])

@@ -359,13 +359,55 @@ def crawl_pages(sample, disallow_prefixes, max_seconds=None):
     return pages, failures, budget_exceeded
 
 
+# Real article text is highly repetitive (shared template/boilerplate across pages),
+# which is difflib's worst case: more candidate matching blocks to explore, not fewer.
+# A naive all-pairs comparison is O(n^2) in both page count AND text length, and a
+# 635-page run of this hung past a 38-minute window with zero visibility. Two bounds
+# fix that: cap how many siblings each page is compared against (random sample, not
+# "first N", so results stay representative), and cap how much of each text is fed to
+# SequenceMatcher (the ratio from the first few thousand characters is a fine proxy —
+# this is a quality *signal*, not a legal document diff).
+MAX_SIBLING_COMPARISONS = 15
+TEXT_COMPARISON_CAP_CHARS = 4000
+SIMILARITY_TIME_BUDGET_SECONDS = 600
+
+
+def _ratio(text_a, text_b):
+    sm = difflib.SequenceMatcher(
+        None, text_a[:TEXT_COMPARISON_CAP_CHARS], text_b[:TEXT_COMPARISON_CAP_CHARS], autojunk=False
+    )
+    return sm, sm.ratio()
+
+
 def compute_similarity(pages):
     by_theme = defaultdict(list)
     for p in pages:
         by_theme[p["theme"]].append(p)
 
-    for p in pages:
-        siblings = [s for s in by_theme[p["theme"]] if s["id"] != p["id"]]
+    rng = random.Random(RANDOM_SEED)
+    start = time.time()
+    budget_exceeded = False
+
+    for i, p in enumerate(pages, start=1):
+        if not budget_exceeded and (time.time() - start) > SIMILARITY_TIME_BUDGET_SECONDS:
+            budget_exceeded = True
+            print(f"      similarity time budget ({SIMILARITY_TIME_BUDGET_SECONDS}s) exceeded after "
+                  f"{i - 1}/{len(pages)} pages; remaining pages get default (uncompared) values")
+
+        all_siblings = [s for s in by_theme[p["theme"]] if s["id"] != p["id"]]
+        p["theme_peer_count"] = len(all_siblings)
+
+        if budget_exceeded:
+            p["max_similarity_in_theme"] = 0.0
+            p["most_similar_peer_id"] = None
+            p["estimated_unique_chars"] = len(p["_text"])
+            p["estimated_unique_ratio"] = None
+            p["similarity_to_national"] = None
+            continue
+
+        siblings = (rng.sample(all_siblings, MAX_SIBLING_COMPARISONS)
+                    if len(all_siblings) > MAX_SIBLING_COMPARISONS else all_siblings)
+
         best_ratio = 0.0
         best_sibling = None
         unique_chars = len(p["_text"])
@@ -373,14 +415,13 @@ def compute_similarity(pages):
             for s in siblings:
                 if not s["_text"]:
                     continue
-                sm = difflib.SequenceMatcher(None, p["_text"], s["_text"], autojunk=False)
-                ratio = sm.ratio()
+                sm, ratio = _ratio(p["_text"], s["_text"])
                 if ratio > best_ratio:
                     best_ratio = ratio
                     best_sibling = s["id"]
                     matched = sum(block.size for block in sm.get_matching_blocks())
-                    unique_chars = max(0, len(p["_text"]) - matched)
-        p["theme_peer_count"] = len(siblings)
+                    unique_chars = max(0, min(len(p["_text"]), TEXT_COMPARISON_CAP_CHARS) - matched)
+                    unique_chars += max(0, len(p["_text"]) - TEXT_COMPARISON_CAP_CHARS)
         p["max_similarity_in_theme"] = round(best_ratio, 4)
         p["most_similar_peer_id"] = best_sibling
         p["estimated_unique_chars"] = unique_chars
@@ -392,10 +433,15 @@ def compute_similarity(pages):
             None,
         )
         if national and p.get("region") != "national" and p["_text"] and national["_text"]:
-            sm = difflib.SequenceMatcher(None, p["_text"], national["_text"], autojunk=False)
-            p["similarity_to_national"] = round(sm.ratio(), 4)
+            _, ratio = _ratio(p["_text"], national["_text"])
+            p["similarity_to_national"] = round(ratio, 4)
         else:
             p["similarity_to_national"] = None
+
+        if i % PROGRESS_EVERY == 0 or i == len(pages):
+            print(f"      similarity progress: {i}/{len(pages)} ({round(time.time() - start, 1)}s elapsed)")
+
+    return pages, budget_exceeded
 
     return pages
 
@@ -583,21 +629,29 @@ def main():
     print(f"[4/5] crawling pages (read-only GET, max 2 attempts each, "
           f"{REQUEST_DELAY_SECONDS}s delay between requests{budget_note})")
     t0 = time.time()
-    pages, failures, budget_exceeded = crawl_pages(sample, disallow_prefixes, max_seconds=max_seconds)
+    pages, failures, crawl_budget_exceeded = crawl_pages(sample, disallow_prefixes, max_seconds=max_seconds)
     elapsed = time.time() - t0
-    pages = compute_similarity(pages)
+
+    print(f"      crawl done in {round(elapsed, 1)}s; computing similarity "
+          f"(max {MAX_SIBLING_COMPARISONS} siblings/page, {SIMILARITY_TIME_BUDGET_SECONDS}s budget)")
+    t1 = time.time()
+    pages, similarity_budget_exceeded = compute_similarity(pages)
+    print(f"      similarity done in {round(time.time() - t1, 1)}s")
 
     print("[5/5] writing report")
     summary = summarize(pages, failures, len(sitemap_urls))
-    summary["time_budget_exceeded"] = budget_exceeded
+    summary["time_budget_exceeded"] = crawl_budget_exceeded or similarity_budget_exceeded
     write_report(pages, failures, summary, {"selected": sample, "disallow_prefixes": list(disallow_prefixes)},
                  out_dir, full=args.full)
     write_load_estimate(pages, len(sitemap_urls), out_dir, elapsed)
 
-    print(f"\nDone in {round(elapsed, 1)}s. Report written to {out_dir}/report.md")
-    if budget_exceeded:
-        print(f"NOTE: stopped early due to the {max_seconds / 60:.0f}min time budget — "
+    print(f"\nDone in {round(time.time() - t0, 1)}s total. Report written to {out_dir}/report.md")
+    if crawl_budget_exceeded:
+        print(f"NOTE: crawl stopped early due to the {max_seconds / 60:.0f}min time budget — "
               f"report covers a partial crawl ({summary['fetched_ok']}/{summary['sample_size']} pages).")
+    if similarity_budget_exceeded:
+        print(f"NOTE: similarity computation stopped early due to its {SIMILARITY_TIME_BUDGET_SECONDS}s "
+              f"budget — some pages have default (uncompared) similarity values.")
     if args.full:
         condensed = {k: v for k, v in summary.items() if not isinstance(v, list) or k == "themes_covered"}
         condensed["flagged_high_similarity_or_low_unique_count"] = len(summary["flagged_high_similarity_or_low_unique"])

@@ -1,4 +1,5 @@
 import json
+import tempfile
 import time
 import unittest
 from unittest import mock
@@ -16,6 +17,8 @@ from run_audit import (
     parse_page,
     parse_sitemap_xml,
     select_pages,
+    summarize,
+    write_report,
 )
 from bs4 import BeautifulSoup
 
@@ -314,6 +317,45 @@ class CrawlPagesTimeBudgetTest(unittest.TestCase):
         self.assertFalse(budget_exceeded)
         self.assertEqual(len(pages), 1)
         self.assertEqual(failures, [])
+
+
+class SummarizeAndReportIntegrationTest(unittest.TestCase):
+    def test_handles_pages_with_none_similarity_fields_from_a_budget_cutoff(self):
+        # Regression test for the real full-crawl run: compute_similarity's time
+        # budget left the tail of pages with estimated_unique_ratio=None /
+        # similarity_to_national=None (by design — "not compared"), and
+        # summarize()'s flagged-page filter did `None < 0.3`, crashing with
+        # TypeError after a 21-minute crawl had already succeeded, so nothing
+        # was ever written. summarize() and write_report() must both tolerate
+        # this partial-data shape all the way through.
+        pages = []
+        for i in range(5):
+            pages.append({
+                "id": f"compared-{i}", "theme": "population", "region": "kanto", "language": "ja",
+                "url": f"https://x/{i}/", "char_count": 500, "dataset_jsonld_found": False,
+                "dataset_entries": [], "max_similarity_in_theme": 0.7, "estimated_unique_ratio": 0.2,
+                "similarity_to_national": 0.5,
+                "page_internal_links": 1, "page_external_links": 0,
+                "body_internal_links": 1, "body_external_links": 0,
+            })
+        for i in range(5):
+            pages.append({
+                "id": f"uncompared-{i}", "theme": "population", "region": "kyushu", "language": "ja",
+                "url": f"https://x/u{i}/", "char_count": 500, "dataset_jsonld_found": False,
+                "dataset_entries": [], "max_similarity_in_theme": 0.0, "estimated_unique_ratio": None,
+                "similarity_to_national": None,
+                "page_internal_links": 1, "page_external_links": 0,
+                "body_internal_links": 1, "body_external_links": 0,
+            })
+
+        summary = summarize(pages, failures=[], sitemap_url_count=10)
+        self.assertEqual(summary["fetched_ok"], 10)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            write_report(pages, [], summary, {"selected": []}, tmp, full=True)
+            with open(f"{tmp}/report.md", encoding="utf-8") as f:
+                content = f.read()
+            self.assertIn("https://x/u0/", content)
 
 
 class SitemapParsingTest(unittest.TestCase):

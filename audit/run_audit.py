@@ -367,9 +367,9 @@ def crawl_pages(sample, disallow_prefixes, max_seconds=None):
 # "first N", so results stay representative), and cap how much of each text is fed to
 # SequenceMatcher (the ratio from the first few thousand characters is a fine proxy —
 # this is a quality *signal*, not a legal document diff).
-MAX_SIBLING_COMPARISONS = 15
-TEXT_COMPARISON_CAP_CHARS = 4000
-SIMILARITY_TIME_BUDGET_SECONDS = 600
+MAX_SIBLING_COMPARISONS = 8
+TEXT_COMPARISON_CAP_CHARS = 1500
+SIMILARITY_TIME_BUDGET_SECONDS = 900
 
 
 def _ratio(text_a, text_b):
@@ -453,7 +453,8 @@ def summarize(pages, failures, sitemap_url_count):
 
     flagged = [
         p for p in pages
-        if p["max_similarity_in_theme"] >= 0.6 or p["estimated_unique_ratio"] < 0.3
+        if p["max_similarity_in_theme"] >= 0.6
+        or (p["estimated_unique_ratio"] is not None and p["estimated_unique_ratio"] < 0.3)
     ]
 
     avg_chars = round(sum(p["char_count"] for p in pages) / len(pages), 1) if pages else 0

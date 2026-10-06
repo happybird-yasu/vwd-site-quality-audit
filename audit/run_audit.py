@@ -51,6 +51,8 @@ THEME_PREFIXES = [
     ("mineral-map", "minerals"),
     ("school-count-map", "schools"),
     ("medical-count-map", "medical"),
+    ("aging-rate-map", "aging_rate"),
+    ("station-passenger-ranking", "station_ranking"),
 ]
 # ordered longest-composite-first so e.g. "chubu-hokuriku" matches before "chubu"
 REGION_KEYWORDS = [
@@ -394,7 +396,13 @@ def compute_similarity(pages):
             print(f"      similarity time budget ({SIMILARITY_TIME_BUDGET_SECONDS}s) exceeded after "
                   f"{i - 1}/{len(pages)} pages; remaining pages get default (uncompared) values")
 
-        all_siblings = [s for s in by_theme[p["theme"]] if s["id"] != p["id"]]
+        # Same theme AND same language only: a multilingual theme group (ja/en/es/de/fr
+        # translations of the same template) must never compare a ja page against its
+        # own en translation — that's an intentional 1:1 translation, not duplicate
+        # content, and comparing across languages would produce a meaningless ratio
+        # anyway (difflib doesn't know Japanese and English are "the same text").
+        all_siblings = [s for s in by_theme[p["theme"]]
+                         if s["id"] != p["id"] and s.get("language") == p.get("language")]
         p["theme_peer_count"] = len(all_siblings)
 
         if budget_exceeded:
@@ -403,6 +411,7 @@ def compute_similarity(pages):
             p["estimated_unique_chars"] = len(p["_text"])
             p["estimated_unique_ratio"] = None
             p["similarity_to_national"] = None
+            p["similarity_to_national_status"] = "skipped_time_budget_exceeded"
             continue
 
         siblings = (rng.sample(all_siblings, MAX_SIBLING_COMPARISONS)
@@ -427,23 +436,31 @@ def compute_similarity(pages):
         p["estimated_unique_chars"] = unique_chars
         p["estimated_unique_ratio"] = round(unique_chars / len(p["_text"]), 4) if p["_text"] else 0.0
 
-        national = next(
-            (s for s in by_theme[p["theme"]]
-             if s.get("region") == "national" and s.get("language") == p.get("language") and s["id"] != p["id"]),
-            None,
-        )
-        if national and p.get("region") != "national" and p["_text"] and national["_text"]:
-            _, ratio = _ratio(p["_text"], national["_text"])
-            p["similarity_to_national"] = round(ratio, 4)
-        else:
+        # National comparison is same-language-only too (an English regional page
+        # compares against the English national page, never the Japanese one), and
+        # gets an explicit status rather than a bare None, so downstream classification
+        # can tell "no same-language national page exists" apart from "not computed".
+        if p.get("region") == "national":
             p["similarity_to_national"] = None
+            p["similarity_to_national_status"] = "not_applicable"
+        else:
+            national = next(
+                (s for s in by_theme[p["theme"]]
+                 if s.get("region") == "national" and s.get("language") == p.get("language") and s["id"] != p["id"]),
+                None,
+            )
+            if national and p["_text"] and national["_text"]:
+                _, ratio = _ratio(p["_text"], national["_text"])
+                p["similarity_to_national"] = round(ratio, 4)
+                p["similarity_to_national_status"] = "ok"
+            else:
+                p["similarity_to_national"] = None
+                p["similarity_to_national_status"] = "not_available"
 
         if i % PROGRESS_EVERY == 0 or i == len(pages):
             print(f"      similarity progress: {i}/{len(pages)} ({round(time.time() - start, 1)}s elapsed)")
 
     return pages, budget_exceeded
-
-    return pages
 
 
 def summarize(pages, failures, sitemap_url_count):

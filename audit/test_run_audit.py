@@ -182,6 +182,28 @@ class ClassifyUrlTest(unittest.TestCase):
         c = classify_url("https://app-navi.biz/privacy-policy/")
         self.assertEqual(c["theme"], "unknown")
 
+    def test_aging_rate_map_is_classified_not_unknown(self):
+        c = classify_url("https://app-navi.biz/aging-rate-map-national/")
+        self.assertEqual(c["theme"], "aging_rate")
+        self.assertEqual(c["region"], "national")
+        self.assertEqual(c["language"], "ja")
+
+        c = classify_url("https://app-navi.biz/en/aging-rate-map-kanto-en/")
+        self.assertEqual(c["theme"], "aging_rate")
+        self.assertEqual(c["region"], "kanto")
+        self.assertEqual(c["language"], "en")
+
+    def test_station_passenger_ranking_is_classified_not_unknown(self):
+        c = classify_url("https://app-navi.biz/en/station-passenger-ranking-national-en/")
+        self.assertEqual(c["theme"], "station_ranking")
+        self.assertEqual(c["region"], "national")
+        self.assertEqual(c["language"], "en")
+
+        c = classify_url("https://app-navi.biz/en/station-passenger-ranking-kanto-en/")
+        self.assertEqual(c["theme"], "station_ranking")
+        self.assertEqual(c["region"], "kanto")
+        self.assertEqual(c["language"], "en")
+
 
 class SimilarityTest(unittest.TestCase):
     def _page(self, id_, theme, region, language, text):
@@ -247,6 +269,41 @@ class SimilarityTest(unittest.TestCase):
         result, _ = compute_similarity(pages)
         national = next(p for p in result if p["id"] == "ja-national")
         self.assertIsNone(national["similarity_to_national"])
+        self.assertEqual(national["similarity_to_national_status"], "not_applicable")
+
+    def test_cross_language_siblings_are_excluded_from_theme_similarity(self):
+        # A ja page and its en translation share the same theme but must never be
+        # compared against each other: that's an intentional 1:1 translation, not
+        # duplicate/templated content, and the ratio would be meaningless anyway.
+        pages = [
+            self._page("ja-kanto", "population", "kanto", "ja", "全国の人口統計データです。関東地方は特に多い。" * 10),
+            self._page("en-kanto", "population", "kanto", "en", "National population statistics. Kanto region is dense." * 10),
+        ]
+        result, _ = compute_similarity(pages)
+        for p in result:
+            self.assertEqual(p["theme_peer_count"], 0)
+            self.assertEqual(p["max_similarity_in_theme"], 0.0)
+            self.assertIsNone(p["most_similar_peer_id"])
+
+    def test_national_comparison_status_not_available_when_no_same_language_national_page(self):
+        pages = [
+            self._page("en-kanto", "population", "kanto", "en", "text"),
+            self._page("ja-national", "population", "national", "ja", "text"),
+        ]
+        result, _ = compute_similarity(pages)
+        en_kanto = next(p for p in result if p["id"] == "en-kanto")
+        self.assertIsNone(en_kanto["similarity_to_national"])
+        self.assertEqual(en_kanto["similarity_to_national_status"], "not_available")
+
+    def test_national_comparison_status_ok_when_same_language_national_page_exists(self):
+        pages = [
+            self._page("ja-kanto", "population", "kanto", "ja", "text about kanto" * 5),
+            self._page("ja-national", "population", "national", "ja", "text about japan" * 5),
+        ]
+        result, _ = compute_similarity(pages)
+        ja_kanto = next(p for p in result if p["id"] == "ja-kanto")
+        self.assertEqual(ja_kanto["similarity_to_national_status"], "ok")
+        self.assertIsNotNone(ja_kanto["similarity_to_national"])
 
 
 class HomepageItemTest(unittest.TestCase):

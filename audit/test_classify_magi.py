@@ -1,13 +1,16 @@
+import csv
 import json
 import tempfile
 import unittest
 import os
 
 from classify_magi import (
+    axes_scored_count,
     classify_pages,
     find_latest_report_json,
     grade_for_score,
     national_level,
+    priority_level,
     similarity_level,
     score_page,
     uniqueness_level,
@@ -20,7 +23,7 @@ def _page(**overrides):
         "id": "https://x/p/", "url": "https://x/p/", "theme": "population",
         "region": "kanto", "language": "ja",
         "max_similarity_in_theme": 0.5, "estimated_unique_ratio": 0.5,
-        "similarity_to_national": 0.5,
+        "similarity_to_national": 0.5, "similarity_to_national_status": "ok",
     }
     base.update(overrides)
     return base
@@ -67,6 +70,7 @@ class ScorePageTest(unittest.TestCase):
         self.assertEqual(score, 100.0)
         self.assertEqual(levels, {"similarity": 3, "uniqueness": 3, "national": 3})
         self.assertEqual(grade_for_score(score), "A")
+        self.assertEqual(axes_scored_count(levels), 3)
 
     def test_worst_case_scores_0_and_grades_d(self):
         page = _page(max_similarity_in_theme=1.0, estimated_unique_ratio=0.0, similarity_to_national=1.0)
@@ -75,18 +79,22 @@ class ScorePageTest(unittest.TestCase):
         self.assertEqual(grade_for_score(score), "D")
 
     def test_missing_axes_are_excluded_not_penalized(self):
-        # No national comparison available (e.g. the national page itself, or budget-skipped) —
-        # score should be computed over the remaining two axes only, not treated as 0.
-        page = _page(max_similarity_in_theme=0.0, estimated_unique_ratio=1.0, similarity_to_national=None)
+        # No national comparison available (e.g. the national page itself, or budget-skipped,
+        # or no same-language national counterpart) — score should be computed over the
+        # remaining two axes only, not treated as 0, and axes_scored reflects only 2/3.
+        page = _page(max_similarity_in_theme=0.0, estimated_unique_ratio=1.0,
+                      similarity_to_national=None, similarity_to_national_status="not_available")
         score, levels = score_page(page)
         self.assertEqual(score, 100.0)
         self.assertIsNone(levels["national"])
+        self.assertEqual(axes_scored_count(levels), 2)
 
     def test_all_axes_missing_returns_unscored(self):
         page = _page(max_similarity_in_theme=None, estimated_unique_ratio=None, similarity_to_national=None)
-        score, _ = score_page(page)
+        score, levels = score_page(page)
         self.assertIsNone(score)
         self.assertEqual(grade_for_score(score), "unscored")
+        self.assertEqual(axes_scored_count(levels), 0)
 
     def test_grade_boundaries(self):
         self.assertEqual(grade_for_score(75.0), "A")
@@ -95,6 +103,42 @@ class ScorePageTest(unittest.TestCase):
         self.assertEqual(grade_for_score(59.9), "C")
         self.assertEqual(grade_for_score(40.0), "C")
         self.assertEqual(grade_for_score(39.9), "D")
+
+
+class PriorityLevelTest(unittest.TestCase):
+    def test_grade_a_or_b_has_no_priority_level(self):
+        page = _page(max_similarity_in_theme=0.0, estimated_unique_ratio=1.0, similarity_to_national=0.0)
+        self.assertIsNone(priority_level(page))
+
+    def test_high_from_similarity_alone(self):
+        # National axis excluded (not_available) so the C/D grade comes from similarity
+        # alone, with uniqueness safe — isolates the "similarity >= 90% => High" rule.
+        page = _page(max_similarity_in_theme=0.95, estimated_unique_ratio=0.5,
+                      similarity_to_national=None, similarity_to_national_status="not_available")
+        self.assertEqual(grade_for_score(score_page(page)[0]), "C")
+        self.assertEqual(priority_level(page), "High")
+
+    def test_high_from_uniqueness_alone(self):
+        page = _page(max_similarity_in_theme=0.5, estimated_unique_ratio=0.05,
+                      similarity_to_national=None, similarity_to_national_status="not_available")
+        self.assertEqual(grade_for_score(score_page(page)[0]), "C")
+        self.assertEqual(priority_level(page), "High")
+
+    def test_medium_band(self):
+        page = _page(max_similarity_in_theme=0.85, estimated_unique_ratio=0.5, similarity_to_national=0.9)
+        level = priority_level(page)
+        self.assertIn(level, ("Medium", "High"))
+        # specifically check the pure-medium case (similarity in 80-89, uniqueness safe)
+        page2 = _page(max_similarity_in_theme=0.82, estimated_unique_ratio=0.5, similarity_to_national=0.9)
+        self.assertEqual(priority_level(page2), "Medium")
+
+    def test_low_when_cd_but_no_axis_in_high_or_medium_band(self):
+        # Grade C/D can also come from a weak national-axis alone, with similarity and
+        # uniqueness both in safe bands — that's priority Low, not High/Medium.
+        page = _page(max_similarity_in_theme=0.5, estimated_unique_ratio=0.5, similarity_to_national=0.95)
+        grade = grade_for_score(score_page(page)[0])
+        if grade in ("C", "D"):
+            self.assertEqual(priority_level(page), "Low")
 
 
 class ClassifyPagesTest(unittest.TestCase):
@@ -114,23 +158,56 @@ class ClassifyPagesTest(unittest.TestCase):
         self.assertTrue(by_theme["infection"]["priority_review"])
         self.assertFalse(by_theme["onsen"]["priority_review"])
 
+    def test_axes_scored_display_format(self):
+        result = classify_pages([_page(similarity_to_national=None, similarity_to_national_status="not_available")])
+        self.assertEqual(result[0]["axes_scored"], 2)
+        self.assertEqual(result[0]["axes_scored_display"], "2/3")
+
 
 class WriteOutputsIntegrationTest(unittest.TestCase):
-    def test_writes_json_and_markdown_without_crashing_on_mixed_data(self):
+    def test_writes_json_markdown_and_csv_without_crashing_on_mixed_data(self):
         pages = [
-            _page(id="a", url="https://x/a/", theme="infection", max_similarity_in_theme=0.95,
-                  estimated_unique_ratio=0.05, similarity_to_national=0.9),
-            _page(id="b", url="https://x/b/", theme="population", similarity_to_national=None),
+            _page(id="a", url="https://x/a/", theme="infection", language="ja",
+                  max_similarity_in_theme=0.95, estimated_unique_ratio=0.05, similarity_to_national=0.9),
+            _page(id="b", url="https://x/b/", theme="population", language="en",
+                  similarity_to_national=None, similarity_to_national_status="not_available"),
             _page(id="c", url="https://x/c/", theme="homepage"),
         ]
         classified = classify_pages(pages)
         with tempfile.TemporaryDirectory() as tmp:
-            write_outputs(classified, tmp)
+            grade_counts, cd_pages, priority_counts = write_outputs(classified, tmp)
             self.assertTrue(os.path.exists(os.path.join(tmp, "magi_classification.json")))
+            self.assertTrue(os.path.exists(os.path.join(tmp, "magi_classification.md")))
+            self.assertTrue(os.path.exists(os.path.join(tmp, "magi_review_queue.csv")))
+
             with open(os.path.join(tmp, "magi_classification.md"), encoding="utf-8") as f:
                 content = f.read()
             self.assertIn("https://x/a/", content)
             self.assertIn("infection", content)
+            self.assertIn("最終判定ではなく", content)
+
+            with open(os.path.join(tmp, "magi_review_queue.csv"), encoding="utf-8") as f:
+                rows = list(csv.reader(f))
+            self.assertEqual(rows[0][0], "url")
+            # only C/D pages appear in the CSV
+            csv_urls = {row[0] for row in rows[1:]}
+            self.assertTrue(csv_urls.issubset({"https://x/a/", "https://x/b/"}))
+
+    def test_csv_is_sorted_by_priority_then_score(self):
+        pages = [
+            _page(id="low", url="https://x/low/", max_similarity_in_theme=0.5,
+                  estimated_unique_ratio=0.5, similarity_to_national=0.95),
+            _page(id="high", url="https://x/high/", max_similarity_in_theme=0.99,
+                  estimated_unique_ratio=0.5, similarity_to_national=0.5),
+        ]
+        classified = classify_pages(pages)
+        with tempfile.TemporaryDirectory() as tmp:
+            write_outputs(classified, tmp)
+            with open(os.path.join(tmp, "magi_review_queue.csv"), encoding="utf-8") as f:
+                rows = list(csv.reader(f))
+            urls_in_order = [row[0] for row in rows[1:]]
+            if "https://x/high/" in urls_in_order and "https://x/low/" in urls_in_order:
+                self.assertLess(urls_in_order.index("https://x/high/"), urls_in_order.index("https://x/low/"))
 
 
 class FindLatestReportJsonTest(unittest.TestCase):

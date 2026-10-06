@@ -170,6 +170,33 @@ def find_dataset_jsonld(soup):
     return found
 
 
+def parse_page(html, url):
+    """Pure, network-free parse of one page's HTML. Order matters: Dataset
+    JSON-LD and whole-page link counts must be read BEFORE extract_main_text()
+    mutates the tree (it decompose()s <script>/<nav>/<header>/<footer>, which
+    would otherwise silently delete the JSON-LD <script> tags first)."""
+    soup = BeautifulSoup(html, "html.parser")
+
+    datasets = find_dataset_jsonld(soup)
+    page_internal, page_external, page_external_samples = classify_links(soup, url)
+
+    text = extract_main_text(soup)
+    body_internal, body_external, body_external_samples = classify_links(soup, url)
+
+    return {
+        "char_count": len(text),
+        "page_internal_links": page_internal,
+        "page_external_links": page_external,
+        "page_external_link_samples": page_external_samples,
+        "body_internal_links": body_internal,
+        "body_external_links": body_external,
+        "body_external_link_samples": body_external_samples,
+        "dataset_jsonld_found": len(datasets) > 0,
+        "dataset_entries": datasets,
+        "_text": text,
+    }
+
+
 def crawl_pages(sample, disallow_prefixes):
     pages = []
     failures = []
@@ -189,10 +216,7 @@ def crawl_pages(sample, disallow_prefixes):
             failures.append({"url": url, "reason": f"http_{resp.status_code}"})
             continue
 
-        soup = BeautifulSoup(resp.text, "html.parser")
-        text = extract_main_text(soup)
-        internal, external, external_samples = classify_links(soup, url)
-        datasets = find_dataset_jsonld(soup)
+        parsed = parse_page(resp.text, url)
 
         pages.append({
             "id": item["id"],
@@ -203,13 +227,7 @@ def crawl_pages(sample, disallow_prefixes):
             "title": item.get("title"),
             "url": url,
             "status_code": resp.status_code,
-            "char_count": len(text),
-            "internal_links": internal,
-            "external_links": external,
-            "external_link_samples": external_samples,
-            "dataset_jsonld_found": len(datasets) > 0,
-            "dataset_entries": datasets,
-            "_text": text,
+            **parsed,
         })
     return pages, failures
 
@@ -333,12 +351,16 @@ def write_report(pages, failures, summary, sample_meta, out_dir):
     lines.append("")
 
     lines.append("## Full sample detail\n")
-    lines.append("| URL | Theme | Region | Lang | Chars | Internal links | External links | Sim. to national | Max sim. in theme | Est. unique ratio | Dataset |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
+    lines.append(
+        "| URL | Theme | Region | Lang | Chars | Body internal links | Body external links | "
+        "Page internal links | Page external links | Sim. to national | Max sim. in theme | Est. unique ratio | Dataset |"
+    )
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|")
     for p in clean_pages:
         lines.append(
             f"| {p['url']} | {p['theme']} | {p['region']} | {p['language']} | {p['char_count']} | "
-            f"{p['internal_links']} | {p['external_links']} | {p['similarity_to_national']} | "
+            f"{p['body_internal_links']} | {p['body_external_links']} | "
+            f"{p['page_internal_links']} | {p['page_external_links']} | {p['similarity_to_national']} | "
             f"{p['max_similarity_in_theme']} | {p['estimated_unique_ratio']} | {'yes' if p['dataset_jsonld_found'] else 'no'} |"
         )
     lines.append("")

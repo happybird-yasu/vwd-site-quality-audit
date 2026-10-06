@@ -30,7 +30,7 @@ GitHubの「Actions」タブ → `Pilot content quality audit (app-navi.biz)` �
 - 同一テーマ内の本文類似率(`difflib` によるペア比較)
 - 全国版と地域版の類似率
 - ページ固有テキスト量(推定)
-- 内部リンク数・外部(出典候補)リンク数
+- 内部リンク数・外部(出典候補)リンク数(本文内のみ、およびナビゲーション込みのページ全体、の2系統で計測)
 - Dataset構造化データ(JSON-LD)の有無・`description`/`license`の有無
 
 ## 第2段階(未着手)

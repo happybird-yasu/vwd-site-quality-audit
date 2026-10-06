@@ -26,6 +26,9 @@ jobs:
       - name: Run full audit (read-only, every sitemap URL)
         run: python audit/run_audit.py --full
 
+      - name: Run MAGI first-pass classification (A/B/C/D)
+        run: python audit/classify_magi.py
+
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:

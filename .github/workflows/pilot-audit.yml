@@ -33,6 +33,9 @@ jobs:
           SAMPLE_SIZE: ${{ github.event.inputs.sample_size }}
         run: python audit/run_audit.py --sample-size "$SAMPLE_SIZE"
 
+      - name: Run MAGI first-pass classification (A/B/C/D)
+        run: python audit/classify_magi.py
+
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:

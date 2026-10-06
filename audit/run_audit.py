@@ -16,6 +16,7 @@ import requests
 from bs4 import BeautifulSoup
 
 SITE = "https://app-navi.biz"
+HOMEPAGE_URL = f"{SITE}/"
 SITEMAP_URL = f"{SITE}/post-sitemap.xml"
 SITEMAP_NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 SITEMAP_RECURSION_CAP = 5
@@ -152,45 +153,62 @@ def classify_url(url):
     return {"slug": slug, "theme": theme, "region": region, "language": language, "url": url, "id": url}
 
 
+def homepage_item():
+    """The homepage isn't a post, so it never appears in post-sitemap.xml.
+    Added explicitly so Dataset JSON-LD auditing also covers it. theme is
+    'homepage' (never matches a real theme), so it never pollutes the
+    per-theme similarity comparisons — it just forms a group of one."""
+    return {"id": HOMEPAGE_URL, "url": HOMEPAGE_URL, "theme": "homepage", "region": None,
+            "language": "ja", "slug": ""}
+
+
 def build_sample(items, sample_size):
+    """Round-robin across every theme so each one gets picked from before any
+    theme gets a second pick. This guarantees full theme coverage (as long as
+    sample_size >= number of themes) instead of exhausting the budget on the
+    alphabetically-first themes and silently dropping the rest."""
     by_theme = defaultdict(list)
     for it in items:
-        by_theme[it.get("theme", "unknown")].append(it)
+        if it.get("theme", "unknown") == "unknown":
+            continue
+        by_theme[it["theme"]].append(it)
 
     rng = random.Random(RANDOM_SEED)
-    selected = []
-    seen_ids = set()
+    themes = sorted(by_theme.keys())
 
-    def take(candidates, n):
-        pool = [c for c in candidates if c["id"] not in seen_ids]
-        rng.shuffle(pool)
-        picked = pool[:n]
-        for p in picked:
-            seen_ids.add(p["id"])
-        return picked
-
-    themes = sorted(k for k in by_theme.keys() if k != "unknown")
+    theme_queues = {}
     for theme in themes:
         group = by_theme[theme]
         national = [g for g in group if g.get("region") == "national" and g.get("language") == "ja"]
         regional_ja = [g for g in group if g.get("region") != "national" and g.get("language") == "ja"]
         other_lang = [g for g in group if g.get("language") != "ja"]
+        rng.shuffle(national)
+        rng.shuffle(regional_ja)
+        rng.shuffle(other_lang)
+        # national-ja first (so every theme's first pick is its flagship page), then variety
+        theme_queues[theme] = national + regional_ja + other_lang
 
-        selected += take(national, 1)
-        selected += take(regional_ja, 2)
-        selected += take(other_lang, 1)
+    selected = []
+    seen_ids = set()
+    next_index = {theme: 0 for theme in themes}
 
-        if len(selected) >= sample_size:
-            break
-
-    if len(selected) < sample_size:
-        remaining = [it for it in items if it["id"] not in seen_ids]
-        rng.shuffle(remaining)
-        for it in remaining:
+    made_progress = True
+    while len(selected) < sample_size and made_progress:
+        made_progress = False
+        for theme in themes:
             if len(selected) >= sample_size:
                 break
-            selected.append(it)
-            seen_ids.add(it["id"])
+            queue = theme_queues[theme]
+            i = next_index[theme]
+            while i < len(queue) and queue[i]["id"] in seen_ids:
+                i += 1
+            next_index[theme] = i
+            if i < len(queue):
+                item = queue[i]
+                selected.append(item)
+                seen_ids.add(item["id"])
+                next_index[theme] = i + 1
+                made_progress = True
 
     return selected[:sample_size]
 
@@ -336,7 +354,11 @@ def compute_similarity(pages):
         p["estimated_unique_chars"] = unique_chars
         p["estimated_unique_ratio"] = round(unique_chars / len(p["_text"]), 4) if p["_text"] else 0.0
 
-        national = next((s for s in by_theme[p["theme"]] if s.get("region") == "national" and s["id"] != p["id"]), None)
+        national = next(
+            (s for s in by_theme[p["theme"]]
+             if s.get("region") == "national" and s.get("language") == p.get("language") and s["id"] != p["id"]),
+            None,
+        )
         if national and p.get("region") != "national" and p["_text"] and national["_text"]:
             sm = difflib.SequenceMatcher(None, p["_text"], national["_text"], autojunk=False)
             p["similarity_to_national"] = round(sm.ratio(), 4)
@@ -400,7 +422,9 @@ def write_report(pages, failures, summary, sample_meta, out_dir):
     lines = []
     lines.append("# VWD Site Quality Audit — Pilot Run\n")
     lines.append(f"Generated: {datetime.now(timezone.utc).isoformat()}\n")
-    lines.append("Population source: `post-sitemap.xml` (REST API is disabled site-side; not used here).\n")
+    lines.append("Population source: `post-sitemap.xml` (REST API is disabled site-side; not used here). "
+                  "The homepage (`/`) is added separately for Dataset JSON-LD auditing only; it is not a "
+                  "post and is excluded from the theme-similarity comparisons.\n")
     lines.append(f"- Sample size: {summary['sample_size']} (fetched OK: {summary['fetched_ok']}, failed: {summary['failed']})")
     lines.append(f"- Sitemap total URLs discovered: {summary['sitemap_url_count']}")
     lines.append(f"- Average body char count (sampled pages): {summary['avg_char_count']}")
@@ -500,7 +524,9 @@ def main():
 
     print(f"[3/5] selecting representative sample (~{args.sample_size} pages)")
     sample = build_sample(classified, args.sample_size)
-    print(f"      selected: {len(sample)} pages across {len({s['theme'] for s in sample})} themes")
+    sample = [homepage_item()] + sample
+    print(f"      selected: {len(sample)} pages (incl. homepage) across "
+          f"{len({s['theme'] for s in sample if s['theme'] != 'homepage'})} content themes")
 
     print("[4/5] crawling sample pages (read-only GET, max 2 attempts each)")
     t0 = time.time()

@@ -5,8 +5,10 @@ from run_audit import (
     build_sample,
     classify_links,
     classify_url,
+    compute_similarity,
     extract_main_text,
     find_dataset_jsonld,
+    homepage_item,
     parse_page,
     parse_sitemap_xml,
 )
@@ -109,6 +111,33 @@ class BuildSampleTest(unittest.TestCase):
         second = [s["id"] for s in build_sample(items, 5)]
         self.assertEqual(first, second)
 
+    def test_every_theme_gets_at_least_one_pick_before_any_gets_a_second(self):
+        # Regression test: the pilot run with the old "fill then break" logic
+        # dropped 5 of 12 themes entirely because earlier themes (sorted
+        # alphabetically) already used up the whole sample_size budget.
+        themes = ["airport", "hotel_ryokan", "infection", "medical", "minerals",
+                  "onsen", "population", "port", "road", "schools", "station", "travel"]
+        items = []
+        for theme in themes:
+            for region in ["national", "kanto", "kinki", "kyushu", "tohoku"]:
+                items.append({
+                    "id": f"{theme}-{region}", "theme": theme, "region": region,
+                    "language": "ja", "url": f"https://example.invalid/{theme}-{region}/",
+                })
+        sample = build_sample(items, 26)
+        themes_in_sample = {s["theme"] for s in sample}
+        self.assertEqual(themes_in_sample, set(themes))
+
+    def test_fewer_slots_than_themes_still_covers_as_many_as_possible(self):
+        items = [
+            {"id": f"{theme}-national", "theme": theme, "region": "national",
+             "language": "ja", "url": f"https://example.invalid/{theme}/"}
+            for theme in ["a", "b", "c", "d", "e"]
+        ]
+        sample = build_sample(items, 3)
+        self.assertEqual(len(sample), 3)
+        self.assertEqual(len({s["theme"] for s in sample}), 3)
+
 
 class ClassifyUrlTest(unittest.TestCase):
     def test_national_japanese(self):
@@ -144,6 +173,55 @@ class ClassifyUrlTest(unittest.TestCase):
     def test_unknown_theme_for_unrelated_page(self):
         c = classify_url("https://app-navi.biz/privacy-policy/")
         self.assertEqual(c["theme"], "unknown")
+
+
+class SimilarityTest(unittest.TestCase):
+    def _page(self, id_, theme, region, language, text):
+        return {"id": id_, "theme": theme, "region": region, "language": language, "_text": text}
+
+    def test_national_comparison_only_matches_same_language(self):
+        pages = [
+            self._page("ja-national", "population", "national", "ja", "全国の人口統計データです。 " * 10),
+            self._page("ja-kanto", "population", "kanto", "ja", "全国の人口統計データです。関東地方は特に多い。 " * 10),
+            self._page("en-national", "population", "national", "en", "National population statistics for Japan. " * 10),
+            self._page("en-kanto", "population", "kanto", "en", "National population statistics for Japan. Kanto region is dense. " * 10),
+        ]
+        result = compute_similarity(pages)
+        by_id = {p["id"]: p for p in result}
+
+        # ja-kanto must compare against ja-national, not en-national
+        self.assertIsNotNone(by_id["ja-kanto"]["similarity_to_national"])
+        # en-kanto must compare against en-national, not ja-national
+        self.assertIsNotNone(by_id["en-kanto"]["similarity_to_national"])
+        # a Japanese-only and an English-only text share almost nothing in common,
+        # so if the language filter were broken this would collapse near 0
+        self.assertGreater(by_id["ja-kanto"]["similarity_to_national"], 0.3)
+        self.assertGreater(by_id["en-kanto"]["similarity_to_national"], 0.3)
+
+    def test_national_page_itself_has_no_national_comparison(self):
+        pages = [
+            self._page("ja-national", "population", "national", "ja", "text"),
+            self._page("ja-kanto", "population", "kanto", "ja", "text"),
+        ]
+        result = compute_similarity(pages)
+        national = next(p for p in result if p["id"] == "ja-national")
+        self.assertIsNone(national["similarity_to_national"])
+
+
+class HomepageItemTest(unittest.TestCase):
+    def test_homepage_item_shape(self):
+        item = homepage_item()
+        self.assertEqual(item["url"], "https://app-navi.biz/")
+        self.assertEqual(item["theme"], "homepage")
+
+    def test_homepage_does_not_crash_similarity_with_no_peers(self):
+        pages = [
+            {**homepage_item(), "_text": "Visible World by Data homepage text."},
+        ]
+        result = compute_similarity(pages)
+        self.assertEqual(result[0]["theme_peer_count"], 0)
+        self.assertEqual(result[0]["max_similarity_in_theme"], 0.0)
+        self.assertIsNone(result[0]["similarity_to_national"])
 
 
 class SitemapParsingTest(unittest.TestCase):

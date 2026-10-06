@@ -404,7 +404,7 @@ def summarize(pages, failures, sitemap_url_count):
     }
 
 
-def write_report(pages, failures, summary, sample_meta, out_dir):
+def write_report(pages, failures, summary, sample_meta, out_dir, full=False):
     os.makedirs(out_dir, exist_ok=True)
 
     clean_pages = [{k: v for k, v in p.items() if k != "_text"} for p in pages]
@@ -420,7 +420,7 @@ def write_report(pages, failures, summary, sample_meta, out_dir):
             f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
     lines = []
-    lines.append("# VWD Site Quality Audit — Pilot Run\n")
+    lines.append(f"# VWD Site Quality Audit — {'Full Run' if full else 'Pilot Run'}\n")
     lines.append(f"Generated: {datetime.now(timezone.utc).isoformat()}\n")
     lines.append("Population source: `post-sitemap.xml` (REST API is disabled site-side; not used here). "
                   "The homepage (`/`) is added separately for Dataset JSON-LD auditing only; it is not a "
@@ -498,9 +498,17 @@ def write_load_estimate(pages, sitemap_url_count, out_dir, elapsed_seconds):
         f.write("\n".join(lines))
 
 
+def select_pages(classified, full, sample_size):
+    if full:
+        return [homepage_item()] + classified
+    return [homepage_item()] + build_sample(classified, sample_size)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--sample-size", type=int, default=int(os.environ.get("SAMPLE_SIZE", 26)))
+    parser.add_argument("--full", action="store_true",
+                         help="Crawl every URL in the sitemap instead of a stratified sample")
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
 
@@ -520,15 +528,19 @@ def main():
     classified = [classify_url(u) for u in sitemap_urls]
     unknown_theme = sum(1 for c in classified if c["theme"] == "unknown")
     if unknown_theme:
-        print(f"      note: {unknown_theme} URLs did not match a known theme prefix (left out of theme-stratified picks)")
+        note = "included as theme=unknown" if args.full else "left out of theme-stratified picks"
+        print(f"      note: {unknown_theme} URLs did not match a known theme prefix ({note})")
 
-    print(f"[3/5] selecting representative sample (~{args.sample_size} pages)")
-    sample = build_sample(classified, args.sample_size)
-    sample = [homepage_item()] + sample
+    if args.full:
+        print(f"[3/5] full-population mode: all {len(classified)} sitemap pages + homepage")
+    else:
+        print(f"[3/5] selecting representative sample (~{args.sample_size} pages)")
+    sample = select_pages(classified, args.full, args.sample_size)
     print(f"      selected: {len(sample)} pages (incl. homepage) across "
           f"{len({s['theme'] for s in sample if s['theme'] != 'homepage'})} content themes")
 
-    print("[4/5] crawling sample pages (read-only GET, max 2 attempts each)")
+    print("[4/5] crawling pages (read-only GET, max 2 attempts each, "
+          f"{REQUEST_DELAY_SECONDS}s delay between requests)")
     t0 = time.time()
     pages, failures = crawl_pages(sample, disallow_prefixes)
     elapsed = time.time() - t0
@@ -536,11 +548,20 @@ def main():
 
     print("[5/5] writing report")
     summary = summarize(pages, failures, len(sitemap_urls))
-    write_report(pages, failures, summary, {"selected": sample, "disallow_prefixes": list(disallow_prefixes)}, out_dir)
+    write_report(pages, failures, summary, {"selected": sample, "disallow_prefixes": list(disallow_prefixes)},
+                 out_dir, full=args.full)
     write_load_estimate(pages, len(sitemap_urls), out_dir, elapsed)
 
     print(f"\nDone. Report written to {out_dir}/report.md")
-    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    if args.full:
+        condensed = {k: v for k, v in summary.items() if not isinstance(v, list) or k == "themes_covered"}
+        condensed["flagged_high_similarity_or_low_unique_count"] = len(summary["flagged_high_similarity_or_low_unique"])
+        condensed["dataset_jsonld_absent_count"] = len(summary["dataset_jsonld_absent_urls"])
+        condensed["dataset_jsonld_missing_description_count"] = len(summary["dataset_jsonld_missing_description_urls"])
+        print(json.dumps(condensed, ensure_ascii=False, indent=2))
+        print("(full URL lists omitted from the log to keep it readable; see report.md / report.json)")
+    else:
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

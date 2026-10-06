@@ -11,6 +11,7 @@ from run_audit import (
     homepage_item,
     parse_page,
     parse_sitemap_xml,
+    select_pages,
 )
 from bs4 import BeautifulSoup
 
@@ -222,6 +223,28 @@ class HomepageItemTest(unittest.TestCase):
         self.assertEqual(result[0]["theme_peer_count"], 0)
         self.assertEqual(result[0]["max_similarity_in_theme"], 0.0)
         self.assertIsNone(result[0]["similarity_to_national"])
+
+
+class SelectPagesTest(unittest.TestCase):
+    def test_full_mode_returns_every_url_plus_homepage_including_unknown_theme(self):
+        classified = [
+            {"id": "a", "theme": "population", "region": "national", "language": "ja", "url": "https://x/a/"},
+            {"id": "b", "theme": "onsen", "region": "kanto", "language": "ja", "url": "https://x/b/"},
+            {"id": "c", "theme": "unknown", "region": "other", "language": "ja", "url": "https://x/c/"},
+        ]
+        result = select_pages(classified, full=True, sample_size=26)
+        self.assertEqual(len(result), 4)  # 3 classified + homepage
+        self.assertIn(homepage_item()["id"], [r["id"] for r in result])
+        self.assertIn("c", [r["id"] for r in result])  # unknown-theme page kept in full mode
+
+    def test_sample_mode_still_caps_at_sample_size_plus_homepage(self):
+        classified = [
+            {"id": f"t{i}-national", "theme": f"t{i}", "region": "national", "language": "ja",
+             "url": f"https://x/t{i}/"}
+            for i in range(20)
+        ]
+        result = select_pages(classified, full=False, sample_size=5)
+        self.assertEqual(len(result), 6)  # 5 sampled + homepage
 
 
 class SitemapParsingTest(unittest.TestCase):

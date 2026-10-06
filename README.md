@@ -1,6 +1,6 @@
 # vwd-site-quality-audit
 
-app-navi.biz の公開記事について、AdSense「有用性の低いコンテンツ」対応のための**読み取り専用**品質監査ツール。現在は20〜30ページ程度のパイロット段階。
+app-navi.biz の公開記事について、AdSense「有用性の低いコンテンツ」対応のための**読み取り専用**品質監査ツール。パイロット(20〜30ページ)での検証を経て、全件クロール(`post-sitemap.xml`の全URL、2026年10月時点で635件)にも対応。
 
 ## スコープと安全性
 
@@ -13,9 +13,10 @@ app-navi.biz の公開記事について、AdSense「有用性の低いコンテ
 
 ## 実行方法
 
-GitHubの「Actions」タブ → `Pilot content quality audit (app-navi.biz)` → `Run workflow`。
+- パイロット(20〜30ページ、全テーマ+ホームページを均等サンプリング):GitHubの「Actions」タブ → `Pilot content quality audit (app-navi.biz)` → `Run workflow`。
+- 全件(`post-sitemap.xml`の全URL+ホームページ):同タブ → `Full content quality audit (app-navi.biz)` → `Run workflow`。所要時間は概ね20分前後(635ページ×約1.8秒/件、1.5秒間隔込み)。
 
-完了後、Artifactsから `audit-report` をダウンロードすると以下が入っている。
+完了後、Artifacts(パイロットは`audit-report`、全件は`full-audit-report`)をダウンロードすると以下が入っている。
 
 - `report.md` — 人間向けサマリー(全サンプルの一覧表、構造化データの問題、類似度が高い/固有テキストが少ないページの一覧)
 - `report.json` — 機械可読な詳細データ

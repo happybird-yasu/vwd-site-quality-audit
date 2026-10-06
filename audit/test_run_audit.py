@@ -4,9 +4,11 @@ import unittest
 from run_audit import (
     build_sample,
     classify_links,
+    classify_url,
     extract_main_text,
     find_dataset_jsonld,
     parse_page,
+    parse_sitemap_xml,
 )
 from bs4 import BeautifulSoup
 
@@ -106,6 +108,68 @@ class BuildSampleTest(unittest.TestCase):
         first = [s["id"] for s in build_sample(items, 5)]
         second = [s["id"] for s in build_sample(items, 5)]
         self.assertEqual(first, second)
+
+
+class ClassifyUrlTest(unittest.TestCase):
+    def test_national_japanese(self):
+        c = classify_url("https://app-navi.biz/population-national/")
+        self.assertEqual(c["theme"], "population")
+        self.assertEqual(c["region"], "national")
+        self.assertEqual(c["language"], "ja")
+
+    def test_regional_with_composite_region_keyword(self):
+        c = classify_url("https://app-navi.biz/school-count-map-chubu-hokuriku/")
+        self.assertEqual(c["theme"], "schools")
+        self.assertEqual(c["region"], "chubu-hokuriku")
+        self.assertEqual(c["language"], "ja")
+
+    def test_translated_page_via_path_prefix(self):
+        c = classify_url("https://app-navi.biz/de/onsen-map-kanto-de/")
+        self.assertEqual(c["theme"], "onsen")
+        self.assertEqual(c["region"], "kanto")
+        self.assertEqual(c["language"], "de")
+
+    def test_translated_page_via_slug_suffix_only(self):
+        c = classify_url("https://app-navi.biz/hotel-ryokan-tohoku-fr/")
+        self.assertEqual(c["theme"], "hotel_ryokan")
+        self.assertEqual(c["region"], "tohoku")
+        self.assertEqual(c["language"], "fr")
+
+    def test_infection_weekly_is_always_national(self):
+        c = classify_url("https://app-navi.biz/infection-weekly-2026-w35-es/")
+        self.assertEqual(c["theme"], "infection")
+        self.assertEqual(c["region"], "national")
+        self.assertEqual(c["language"], "es")
+
+    def test_unknown_theme_for_unrelated_page(self):
+        c = classify_url("https://app-navi.biz/privacy-policy/")
+        self.assertEqual(c["theme"], "unknown")
+
+
+class SitemapParsingTest(unittest.TestCase):
+    def test_urlset_returns_locs(self):
+        xml = b"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://app-navi.biz/population-national/</loc></url>
+  <url><loc>https://app-navi.biz/population-kanto/</loc></url>
+</urlset>"""
+        kind, locs = parse_sitemap_xml(xml)
+        self.assertEqual(kind, "urlset")
+        self.assertEqual(len(locs), 2)
+        self.assertIn("https://app-navi.biz/population-national/", locs)
+
+    def test_sitemapindex_returns_child_sitemap_locs(self):
+        xml = b"""<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>https://app-navi.biz/post-sitemap1.xml</loc></sitemap>
+  <sitemap><loc>https://app-navi.biz/post-sitemap2.xml</loc></sitemap>
+</sitemapindex>"""
+        kind, locs = parse_sitemap_xml(xml)
+        self.assertEqual(kind, "sitemapindex")
+        self.assertEqual(locs, [
+            "https://app-navi.biz/post-sitemap1.xml",
+            "https://app-navi.biz/post-sitemap2.xml",
+        ])
 
 
 if __name__ == "__main__":

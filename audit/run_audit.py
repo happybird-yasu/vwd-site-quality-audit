@@ -8,6 +8,7 @@ import re
 import sys
 import time
 import urllib.parse
+import xml.etree.ElementTree as ET
 from collections import defaultdict
 from datetime import datetime, timezone
 
@@ -15,14 +16,37 @@ import requests
 from bs4 import BeautifulSoup
 
 SITE = "https://app-navi.biz"
-SEARCH_API = f"{SITE}/wp-json/vwd-library/v1/search"
+SITEMAP_URL = f"{SITE}/post-sitemap.xml"
+SITEMAP_NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+SITEMAP_RECURSION_CAP = 5
 USER_AGENT = "VWD-Site-Quality-Audit/1.0 (+internal content QA pilot; read-only; contact: hirohirori)"
 REQUEST_TIMEOUT = 15
 MAX_ATTEMPTS = 2
 RETRY_BACKOFF_SECONDS = 2
 REQUEST_DELAY_SECONDS = 1.5
-CATALOG_PAGE_CAP = 10
 RANDOM_SEED = 20261006
+
+LANG_CODES = {"en", "es", "de", "fr"}
+THEME_PREFIXES = [
+    ("population", "population"),
+    ("station-map", "station"),
+    ("road-traffic", "road"),
+    ("airport-passengers", "airport"),
+    ("port-passenger", "port"),
+    ("domestic-travel", "travel"),
+    ("hotel-ryokan", "hotel_ryokan"),
+    ("infection-weekly", "infection"),
+    ("onsen-map", "onsen"),
+    ("mineral-map", "minerals"),
+    ("school-count-map", "schools"),
+    ("medical-count-map", "medical"),
+]
+# ordered longest-composite-first so e.g. "chubu-hokuriku" matches before "chubu"
+REGION_KEYWORDS = [
+    "chubu-hokuriku", "chugoku-kyushu", "kyushu-okinawa",
+    "hokkaido", "tohoku", "kanto", "koshinetsu", "chubu",
+    "hokuriku", "kinki", "chugoku", "shikoku", "kyushu", "okinawa",
+]
 
 session = requests.Session()
 session.headers["User-Agent"] = USER_AGENT
@@ -60,21 +84,72 @@ def is_disallowed(url, disallow_prefixes):
     return any(path.startswith(p) for p in disallow_prefixes)
 
 
-def fetch_catalog():
-    items = []
-    page = 1
-    total_pages = None
-    while page <= CATALOG_PAGE_CAP and (total_pages is None or page <= total_pages):
-        resp, err = fetch_with_retry(SEARCH_API, params={"per_page": 100, "page": page})
-        if err or resp is None or resp.status_code != 200:
-            print(f"[catalog] page {page} failed: {err or resp.status_code}", file=sys.stderr)
+def parse_sitemap_xml(xml_bytes):
+    """Returns (kind, urls) where kind is 'index' or 'urlset'."""
+    root = ET.fromstring(xml_bytes)
+    tag = root.tag.replace(SITEMAP_NS, "")
+    locs = [el.text.strip() for el in root.iter(f"{SITEMAP_NS}loc") if el.text and el.text.strip()]
+    return tag, locs
+
+
+def fetch_sitemap_urls(start_url=SITEMAP_URL, depth=0, seen=None):
+    if seen is None:
+        seen = set()
+    if depth > SITEMAP_RECURSION_CAP or start_url in seen:
+        return []
+    seen.add(start_url)
+
+    resp, err = fetch_with_retry(start_url)
+    time.sleep(REQUEST_DELAY_SECONDS)
+    if err or resp is None or resp.status_code != 200:
+        print(f"[sitemap] {start_url} failed: {err or resp.status_code}", file=sys.stderr)
+        return []
+
+    try:
+        kind, locs = parse_sitemap_xml(resp.content)
+    except ET.ParseError as exc:
+        print(f"[sitemap] {start_url} parse error: {exc}", file=sys.stderr)
+        return []
+
+    if kind == "sitemapindex":
+        child_sitemaps = [loc for loc in locs if "post-sitemap" in loc] or locs
+        urls = []
+        for child in child_sitemaps:
+            urls.extend(fetch_sitemap_urls(child, depth + 1, seen))
+        return urls
+    return locs
+
+
+def classify_url(url):
+    parsed = urllib.parse.urlparse(url)
+    segments = [s for s in parsed.path.split("/") if s]
+    slug = segments[-1] if segments else ""
+
+    language = "ja"
+    if segments and segments[0] in LANG_CODES:
+        language = segments[0]
+    lang_suffix_match = re.search(r"-(en|es|de|fr)$", slug)
+    if lang_suffix_match:
+        language = lang_suffix_match.group(1)
+
+    core = re.sub(r"-(ja|en|es|de|fr)$", "", slug)
+
+    theme = "unknown"
+    for prefix, key in THEME_PREFIXES:
+        if core == prefix or core.startswith(prefix + "-"):
+            theme = key
             break
-        data = resp.json()
-        items.extend(data.get("items", []))
-        total_pages = data.get("total_pages", page)
-        page += 1
-        time.sleep(REQUEST_DELAY_SECONDS)
-    return items
+
+    if theme == "infection" or core in ("port-passenger-map",) or "national" in core:
+        region = "national"
+    else:
+        region = "other"
+        for kw in REGION_KEYWORDS:
+            if kw in core:
+                region = kw
+                break
+
+    return {"slug": slug, "theme": theme, "region": region, "language": language, "url": url, "id": url}
 
 
 def build_sample(items, sample_size):
@@ -94,7 +169,7 @@ def build_sample(items, sample_size):
             seen_ids.add(p["id"])
         return picked
 
-    themes = sorted(by_theme.keys())
+    themes = sorted(k for k in by_theme.keys() if k != "unknown")
     for theme in themes:
         group = by_theme[theme]
         national = [g for g in group if g.get("region") == "national" and g.get("language") == "ja"]
@@ -171,12 +246,14 @@ def find_dataset_jsonld(soup):
 
 
 def parse_page(html, url):
-    """Pure, network-free parse of one page's HTML. Order matters: Dataset
-    JSON-LD and whole-page link counts must be read BEFORE extract_main_text()
-    mutates the tree (it decompose()s <script>/<nav>/<header>/<footer>, which
-    would otherwise silently delete the JSON-LD <script> tags first)."""
+    """Pure, network-free parse of one page's HTML. Order matters: title,
+    Dataset JSON-LD, and whole-page link counts must all be read BEFORE
+    extract_main_text() mutates the tree (it decompose()s
+    <script>/<nav>/<header>/<footer>, which would otherwise silently delete
+    the JSON-LD <script> tags first)."""
     soup = BeautifulSoup(html, "html.parser")
 
+    title = soup.title.get_text(strip=True) if soup.title else None
     datasets = find_dataset_jsonld(soup)
     page_internal, page_external, page_external_samples = classify_links(soup, url)
 
@@ -184,6 +261,7 @@ def parse_page(html, url):
     body_internal, body_external, body_external_samples = classify_links(soup, url)
 
     return {
+        "title": title,
         "char_count": len(text),
         "page_internal_links": page_internal,
         "page_external_links": page_external,
@@ -223,8 +301,7 @@ def crawl_pages(sample, disallow_prefixes):
             "theme": item.get("theme"),
             "region": item.get("region"),
             "language": item.get("language"),
-            "edition": item.get("edition"),
-            "title": item.get("title"),
+            "slug": item.get("slug"),
             "url": url,
             "status_code": resp.status_code,
             **parsed,
@@ -269,7 +346,7 @@ def compute_similarity(pages):
     return pages
 
 
-def summarize(pages, failures, catalog_size):
+def summarize(pages, failures, sitemap_url_count):
     themes = defaultdict(list)
     for p in pages:
         themes[p["theme"]].append(p)
@@ -291,7 +368,7 @@ def summarize(pages, failures, catalog_size):
         "sample_size": len(pages) + len(failures),
         "fetched_ok": len(pages),
         "failed": len(failures),
-        "catalog_total_items": catalog_size,
+        "sitemap_url_count": sitemap_url_count,
         "avg_char_count": avg_chars,
         "dataset_jsonld_present_count": dataset_coverage,
         "dataset_jsonld_missing_description_urls": dataset_missing_desc,
@@ -321,10 +398,11 @@ def write_report(pages, failures, summary, sample_meta, out_dir):
             f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
     lines = []
-    lines.append(f"# VWD Site Quality Audit — Pilot Run\n")
+    lines.append("# VWD Site Quality Audit — Pilot Run\n")
     lines.append(f"Generated: {datetime.now(timezone.utc).isoformat()}\n")
+    lines.append("Population source: `post-sitemap.xml` (REST API is disabled site-side; not used here).\n")
     lines.append(f"- Sample size: {summary['sample_size']} (fetched OK: {summary['fetched_ok']}, failed: {summary['failed']})")
-    lines.append(f"- Catalog total items (public search API): {summary['catalog_total_items']}")
+    lines.append(f"- Sitemap total URLs discovered: {summary['sitemap_url_count']}")
     lines.append(f"- Average body char count (sampled pages): {summary['avg_char_count']}")
     lines.append(f"- Dataset JSON-LD present: {summary['dataset_jsonld_present_count']} / {summary['fetched_ok']}")
     lines.append(f"- Themes covered: {', '.join(summary['themes_covered'])}\n")
@@ -377,19 +455,20 @@ def write_report(pages, failures, summary, sample_meta, out_dir):
         f.write("\n".join(lines))
 
 
-def write_load_estimate(pages, catalog_size, out_dir, elapsed_seconds):
+def write_load_estimate(pages, sitemap_url_count, out_dir, elapsed_seconds):
     per_page = elapsed_seconds / max(len(pages), 1)
-    full_estimate_seconds = per_page * catalog_size
+    full_estimate_seconds = per_page * sitemap_url_count
     lines = [
         "# Estimated load for a full-site crawl\n",
         f"- Pilot sample: {len(pages)} pages fetched in {round(elapsed_seconds, 1)}s "
         f"({round(per_page, 2)}s/page, includes {REQUEST_DELAY_SECONDS}s politeness delay)",
-        f"- Catalog total (public search API): {catalog_size} items",
+        f"- Sitemap total URLs discovered: {sitemap_url_count}",
         f"- Extrapolated full crawl: ~{round(full_estimate_seconds / 60, 1)} minutes, "
-        f"{catalog_size} GET requests to app-navi.biz, single-threaded, "
+        f"{sitemap_url_count} GET requests to app-navi.biz, single-threaded, "
         f"{REQUEST_DELAY_SECONDS}s delay between requests",
-        "- All requests are read-only GETs to public article URLs discovered via the public "
-        "`vwd-library/v1/search` API; no WordPress admin, Xserver panel, or write endpoints are touched.",
+        "- All requests are read-only GETs to public article URLs discovered via `post-sitemap.xml`; "
+        "the REST API is not used (it is intentionally disabled site-side). No WordPress admin, "
+        "Xserver panel, or write endpoints are touched.",
     ]
     with open(os.path.join(out_dir, "estimated_load.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
@@ -407,15 +486,20 @@ def main():
     print("[1/5] fetching robots.txt")
     disallow_prefixes = fetch_robots_disallow()
 
-    print("[2/5] fetching public catalog via vwd-library/v1/search")
-    catalog = fetch_catalog()
-    print(f"      catalog size: {len(catalog)}")
-    if not catalog:
-        print("ERROR: empty catalog, aborting (site may be unreachable)", file=sys.stderr)
+    print("[2/5] fetching public post sitemap")
+    sitemap_urls = fetch_sitemap_urls()
+    print(f"      sitemap URLs: {len(sitemap_urls)}")
+    if not sitemap_urls:
+        print("ERROR: empty sitemap, aborting (site may be unreachable, or sitemap path changed)", file=sys.stderr)
         sys.exit(1)
 
+    classified = [classify_url(u) for u in sitemap_urls]
+    unknown_theme = sum(1 for c in classified if c["theme"] == "unknown")
+    if unknown_theme:
+        print(f"      note: {unknown_theme} URLs did not match a known theme prefix (left out of theme-stratified picks)")
+
     print(f"[3/5] selecting representative sample (~{args.sample_size} pages)")
-    sample = build_sample(catalog, args.sample_size)
+    sample = build_sample(classified, args.sample_size)
     print(f"      selected: {len(sample)} pages across {len({s['theme'] for s in sample})} themes")
 
     print("[4/5] crawling sample pages (read-only GET, max 2 attempts each)")
@@ -425,9 +509,9 @@ def main():
     pages = compute_similarity(pages)
 
     print("[5/5] writing report")
-    summary = summarize(pages, failures, len(catalog))
+    summary = summarize(pages, failures, len(sitemap_urls))
     write_report(pages, failures, summary, {"selected": sample, "disallow_prefixes": list(disallow_prefixes)}, out_dir)
-    write_load_estimate(pages, len(catalog), out_dir, elapsed)
+    write_load_estimate(pages, len(sitemap_urls), out_dir, elapsed)
 
     print(f"\nDone. Report written to {out_dir}/report.md")
     print(json.dumps(summary, ensure_ascii=False, indent=2))

@@ -1,11 +1,14 @@
 import json
 import unittest
+from unittest import mock
 
+import run_audit
 from run_audit import (
     build_sample,
     classify_links,
     classify_url,
     compute_similarity,
+    crawl_pages,
     extract_main_text,
     find_dataset_jsonld,
     homepage_item,
@@ -245,6 +248,38 @@ class SelectPagesTest(unittest.TestCase):
         ]
         result = select_pages(classified, full=False, sample_size=5)
         self.assertEqual(len(result), 6)  # 5 sampled + homepage
+
+
+class CrawlPagesTimeBudgetTest(unittest.TestCase):
+    def test_stops_and_marks_remainder_skipped_when_budget_already_exceeded(self):
+        # Regression test for the run that hung for an hour and was killed by the
+        # GitHub Actions job timeout with nothing saved. A negative budget forces
+        # the very first iteration to trip the check, so the whole sample is
+        # skipped instead of fetched — proving the early-exit path writes a
+        # usable (if empty) result rather than running unbounded.
+        sample = [
+            {"id": "a", "url": "https://x/a/", "theme": "population", "region": "national", "language": "ja"},
+            {"id": "b", "url": "https://x/b/", "theme": "population", "region": "kanto", "language": "ja"},
+        ]
+        with mock.patch.object(run_audit, "fetch_with_retry") as fetch_mock:
+            pages, failures, budget_exceeded = crawl_pages(sample, disallow_prefixes=set(), max_seconds=-1)
+
+        fetch_mock.assert_not_called()
+        self.assertTrue(budget_exceeded)
+        self.assertEqual(pages, [])
+        self.assertEqual(len(failures), 2)
+        self.assertTrue(all(f["reason"] == "skipped_time_budget_exceeded" for f in failures))
+
+    def test_no_budget_means_unbounded(self):
+        sample = [{"id": "a", "url": "https://x/a/", "theme": "population", "region": "national", "language": "ja"}]
+        fake_resp = mock.Mock(status_code=200, text="<html><body><article>hi</article></body></html>")
+        with mock.patch.object(run_audit, "fetch_with_retry", return_value=(fake_resp, None)), \
+             mock.patch.object(run_audit.time, "sleep"):
+            pages, failures, budget_exceeded = crawl_pages(sample, disallow_prefixes=set(), max_seconds=None)
+
+        self.assertFalse(budget_exceeded)
+        self.assertEqual(len(pages), 1)
+        self.assertEqual(failures, [])
 
 
 class SitemapParsingTest(unittest.TestCase):

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import concurrent.futures
 import difflib
 import json
 import os
@@ -15,6 +16,8 @@ from datetime import datetime, timezone
 import requests
 from bs4 import BeautifulSoup
 
+sys.stdout.reconfigure(line_buffering=True)  # force live progress in CI logs instead of buffering until exit
+
 SITE = "https://app-navi.biz"
 HOMEPAGE_URL = f"{SITE}/"
 SITEMAP_URL = f"{SITE}/post-sitemap.xml"
@@ -22,10 +25,17 @@ SITEMAP_NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 SITEMAP_RECURSION_CAP = 5
 USER_AGENT = "VWD-Site-Quality-Audit/1.0 (+internal content QA pilot; read-only; contact: hirohirori)"
 REQUEST_TIMEOUT = 15
+# requests' own timeout only fires on a gap with NO bytes received; a connection that
+# trickles data indefinitely (or a stuck proxy) can otherwise hang forever. This wraps
+# every request in a worker thread with a true wall-clock deadline as a backstop.
+HARD_DEADLINE_SECONDS = 25
 MAX_ATTEMPTS = 2
 RETRY_BACKOFF_SECONDS = 2
 REQUEST_DELAY_SECONDS = 1.5
 RANDOM_SEED = 20261006
+PROGRESS_EVERY = 20
+
+_fetch_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
 
 LANG_CODES = {"en", "es", "de", "fr"}
 THEME_PREFIXES = [
@@ -53,16 +63,23 @@ session = requests.Session()
 session.headers["User-Agent"] = USER_AGENT
 
 
+def _get(url, params):
+    return session.get(url, params=params, timeout=REQUEST_TIMEOUT)
+
+
 def fetch_with_retry(url, params=None):
     last_error = None
     for attempt in range(1, MAX_ATTEMPTS + 1):
         try:
-            resp = session.get(url, params=params, timeout=REQUEST_TIMEOUT)
+            future = _fetch_executor.submit(_get, url, params)
+            resp = future.result(timeout=HARD_DEADLINE_SECONDS)
             return resp, None
+        except concurrent.futures.TimeoutError:
+            last_error = f"hard deadline exceeded ({HARD_DEADLINE_SECONDS}s, possible stuck/trickling connection)"
         except requests.RequestException as exc:
             last_error = str(exc)
-            if attempt < MAX_ATTEMPTS:
-                time.sleep(RETRY_BACKOFF_SECONDS)
+        if attempt < MAX_ATTEMPTS:
+            time.sleep(RETRY_BACKOFF_SECONDS)
     return None, last_error
 
 
@@ -293,10 +310,22 @@ def parse_page(html, url):
     }
 
 
-def crawl_pages(sample, disallow_prefixes):
+def crawl_pages(sample, disallow_prefixes, max_seconds=None):
     pages = []
     failures = []
-    for item in sample:
+    start = time.time()
+    budget_exceeded = False
+
+    for i, item in enumerate(sample, start=1):
+        if max_seconds is not None and (time.time() - start) > max_seconds:
+            budget_exceeded = True
+            remaining = sample[i - 1:]
+            print(f"      time budget ({max_seconds}s) exceeded after {i - 1}/{len(sample)} pages; "
+                  f"skipping remaining {len(remaining)}")
+            for skipped in remaining:
+                failures.append({"url": skipped["url"], "reason": "skipped_time_budget_exceeded"})
+            break
+
         url = item["url"]
         if is_disallowed(url, disallow_prefixes):
             failures.append({"url": url, "reason": "disallowed_by_robots_txt"})
@@ -307,24 +336,27 @@ def crawl_pages(sample, disallow_prefixes):
 
         if err or resp is None:
             failures.append({"url": url, "reason": err or "no_response"})
-            continue
-        if resp.status_code != 200:
+        elif resp.status_code != 200:
             failures.append({"url": url, "reason": f"http_{resp.status_code}"})
-            continue
+        else:
+            parsed = parse_page(resp.text, url)
+            pages.append({
+                "id": item["id"],
+                "theme": item.get("theme"),
+                "region": item.get("region"),
+                "language": item.get("language"),
+                "slug": item.get("slug"),
+                "url": url,
+                "status_code": resp.status_code,
+                **parsed,
+            })
 
-        parsed = parse_page(resp.text, url)
+        if i % PROGRESS_EVERY == 0 or i == len(sample):
+            elapsed = round(time.time() - start, 1)
+            print(f"      progress: {i}/{len(sample)} processed "
+                  f"({len(pages)} ok, {len(failures)} failed) — {elapsed}s elapsed")
 
-        pages.append({
-            "id": item["id"],
-            "theme": item.get("theme"),
-            "region": item.get("region"),
-            "language": item.get("language"),
-            "slug": item.get("slug"),
-            "url": url,
-            "status_code": resp.status_code,
-            **parsed,
-        })
-    return pages, failures
+    return pages, failures, budget_exceeded
 
 
 def compute_similarity(pages):
@@ -425,6 +457,10 @@ def write_report(pages, failures, summary, sample_meta, out_dir, full=False):
     lines.append("Population source: `post-sitemap.xml` (REST API is disabled site-side; not used here). "
                   "The homepage (`/`) is added separately for Dataset JSON-LD auditing only; it is not a "
                   "post and is excluded from the theme-similarity comparisons.\n")
+    if summary.get("time_budget_exceeded"):
+        lines.append("**⚠ Stopped early: the crawl time budget was exceeded. This report covers a "
+                      "partial crawl only — remaining pages are listed in Failures with reason "
+                      "`skipped_time_budget_exceeded`.**\n")
     lines.append(f"- Sample size: {summary['sample_size']} (fetched OK: {summary['fetched_ok']}, failed: {summary['failed']})")
     lines.append(f"- Sitemap total URLs discovered: {summary['sitemap_url_count']}")
     lines.append(f"- Average body char count (sampled pages): {summary['avg_char_count']}")
@@ -509,8 +545,12 @@ def main():
     parser.add_argument("--sample-size", type=int, default=int(os.environ.get("SAMPLE_SIZE", 26)))
     parser.add_argument("--full", action="store_true",
                          help="Crawl every URL in the sitemap instead of a stratified sample")
+    parser.add_argument("--max-minutes", type=float, default=None,
+                         help="Stop crawling (and still write a report) after this many minutes. "
+                              "Defaults to 45 in --full mode, unbounded otherwise.")
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
+    max_seconds = args.max_minutes * 60 if args.max_minutes is not None else (2700 if args.full else None)
 
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = args.out or os.path.join("results", f"run-{run_id}")
@@ -539,20 +579,25 @@ def main():
     print(f"      selected: {len(sample)} pages (incl. homepage) across "
           f"{len({s['theme'] for s in sample if s['theme'] != 'homepage'})} content themes")
 
-    print("[4/5] crawling pages (read-only GET, max 2 attempts each, "
-          f"{REQUEST_DELAY_SECONDS}s delay between requests)")
+    budget_note = f", time budget {max_seconds / 60:.0f}min" if max_seconds else ""
+    print(f"[4/5] crawling pages (read-only GET, max 2 attempts each, "
+          f"{REQUEST_DELAY_SECONDS}s delay between requests{budget_note})")
     t0 = time.time()
-    pages, failures = crawl_pages(sample, disallow_prefixes)
+    pages, failures, budget_exceeded = crawl_pages(sample, disallow_prefixes, max_seconds=max_seconds)
     elapsed = time.time() - t0
     pages = compute_similarity(pages)
 
     print("[5/5] writing report")
     summary = summarize(pages, failures, len(sitemap_urls))
+    summary["time_budget_exceeded"] = budget_exceeded
     write_report(pages, failures, summary, {"selected": sample, "disallow_prefixes": list(disallow_prefixes)},
                  out_dir, full=args.full)
     write_load_estimate(pages, len(sitemap_urls), out_dir, elapsed)
 
-    print(f"\nDone. Report written to {out_dir}/report.md")
+    print(f"\nDone in {round(elapsed, 1)}s. Report written to {out_dir}/report.md")
+    if budget_exceeded:
+        print(f"NOTE: stopped early due to the {max_seconds / 60:.0f}min time budget — "
+              f"report covers a partial crawl ({summary['fetched_ok']}/{summary['sample_size']} pages).")
     if args.full:
         condensed = {k: v for k, v in summary.items() if not isinstance(v, list) or k == "themes_covered"}
         condensed["flagged_high_similarity_or_low_unique_count"] = len(summary["flagged_high_similarity_or_low_unique"])

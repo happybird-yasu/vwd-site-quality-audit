@@ -76,7 +76,7 @@ print(f"\nduplicate Dataset entries (same name/identifier/url repeated): {dupes}
 # enqueued handles containing "vwd", "library", "dataset", "schema", "jsonld")
 print("\n----- possible source fingerprints in raw HTML -----")
 for pattern in [r'class="[^"]*vwd-library[^"]*"', r'id="[^"]*jsonld[^"]*"', r'id="[^"]*schema[^"]*"',
-                 r"<!--\s*(vwd|library|dataset|jsonld|schema)[^>]*-->", r'wp-content/plugins/[a-zA-Z0-9_-]+'):
+                 r"<!--\s*(vwd|library|dataset|jsonld|schema)[^>]*-->", r'wp-content/plugins/[a-zA-Z0-9_-]+']:
     matches = sorted(set(re.findall(pattern, html, flags=re.IGNORECASE)))
     if matches:
         print(f"{pattern}: {matches[:10]}")

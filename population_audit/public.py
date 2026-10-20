@@ -9,7 +9,7 @@ import json
 import re
 from pathlib import Path
 
-from .common import http_get, read_json, sha256_bytes, utcnow, write_json
+from .common import http_get, read_json, safe_reason, sha256_bytes, utcnow, write_json
 
 BASE = "https://app-navi.biz/maps/population"
 SITE_INTERVAL = 1.5
@@ -82,8 +82,9 @@ def fetch_snapshot(out_dir: Path) -> dict:
                             "slug": slug, "lang": lang, "compared": len(base),
                             "differences": len(diff), "examples": sorted(diff)[:5]})
             except Exception as exc:  # noqa: BLE001
-                manifest["failures"].append({"url": url, "stage": "page",
-                                             "exception_type": type(exc).__name__})
+                manifest["failures"].append({"url": url, "stage": "page", "target": f"{slug}/{lang}",
+                                             "exception_type": type(exc).__name__,
+                                             "reason": safe_reason(exc), "retry_count": 3})
     for slug in SLUGS:
         for attr in ATTRS:
             url = f"{BASE}/data/{slug}/{attr}.json"
@@ -95,8 +96,9 @@ def fetch_snapshot(out_dir: Path) -> dict:
                                                "bytes": len(body), "sha256": sha256_bytes(body),
                                                "years": sorted(obj.keys())})
             except Exception as exc:  # noqa: BLE001
-                manifest["failures"].append({"url": url, "stage": "attribute",
-                                             "exception_type": type(exc).__name__})
+                manifest["failures"].append({"url": url, "stage": "attribute", "target": f"{slug}/{attr}",
+                                             "exception_type": type(exc).__name__,
+                                             "reason": safe_reason(exc), "retry_count": 3})
     write_json(out_dir / "manifest.json", manifest)
     return manifest
 
@@ -106,7 +108,9 @@ class PublicData:
 
     def __init__(self, snap_dir: Path):
         self.snap_dir = Path(snap_dir)
-        self.manifest = read_json(self.snap_dir / "manifest.json")
+        mp = self.snap_dir / "manifest.json"
+        self.available = mp.exists()
+        self.manifest = read_json(mp) if self.available else {"missing": True, "failures": []}
         self.pop = {}        # (year, dir, code) -> record
         self.attr = {}       # (attr, year, dir, sub, code) -> record
         self.slug_of = {}    # code -> slug where it was found

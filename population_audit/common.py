@@ -8,6 +8,7 @@ import datetime as dt
 import gzip
 import hashlib
 import json
+import re
 import time
 import urllib.error
 import urllib.request
@@ -60,12 +61,21 @@ def http_get(url: str, *, host_key: str, min_interval: float, retries: int = 3,
     raise last_exc  # type: ignore[misc]
 
 
+_SECRET = re.compile(r"(?i)(bearer\s+\S+|token=\S+|cookie[^,;]*|authorization[^,;]*)")
+
+
+def safe_reason(exc: BaseException) -> str:
+    """Exception type and message, secrets redacted and truncated."""
+    return _SECRET.sub("[redacted]", f"{type(exc).__name__}: {exc}")[:300]
+
+
 def log_failure(out_dir: Path, target: str, stage: str, exc: BaseException,
-                retry_count: int) -> None:
-    """Append one failure record. Only time, target, stage, exception type, retries."""
+                retry_count: int, url: str | None = None) -> None:
+    """Append one failure record (time, target, stage, url, error, retries). No credentials."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    rec = {"ts": utcnow(), "target": target, "stage": stage,
-           "exception_type": type(exc).__name__, "retry_count": retry_count}
+    rec = {"ts": utcnow(), "target": target, "stage": stage, "url": url,
+           "exception_type": type(exc).__name__, "reason": safe_reason(exc),
+           "retry_count": retry_count}
     with open(out_dir / "failures.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 

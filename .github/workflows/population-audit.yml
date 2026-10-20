@@ -46,7 +46,6 @@ jobs:
         run: python -m unittest discover -s population_audit -p "test_*.py" -v
 
   snapshot:
-    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -55,17 +54,20 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - name: Fetch public-site data (read-only GET, 1.5s spacing)
+      - name: Fetch public-site data (read-only GET, 1.5s spacing; failures are recorded, not fatal)
+        continue-on-error: true
         run: python -m population_audit snapshot --out snapshot
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: public-snapshot
           path: snapshot/
+          if-no-files-found: warn
           retention-days: 30
 
   audit:
     needs: snapshot
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 345
     strategy:
@@ -79,6 +81,7 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: public-snapshot
           path: snapshot
@@ -93,7 +96,7 @@ jobs:
         run: >
           python -m population_audit year --year ${{ matrix.year }}
           --snapshot snapshot --work work --out out
-          --max-prefectures "$MAX_PREFECTURES"
+          --max-prefectures "$MAX_PREFECTURES" --deadline-minutes 325
       - name: Save cache (official files + state), even after partial failure
         if: always()
         uses: actions/cache/save@v4
@@ -105,11 +108,12 @@ jobs:
         with:
           name: audit-year-${{ matrix.year }}
           path: out/
+          if-no-files-found: warn
           retention-days: 30
 
   merge:
-    needs: [snapshot, audit]
-    if: always() && needs.snapshot.result == 'success'
+    needs: [test, snapshot, audit]
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -119,6 +123,7 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: public-snapshot
           path: snapshot
@@ -128,10 +133,17 @@ jobs:
           pattern: audit-year-*
           path: years
       - name: Build combined report
-        run: python -m population_audit merge --inputs years --out report --snapshot snapshot
+        env:
+          EXPECTED_YEARS: ${{ join(fromJSON(github.event.inputs.years || '[2025,2021,2019]'), ',') }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: >
+          python -m population_audit merge --inputs years --out report --snapshot snapshot
+          --expected-years "$EXPECTED_YEARS" --test-result "$TEST_RESULT"
       - name: Job summary
-        run: head -c 900000 report/report.md >> "$GITHUB_STEP_SUMMARY"
+        if: always()
+        run: head -c 900000 report/report.md >> "$GITHUB_STEP_SUMMARY" || echo "no report generated"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: population-audit-report
           path: report/

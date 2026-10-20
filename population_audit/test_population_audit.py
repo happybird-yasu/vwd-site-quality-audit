@@ -110,5 +110,43 @@ class PublicInternal(unittest.TestCase):
         self.assertEqual(t.counts["public_sum_sex_vs_total"]["match"], 2)
 
 
+class FailureIsolation(unittest.TestCase):
+    def test_bad_sheet_does_not_stop_file(self):
+        import tempfile
+        from pathlib import Path
+
+        import openpyxl
+
+        from population_audit import run as runmod
+
+        tmp = Path(tempfile.mkdtemp())
+        wb = openpyxl.Workbook()
+        good = wb.active
+        good.title = "13104新宿区"
+        for r in make_rows((100, 70, 30), []):
+            good.append(list(r))
+        bad = wb.create_sheet("13105文京区")          # no total row -> LayoutError
+        bad.append([None] * 8 + ["13101", 5, 3, 2])
+        path = tmp / "t.xlsx"
+        wb.save(path)
+        item = {"year": 2025, "kind": "nationality", "direction_assumed": "inflow",
+                "stat_inf_id": "X", "url": "u", "pref_code": "13"}
+        orig = runmod.off.download
+        runmod.off.download = lambda it, d: {**it, "path": str(path), "cached": False, "sha256": "s"}
+        try:
+            res = runmod._process_item(item, FakePub(), tmp)
+        finally:
+            runmod.off.download = orig
+        self.assertEqual(res["sheets"], 1)
+        self.assertEqual(len(res["sheet_failures"]), 1)
+        self.assertIn("13105", res["sheet_failures"][0]["sheet"])
+
+    def test_safe_reason_redacts_secrets(self):
+        from population_audit.common import safe_reason
+        s = safe_reason(RuntimeError("failed token=abc123 Authorization: Bearer xyz"))
+        self.assertNotIn("abc123", s)
+        self.assertNotIn("xyz", s)
+
+
 if __name__ == "__main__":
     unittest.main()

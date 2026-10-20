@@ -1,0 +1,138 @@
+name: Population flow numeric audit (official statistics)
+
+# Read-only numeric audit of https://app-navi.biz/maps/population/ against e-Stat
+# reference tables. Never writes to the site, WordPress, or the repository.
+# Triggers: manual dispatch, or a push to the dedicated work branch (so it can run
+# before this workflow exists on main). Existing audit workflows are untouched.
+on:
+  workflow_dispatch:
+    inputs:
+      years:
+        description: "JSON list of years"
+        required: false
+        default: "[2025,2021,2019]"
+      max_prefectures:
+        description: "Limit to prefecture codes <= N (0 = all 47)"
+        required: false
+        default: "0"
+  push:
+    branches: [population-numeric-audit]
+    paths:
+      - "population_audit/**"
+      - ".github/workflows/population-audit.yml"
+      - "requirements.txt"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: population-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MAX_PREFECTURES: ${{ github.event.inputs.max_prefectures || '0' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Unit tests (including deliberately broken data must be flagged)
+        run: python -m unittest discover -s population_audit -p "test_*.py" -v
+
+  snapshot:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Fetch public-site data (read-only GET, 1.5s spacing)
+        run: python -m population_audit snapshot --out snapshot
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-snapshot
+          path: snapshot/
+          retention-days: 30
+
+  audit:
+    needs: snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      matrix:
+        year: ${{ fromJSON(github.event.inputs.years || '[2025,2021,2019]') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: public-snapshot
+          path: snapshot
+      - name: Restore cached official files and progress state
+        uses: actions/cache/restore@v4
+        with:
+          path: work
+          key: official-v1-${{ matrix.year }}-${{ github.run_id }}
+          restore-keys: |
+            official-v1-${{ matrix.year }}-
+      - name: Audit year ${{ matrix.year }} (resumable)
+        run: >
+          python -m population_audit year --year ${{ matrix.year }}
+          --snapshot snapshot --work work --out out
+          --max-prefectures "$MAX_PREFECTURES"
+      - name: Save cache (official files + state), even after partial failure
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: work
+          key: official-v1-${{ matrix.year }}-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: audit-year-${{ matrix.year }}
+          path: out/
+          retention-days: 30
+
+  merge:
+    needs: [snapshot, audit]
+    if: always() && needs.snapshot.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: public-snapshot
+          path: snapshot
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: audit-year-*
+          path: years
+      - name: Build combined report
+        run: python -m population_audit merge --inputs years --out report --snapshot snapshot
+      - name: Job summary
+        run: head -c 900000 report/report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: population-audit-report
+          path: report/
+          retention-days: 90

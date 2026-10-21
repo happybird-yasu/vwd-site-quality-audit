@@ -176,8 +176,9 @@ def cmd_fetch_pages(a):
             get(f"{BASE}/{lang}/{slug}.html", out / lang / f"{slug}.html")
     for slug in SLUGS:
         get(f"https://app-navi.biz/maps/shared/{slug}.geojson", out / "geo" / f"{slug}.geojson")
-        get(f"https://app-navi.biz/cards/population/ja/{slug}_datacard.html",
-            out / "cards" / "ja" / f"{slug}_datacard.html")
+        for lg in LANGS:
+            fn = cards.card_file(lg, slug)
+            get(f"https://app-navi.biz/cards/population/{lg}/{fn}", out / "cards" / lg / fn)
     write_json(out / "pages_manifest.json", man)
     print(f"fetched={len(man['files'])} failures={len(man['failures'])}")
     return 0
@@ -453,15 +454,15 @@ def cmd_cards(a):
     official = national.pref_net_from_extracts(merged)
     res = cards.check_cards(Path(a.cards), official, out / "site")
     write_json(out / "cards_report.json", res)
-    L = ["# Regional data card check (ja)", "",
+    L = ["# Regional data card check (5 languages)", "",
          f"Checked values: {res['checked_values']}, mismatches: {res['mismatch_count']}, "
          f"cards not checked: {res['cards_not_checked'] or 'none'}", "",
-         "| region | year | card | official (sum of prefecture net migration) | match |", "|---|---|---:|---:|---|"]
-    for r in res["mismatches"][:60] or []:
-        L.append(f"| {r['slug']} | {r['year']} | {r['card']:+,} | {r['official'] if r['official'] is None else format(r['official'], '+,')} | NO |")
+         "| lang | region | year | card | official (sum of prefecture net migration) | match |", "|---|---|---|---:|---:|---|"]
+    for r in res["mismatches"][:120] or []:
+        L.append(f"| {r['lang']} | {r['slug']} | {r['year']} | {r['card']:+,} | {r['official'] if r['official'] is None else format(r['official'], '+,')} | NO |")
     L += ["", f"Official region sums by year (should be 0 in total): {res['official_region_sum_total_by_year']}",
           f"Candidates written (work copies only): {res['candidates_written'] or 'none'}",
-          f"Other languages: {res['other_languages']}"]
+          f"Locations: {res['locations']}"]
     (out / "cards_report.md").write_text("\n".join(L) + "\n", encoding="utf-8")
     print(json.dumps({k: res[k] for k in ("checked_values", "mismatch_count", "cards_not_checked",
                                           "candidates_written", "passed")}, ensure_ascii=False))
@@ -533,9 +534,8 @@ def cmd_finalize(a):
     if cr.exists():
         c = read_json(cr)
         if not c.get("passed"):
-            open_items.append(f"regional cards (ja): {c['mismatch_count']} value(s) differ from official sums; "
+            open_items.append(f"regional cards: {c['mismatch_count']} value(s) differ from official sums; "
                               f"candidates for {c['candidates_written']} (work copies); not checked: {c['cards_not_checked']}")
-        open_items.append("cards in en/de/es/fr: location not found (404) -> not verified")
     else:
         open_items.append("regional cards: check not run")
     open_items.append("static article text outside POP_DATA / cards is NOT regenerated or verified")

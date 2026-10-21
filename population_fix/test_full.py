@@ -179,3 +179,16 @@ class Cards(unittest.TestCase):
         s = cards.region_sums(pn)
         self.assertEqual(s["kanto"]["2019"], 7)        # prefectures 08-14
         self.assertIsNone(s["kanto"]["2021"])          # missing -> unknown, never 0
+
+
+class CardsLanguages(unittest.TestCase):
+    def test_french_narrow_space_is_parsed_and_preserved(self):
+        from population_fix import cards
+        html = ('<td class="region-label">Kanto</td>\n    <td class="pos">+133&#8239;305</td>\n'
+                '    <td class="pos">+83&#8239;482</td>\n    <td class="pos">+114&#8239;047</td>')
+        self.assertEqual(cards.parse_card(html), {"2019": 133305, "2021": 83482, "2025": 114047})
+        out = cards.patch_card(html, {"2019": 1234, "2021": -5678, "2025": 9}, "fr")
+        self.assertIn("+1&#8239;234", out)
+        self.assertIn("-5&#8239;678", out)
+        self.assertEqual(cards.card_file("en", "kanto"), "kanto_datacard_en.html")
+        self.assertEqual(cards.card_file("ja", "kanto"), "kanto_datacard.html")

@@ -1,0 +1,246 @@
+name: Population flow data correction (official tables -> candidate site files)
+
+# Regenerates the population-flow map data from the official e-Stat reference tables,
+# applies it to COPIES of the current public pages, and verifies the result directly
+# against the official workbooks.  Read-only toward the live site: it only performs GET
+# requests, writes nothing to the server/WordPress, and publishes nothing.
+# Triggers: manual dispatch, or a push to the dedicated correction branch.
+on:
+  workflow_dispatch:
+    inputs:
+      years:
+        description: "JSON list of years"
+        required: false
+        default: "[2025,2021,2019]"
+      max_prefectures:
+        description: "Smoke test only: limit to prefecture codes <= N (0 = all 47). A limited run can never be reported as complete."
+        required: false
+        default: "0"
+  push:
+    branches: [population-data-correction]
+    paths:
+      - "population_fix/**"
+      - "population_audit/**"
+      - ".github/workflows/population-correction.yml"
+      - "requirements.txt"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: population-correction-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MAX_PREFECTURES: ${{ github.event.inputs.max_prefectures || '0' }}
+  EXPECTED_YEARS: ${{ join(fromJSON(github.event.inputs.years || '[2025,2021,2019]'), ',') }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Unit tests (broken inputs must be flagged, gates must not pass on empty/partial work)
+        run: python -m unittest discover -s . -p "test_*.py" -t . -v
+
+  pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Public data snapshot (read-only GET; failures recorded, not fatal)
+        continue-on-error: true
+        run: python -m population_audit snapshot --out snapshot
+      - name: Copies of current public pages, i18n and geometry (read-only GET)
+        continue-on-error: true
+        run: python -m population_fix fetch-pages --out pages
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-snapshot
+          path: snapshot/
+          if-no-files-found: warn
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-pages
+          path: pages/
+          if-no-files-found: warn
+          retention-days: 30
+
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      matrix:
+        year: ${{ fromJSON(github.event.inputs.years || '[2025,2021,2019]') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Restore cached official files and progress state
+        uses: actions/cache/restore@v4
+        with:
+          path: work
+          key: corr-official-v1-${{ matrix.year }}-${{ github.run_id }}
+          restore-keys: |
+            corr-official-v1-${{ matrix.year }}-
+      - name: Extract year ${{ matrix.year }} (resumable; errors are recorded and skipped)
+        run: >
+          python -m population_fix extract --year ${{ matrix.year }}
+          --work work --out out --max-prefectures "$MAX_PREFECTURES"
+          --deadline-minutes 325
+      - name: Save cache (official files + state), even after partial failure
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: work
+          key: corr-official-v1-${{ matrix.year }}-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: extracts-${{ matrix.year }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 30
+
+  build:
+    needs: [pages, extract]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: public-snapshot
+          path: snapshot
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: source-pages
+          path: pages
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: extracts-*
+          path: extracts
+      - name: Assemble corrected data, patch page copies, build diff report and ZIP
+        run: >
+          python -m population_fix assemble --extracts extracts --snapshot snapshot
+          --pages pages --out build --expected-years "$EXPECTED_YEARS"
+      - name: Regional data cards vs official prefecture totals (work-copy candidates only)
+        if: always()
+        run: python -m population_fix cards --extracts extracts --cards pages/cards --out build
+      - name: Year-correct Hamamatsu geometry and nationwide search (copies only)
+        run: >
+          python -m population_fix.boundary_fix build boundary-build
+          population_fix/fixtures/hamamatsu-n03-20250101.geojson.gz pages/geo
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: population-correction-candidate
+          path: boundary-build/
+          if-no-files-found: warn
+          retention-days: 30
+
+  verify:
+    needs: build
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        year: ${{ fromJSON(github.event.inputs.years || '[2025,2021,2019]') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Restore official files (same cache the extract job saved)
+        uses: actions/cache/restore@v4
+        with:
+          path: work
+          key: corr-official-v1-${{ matrix.year }}-${{ github.run_id }}
+          restore-keys: |
+            corr-official-v1-${{ matrix.year }}-
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: population-correction-candidate
+          path: candidate
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: extracts-${{ matrix.year }}
+          path: extractsy
+      - name: Independent verification against the official workbooks (year ${{ matrix.year }})
+        run: >
+          python -m population_fix verify-year --year ${{ matrix.year }}
+          --candidate candidate --manifest extractsy/manifest_${{ matrix.year }}.json
+          --work work --out verification
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-${{ matrix.year }}
+          path: verification/
+          if-no-files-found: warn
+          retention-days: 30
+
+  finalize:
+    needs: [build, verify]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: population-correction-candidate
+          path: candidate
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: verification-*
+          path: verifications
+      - name: Final gate (never reports verified on missing/partial/failed scope)
+        run: >
+          python -m population_fix finalize --candidate candidate
+          --verifications verifications --out final --expected-years "$EXPECTED_YEARS"
+      - name: Job summary
+        if: always()
+        run: |
+          head -c 200000 final/VERIFICATION.md >> "$GITHUB_STEP_SUMMARY" || echo "no verification summary"
+          head -c 200000 candidate/diff_report.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: population-correction-final
+          path: final/
+          if-no-files-found: warn
+          retention-days: 90

@@ -1,0 +1,9 @@
+Source: MLIT National Land Numerical Information, administrative areas, 2025-01-01.
+https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2025.html
+License: CC BY 4.0.
+Original: N03-20250101_22_GML.zip
+Original ZIP SHA256: abf0672d126c44923e1d69e99cf0d6688707db3ddf55a08e09ccbff32b806ed4
+The fixture extracts the four source features for wards 22138, 22139, 22140.
+Coordinates and properties are unchanged in the fixture. The renderer adapter
+groups polygon parts by ward and maps city/ward name fields to the legacy schema.
+No old-ward statistics are aggregated, allocated, estimated or renumbered.

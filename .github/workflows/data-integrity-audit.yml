@@ -1,0 +1,115 @@
+name: Overnight map data integrity audit (12 themes, read-only)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [data-integrity-audit]
+    paths:
+      - 'data_audit/**'
+      - '.github/workflows/data-integrity-audit.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: overnight-data-integrity-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m unittest data_audit.test_audit -v
+
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Discover actual published articles from sitemap (GET only)
+        run: python -m data_audit.run discover --out inventory --delay 3
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data-audit-inventory
+          path: inventory/
+          retention-days: 30
+
+  audit:
+    needs: [test, discover]
+    runs-on: ubuntu-latest
+    timeout-minutes: 175
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        theme: [aging_rate, infection, airport, schools, port, onsen, medical, road, station, station_ranking, minerals, hotel_ryokan]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: data-audit-inventory
+          path: inventory
+      - name: Check theme (errors recorded, continue with other resources)
+        continue-on-error: true
+        run: >
+          python -m data_audit.run audit --theme '${{ matrix.theme }}'
+          --targets inventory/targets.json --out report --delay 3
+          --minutes 150 --max-assets 1800
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data-audit-${{ matrix.theme }}
+          path: report/
+          if-no-files-found: warn
+          retention-days: 30
+
+  summary:
+    needs: [test, discover, audit]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: data-audit-*
+          path: results
+      - name: Combine results, retaining missing/failed theme status
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from data_audit.run import merge
+          inventory=Path('results/data-audit-inventory/targets.json')
+          targets=json.loads(inventory.read_text()) if inventory.exists() else {'groups':{},'unknown_urls':['Inventory missing: discovery failed.']}
+          merge(Path('results'),Path('summary'),targets)
+          PY
+      - name: Morning summary
+        if: always()
+        run: cat summary/report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: morning-data-audit-summary
+          path: summary/
+          retention-days: 90

@@ -147,6 +147,9 @@ jobs:
         run: >
           python -m population_fix assemble --extracts extracts --snapshot snapshot
           --pages pages --out build --expected-years "$EXPECTED_YEARS"
+      - name: Regional data cards vs official prefecture totals (work-copy candidates only)
+        if: always()
+        run: python -m population_fix cards --extracts extracts --cards pages/cards --out build
       - uses: actions/upload-artifact@v4
         if: always()
         with:

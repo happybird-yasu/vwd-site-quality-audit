@@ -159,3 +159,23 @@ class DisplayPatch(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Cards(unittest.TestCase):
+    HTML = ('<table><tr><td class="region-label">関東</td>\n    <td class="pos">+133,305</td>\n'
+            '    <td class="pos">+83,482</td>\n    <td class="neg">-114,047</td>\n  </tr></table>')
+
+    def test_parse_and_patch(self):
+        from population_fix import cards
+        self.assertEqual(cards.parse_card(self.HTML), {"2019": 133305, "2021": 83482, "2025": -114047})
+        new = cards.patch_card(self.HTML, {"2019": 1, "2021": -2, "2025": 3000})
+        self.assertEqual(cards.parse_card(new), {"2019": 1, "2021": -2, "2025": 3000})
+        self.assertIn('class="neg">-2<', new)
+        self.assertIn('class="pos">+3,000<', new)
+
+    def test_region_sum_needs_all_prefectures(self):
+        from population_fix import cards
+        pn = {"2019": {f"{p:02d}000": 1 for p in range(1, 48)}, "2021": {}, "2025": {}}
+        s = cards.region_sums(pn)
+        self.assertEqual(s["kanto"]["2019"], 7)        # prefectures 08-14
+        self.assertIsNone(s["kanto"]["2021"])          # missing -> unknown, never 0

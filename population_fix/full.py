@@ -18,7 +18,7 @@ from population_audit import official as off
 from population_audit.common import (http_get, log_failure, read_json, safe_reason, sha256_bytes,
                                      utcnow, write_json)
 
-from . import build, national, render, verify
+from . import build, cards, national, render, verify
 from .cli import ATTRS, LANGS, SITE, load_public_names
 from .rules import SLUG_MAP, SLUGS, region_of
 
@@ -176,6 +176,8 @@ def cmd_fetch_pages(a):
             get(f"{BASE}/{lang}/{slug}.html", out / lang / f"{slug}.html")
     for slug in SLUGS:
         get(f"https://app-navi.biz/maps/shared/{slug}.geojson", out / "geo" / f"{slug}.geojson")
+        get(f"https://app-navi.biz/cards/population/ja/{slug}_datacard.html",
+            out / "cards" / "ja" / f"{slug}_datacard.html")
     write_json(out / "pages_manifest.json", man)
     print(f"fetched={len(man['files'])} failures={len(man['failures'])}")
     return 0
@@ -444,6 +446,28 @@ def cmd_assemble(a):
     return 0
 
 
+def cmd_cards(a):
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    merged, _ = build.merge_extracts(_load_extracts(a.extracts))
+    official = national.pref_net_from_extracts(merged)
+    res = cards.check_cards(Path(a.cards), official, out / "site")
+    write_json(out / "cards_report.json", res)
+    L = ["# Regional data card check (ja)", "",
+         f"Checked values: {res['checked_values']}, mismatches: {res['mismatch_count']}, "
+         f"cards not checked: {res['cards_not_checked'] or 'none'}", "",
+         "| region | year | card | official (sum of prefecture net migration) | match |", "|---|---|---:|---:|---|"]
+    for r in res["mismatches"][:60] or []:
+        L.append(f"| {r['slug']} | {r['year']} | {r['card']:+,} | {r['official'] if r['official'] is None else format(r['official'], '+,')} | NO |")
+    L += ["", f"Official region sums by year (should be 0 in total): {res['official_region_sum_total_by_year']}",
+          f"Candidates written (work copies only): {res['candidates_written'] or 'none'}",
+          f"Other languages: {res['other_languages']}"]
+    (out / "cards_report.md").write_text("\n".join(L) + "\n", encoding="utf-8")
+    print(json.dumps({k: res[k] for k in ("checked_values", "mismatch_count", "cards_not_checked",
+                                          "candidates_written", "passed")}, ensure_ascii=False))
+    return 0
+
+
 # ------------------------------------------------------------- verify-year
 
 def cmd_verify_year(a):
@@ -505,7 +529,16 @@ def cmd_finalize(a):
                           f"not checkable={pref.get('not_checkable_count')})")
     if not boundary.get("polygons_available"):
         open_items.append("boundary correspondence not checked (geometry unavailable)")
-    open_items.append("regional card texts / static article text outside POP_DATA are NOT regenerated or verified")
+    cr = Path(a.candidate) / "cards_report.json"
+    if cr.exists():
+        c = read_json(cr)
+        if not c.get("passed"):
+            open_items.append(f"regional cards (ja): {c['mismatch_count']} value(s) differ from official sums; "
+                              f"candidates for {c['candidates_written']} (work copies); not checked: {c['cards_not_checked']}")
+        open_items.append("cards in en/de/es/fr: location not found (404) -> not verified")
+    else:
+        open_items.append("regional cards: check not run")
+    open_items.append("static article text outside POP_DATA / cards is NOT regenerated or verified")
     open_items.append("in-browser rendering of the corrected pages was not part of this automated run")
     verified = bool(ver) and not blockers
     final = {"generated_at": utcnow(), "build_complete": summary["complete"],
@@ -541,6 +574,9 @@ def add_full_parser(sub):
     s.add_argument("--extracts", nargs="+", required=True); s.add_argument("--snapshot", required=True)
     s.add_argument("--pages", required=True); s.add_argument("--out", required=True)
     s.add_argument("--expected-years", default="2019,2021,2025"); s.set_defaults(fn=cmd_assemble)
+    c = sub.add_parser("cards")
+    c.add_argument("--extracts", nargs="+", required=True); c.add_argument("--cards", required=True)
+    c.add_argument("--out", required=True); c.set_defaults(fn=cmd_cards)
     v = sub.add_parser("verify-year")
     v.add_argument("--year", required=True); v.add_argument("--candidate", required=True)
     v.add_argument("--manifest", required=True); v.add_argument("--work", required=True)

@@ -90,3 +90,12 @@ class InfectionTests(unittest.TestCase):
         self.assertEqual(r['numeric_mismatches'],0)
         self.assertEqual(r['official_non_numeric'],1)
         self.assertEqual(r['non_numeric_mapped_to_zero_review'],0)
+
+class RobotsSnapshotTests(unittest.TestCase):
+    def test_same_run_robots_cache_does_not_refetch_and_still_denies(self):
+        import time
+        with tempfile.TemporaryDirectory() as d:
+            c=Client(Path(d),delay=0,robots_snapshot={'https://app-navi.biz':{'body':'User-agent: *\nDisallow: /private/\n','fetched_unix':time.time()}})
+            c.raw=lambda u: (_ for _ in ()).throw(AssertionError('unexpected robots request'))
+            self.assertTrue(c.allowed('https://app-navi.biz/maps/data.json'))
+            self.assertFalse(c.allowed('https://app-navi.biz/private/data.json'))

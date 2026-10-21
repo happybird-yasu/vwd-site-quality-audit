@@ -59,7 +59,7 @@ def official_url(url):
 
 
 class Client:
-    def __init__(self, out, delay=3.0, minutes=150):
+    def __init__(self, out, delay=3.0, minutes=150, robots_snapshot=None):
         self.out = out
         self.out.mkdir(parents=True, exist_ok=True)
         self.delay = delay
@@ -71,6 +71,12 @@ class Client:
         self.records = []
         self.cache = {}
         self.robots = {}
+        self.robot_sources = {}
+        self.robot_errors = {}
+        for origin, item in (robots_snapshot or {}).items():
+            if time.time()-item.get('fetched_unix',0) < 86400 and item.get('body') is not None:
+                parser=RobotFileParser();parser.parse(item['body'].splitlines())
+                self.robots[origin]=parser;self.robot_sources[origin]=item
         self.bytes = 0
 
     def raw(self, url, limit=25*1024*1024):
@@ -107,16 +113,21 @@ class Client:
             parser = RobotFileParser()
             try:
                 raw, _, _ = self.raw(robots_url, 1024*1024)
-                parser.parse(raw.decode('utf-8-sig').splitlines())
+                body=raw.decode('utf-8-sig')
+                parser.parse(body.splitlines())
                 self.robots[origin] = parser
+                self.robot_sources[origin]={'body':body,'fetched_unix':time.time(),'url':robots_url}
             except requests.HTTPError as e:
                 # 404/410 means no published robots restrictions; other errors stay unverified.
                 if e.response is not None and e.response.status_code in [404, 410]:
                     parser.parse([]);self.robots[origin] = parser
+                    self.robot_sources[origin]={'body':'','fetched_unix':time.time(),'url':robots_url,'http_status':e.response.status_code}
                 else:
                     self.robots[origin] = None
-            except Exception:
+                    self.robot_errors[origin]=str(e)[:400]
+            except Exception as e:
                 self.robots[origin] = None
+                self.robot_errors[origin]=type(e).__name__+': '+str(e)[:400]
         parser = self.robots[origin]
         return parser is not None and parser.can_fetch(UA, url)
 
@@ -128,7 +139,8 @@ class Client:
             if not (public_url(url) or official_url(url)):
                 raise ValueError('not an allowed public URL')
             if not self.allowed(url):
-                rec.update(status='unchecked', error='robots denied or robots unavailable')
+                origin=urlparse(url).scheme+'://'+urlparse(url).netloc
+                rec.update(status='unchecked', error='robots denied or robots unavailable', robots_error=self.robot_errors.get(origin))
                 self.cache[url] = (None, rec)
                 return None, rec
             if self.bytes > 2*1024**3: raise ValueError('theme total byte budget exhausted')
@@ -174,7 +186,7 @@ def discover(out, delay):
         if t in groups:groups[t].append(u)
         elif t == 'population':excluded.append(u)
         else:unknown.append(u)
-    result = {'generated_at':now(), 'groups':groups, 'counts':{t:len(v) for t,v in groups.items()}, 'excluded_population':excluded, 'unknown_urls':unknown, 'sitemap_articles':len(set(urls))}
+    result = {'generated_at':now(), 'groups':groups, 'counts':{t:len(v) for t,v in groups.items()}, 'excluded_population':excluded, 'unknown_urls':unknown, 'sitemap_articles':len(set(urls)), 'robots_snapshot':c.robot_sources}
     write(out/'targets.json',result);write(out/'fetch_manifest.json',c.records)
     print(json.dumps({'counts':result['counts'],'unknown':unknown,'total':result['sitemap_articles']},ensure_ascii=False),flush=True)
 
@@ -265,13 +277,14 @@ def aging_official(c, data, checks):
 
 
 def audit(theme, targets, out, delay, minutes, max_assets):
-    c=Client(out,delay,minutes);checks=Checks()
+    c=Client(out,delay,minutes,robots_snapshot=targets.get('robots_snapshot'));checks=Checks()
     urls=targets.get('groups',{}).get(theme,[])
     q=deque((u,0) for u in urls)
     seen=set();scheduled=set(urls);sources=set();dynamic=[];objects=0;age_data=None;infection_catalog=None;infection_series=[]
     errors=[];page_count=0;expected=len(urls)
     def checkpoint():
         write(out/'fetch_manifest.json',c.records)
+        write(out/'robots_diagnostics.json',{'snapshot':c.robot_sources,'errors':c.robot_errors})
         write(out/'checks.json',checks.result())
         write(out/'progress.json',{'theme':theme,'seen':len(seen),'queued':len(q),'generated_at':now(),'article_expected':expected,'article_fetched':page_count})
     while q and len(seen)<max_assets and time.monotonic()<c.deadline-min(20*60,minutes*60*.15):

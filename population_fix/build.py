@@ -84,11 +84,23 @@ def _extract_sheet(sh, sheet_name: str, kind: str) -> dict:
             if k in AGGREGATE_KINDS and isinstance(v, int):
                 excl_max[k] = max(excl_max[k], v)
     unit_vals = [(c, v) for c, v, _ in units]
+    unit_codes = {int(c) for c, _, _ in units}
+    absent = []
+    for code, rec in sh.records.items():
+        if classify_origin(code, rec.get("label", "")) in ("city_total", "special_wards_total"):
+            lo = int(code)
+            nxt = min([int(x) for x in off.DESIGNATED_CITY_CODES if x[:2] == code[:2] and int(x) > lo]
+                      + [int(code[:2] + "200")])
+            v = rec["vals"].get(TOTAL_COL)
+            if isinstance(v, int) and not any(lo < u < nxt for u in unit_codes):
+                absent.append((code, rec.get("label", ""), v))   # a whole city with no ward listed
+    absent.sort(key=lambda x: -x[2])
     tv = sh.total_row["vals"]
     out = {"sheet": sheet_name, "sheet_name_text": sheet_name[5:], "total_row": sh.total_row["row"],
            "pref_rows": pref_rows,
            "vals": dict(tv), "origin_labels": {c: lab for c, _, lab in units},
            "excluded_rows": dict(excluded), "excluded_max": dict(excl_max),
+           "absent_cities": absent[:3], "absent_city_max": absent[0][2] if absent else 0,
            "non_numeric_cells": len(sh.non_numeric), "integrity": list(sh.integrity),
            "ranks": {}, "hidden_origin": {}, "ranked_candidates": {}}
     keys = [("total", [TOTAL_COL])] + [(f"{a}:{s}", SUB_COLUMNS[(a, s)])

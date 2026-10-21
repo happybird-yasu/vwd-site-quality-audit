@@ -23,6 +23,7 @@ from .cli import ATTRS, LANGS, SITE, load_public_names
 from .rules import SLUG_MAP, SLUGS, region_of
 
 MAX_FILE_RETRIES = 2
+EXTRACT_VERSION = 2          # bump when the extract format changes so cached extracts are rebuilt
 BASE = "https://app-navi.biz/maps/population"
 SITE_INTERVAL = 1.5
 
@@ -90,7 +91,7 @@ def cmd_extract(a):
             base = {"stem": stem, "kind": kind, "direction": item["direction_assumed"],
                     "pref_code": item["pref_code"], "url": item["url"], "stat_inf_id": item["stat_inf_id"]}
             st = read_json(sp) if sp.exists() else {"status": "pending", "retries": 0}
-            if st["status"] == "completed" and ep.exists():
+            if st["status"] == "completed" and ep.exists() and st.get("extract_version") == EXTRACT_VERSION:
                 manifest["files"].append({**base, **st, "resumed": True})
                 continue
             if st.get("retries", 0) >= MAX_FILE_RETRIES:
@@ -118,7 +119,7 @@ def cmd_extract(a):
                 partial = bool(ex["failures"])
                 for sf in ex["failures"]:
                     log_failure(out, f"{stem}#{sf['sheet']}", "sheet", RuntimeError(sf["reason"]), 0, url=item["url"])
-                st = {"status": "partial" if partial else "completed",
+                st = {"status": "partial" if partial else "completed", "extract_version": EXTRACT_VERSION,
                       "retries": st.get("retries", 0) + (1 if partial else 0),
                       "sheets": len(ex["dests"]), "sheet_failures": len(ex["failures"]),
                       "sha256": meta.get("sha256"), "official_file": Path(meta["path"]).name,
@@ -155,9 +156,9 @@ def cmd_extract(a):
 
 def cmd_fetch_pages(a):
     out = Path(a.out)
-    man = {"retrieved_at": utcnow(), "files": [], "failures": []}
+    man = {"retrieved_at": utcnow(), "files": [], "failures": [], "absent": []}
 
-    def get(url, dest):
+    def get(url, dest, optional=False):
         try:
             body, _, _ = http_get(url, host_key="site", min_interval=SITE_INTERVAL)
             dest.parent.mkdir(parents=True, exist_ok=True)
@@ -165,12 +166,17 @@ def cmd_fetch_pages(a):
             man["files"].append({"url": url, "path": str(dest.relative_to(out)),
                                  "bytes": len(body), "sha256": sha256_bytes(body)})
         except Exception as exc:  # noqa: BLE001
+            if optional and getattr(exc, "code", None) in (404, 410):
+                man["absent"].append(url)          # definitive "does not exist": not a failure
+                return
             man["failures"].append({"url": url, "reason": safe_reason(exc)})
             log_failure(out, str(dest.name), "fetch-page", exc, 3, url=url)
 
     for lang in LANGS:
         get(f"{BASE}/{lang}/js/i18n.js", out / lang / "js" / "i18n.js")
-        get(f"{BASE}/{lang}/i18n/{lang}.json", out / lang / "i18n" / f"{lang}.json")
+        for code in LANGS:      # each folder holds a different set of translation files
+            get(f"{BASE}/{lang}/i18n/{code}.json", out / lang / "i18n" / f"{code}.json",
+                optional=(code != lang))
         get(f"{BASE}/{lang}/national.html", out / lang / "national.html")
         for slug in SLUGS:
             get(f"{BASE}/{lang}/{slug}.html", out / lang / f"{slug}.html")
@@ -255,15 +261,19 @@ def diff_report(gen, extracts, old_pop, old_attr):
             top = d["ranks"].get("total", [])
             tenth = top[-1][1] if len(top) == 10 else 0
             nodes += 1
-            single = max((d["excluded_max"].get(k, 0) for k in ("city_total", "special_wards_total")), default=0)
+            single = d.get("absent_city_max", 0)
             group = max((d["excluded_max"].get(k, 0) for k in ("other_wards", "other_municipalities")), default=0)
             if single > tenth:
                 affected[f"{e['year']}/{e['direction']}"] += 1
             if group > tenth:
                 affected_groups[f"{e['year']}/{e['direction']}"] += 1
     rep["ranking"] = {"tier": gen["tier"], "destinations_checked": nodes,
-                      "destinations_where_an_excluded_single_city_total_exceeds_10th_value": dict(affected),
+                      "destinations_where_a_city_with_no_ward_listed_exceeds_10th_value": dict(affected),
                       "destinations_where_an_excluded_group_row_exceeds_10th_value": dict(affected_groups)}
+    for e in build.merge_extracts(extracts)[0].values():
+        if e["kind"] == "nationality" and e["year"] == 2025 and "13104" in e["dests"]:
+            rep["examples"][f"13104 cities absent from ranking 2025 {e['direction']}"] = {
+                "absent_city_totals": e["dests"]["13104"]["absent_cities"]}
     for key in ("2019", "2021", "2025"):
         for d in ("inflow", "outflow"):
             n, o = gen["pop"].get(key, {}).get(d, {}).get("13104"), old_pop.get(key, {}).get(d, {}).get("13104")
@@ -279,12 +289,13 @@ def diff_markdown(rep) -> str:
     for k, v in rep["total"].items():
         L.append(f"| {k} | {v['new_records']} | {v['old_records']} | {v['added']} | {v['removed']} | "
                  f"{v['unchanged_total']} | {v['changed_total']} | {v['top10_changed']} |")
-    L += ["", "Examples (新宿区 13104):"] + [f"- {k}: new {v['new_total']} / old {v['old_total']}"
-                                          for k, v in rep["examples"].items()]
+    L += ["", "Examples (新宿区 13104):"] + [
+        (f"- {k}: new {v['new_total']} / old {v['old_total']}" if "new_total" in v else f"- {k}: {v}")
+        for k, v in rep["examples"].items()]
     L += ["", f"Ranking tier: `{rep['ranking']['tier']}` (of {rep['ranking']['destinations_checked']} destination sheets checked).",
-          "Destinations where an excluded *single city total* (政令市・特別区部の市全体行) exceeds the 10th ranked value "
-          "- a comparable city is missing from the ranking: "
-          f"{rep['ranking']['destinations_where_an_excluded_single_city_total_exceeds_10th_value']}",
+          "Destinations where a designated city / the 23 wards appears ONLY as a city-total row (no ward listed "
+          "individually) and exceeds the 10th ranked value - that city is entirely absent from the ranking: "
+          f"{rep['ranking']['destinations_where_a_city_with_no_ward_listed_exceeds_10th_value']}",
           "Destinations where an excluded *group row* (「その他の区/市町村」) exceeds the 10th value "
           "- many small places pooled, not a single competitor: "
           f"{rep['ranking']['destinations_where_an_excluded_group_row_exceeds_10th_value']}"]
@@ -352,14 +363,18 @@ def cmd_assemble(a):
             except Exception as exc:  # noqa: BLE001
                 issues["national"].append({"lang": lang, "reason": safe_reason(exc)})
                 log_failure(out, f"{lang}/national", "render", exc, 0)
-        for fname, fn in (("i18n/%s.json" % lang, "json"), ("js/i18n.js", "js")):
+        i18n_files = [("js/i18n.js", "js", lang)] + [
+            (f"i18n/{p.name}", "json", p.stem) for p in sorted((pages / lang / "i18n").glob("*.json"))]
+        if not (pages / lang / "i18n" / f"{lang}.json").exists():
+            issues["pages"].append({"lang": lang, "file": f"i18n/{lang}.json", "reason": "file missing"})
+        for fname, fn, code in i18n_files:
             sp = pages / lang / fname
             if not sp.exists():
                 issues["pages"].append({"lang": lang, "file": fname, "reason": "file missing"})
                 continue
             try:
                 if fn == "json":
-                    txt = json.dumps(render.patch_messages_json(json.loads(sp.read_text(encoding="utf-8")), lang),
+                    txt = json.dumps(render.patch_messages_json(json.loads(sp.read_text(encoding="utf-8")), code),
                                      ensure_ascii=False)
                 else:
                     txt = render.patch_i18n_js(sp.read_text(encoding="utf-8"), lang)
@@ -570,7 +585,25 @@ def cmd_finalize(a):
     return 0
 
 
+def cmd_preview(a):
+    """Local preview tree: candidate pages/data + current geometry, served as /maps/... (no deployment)."""
+    cand, pages, out = Path(a.candidate), Path(a.pages), Path(a.out)
+    shutil.copytree(cand / "site" / "maps" / "population", out / "maps" / "population", dirs_exist_ok=True)
+    if (cand / "site" / "cards").exists():
+        shutil.copytree(cand / "site" / "cards", out / "cards", dirs_exist_ok=True)
+    for s in SLUGS:
+        src = pages / "geo" / f"{s}.geojson"
+        if src.exists():
+            (out / "maps" / "shared").mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, out / "maps" / "shared" / f"{s}.geojson")
+    print(f"preview tree: {out}  (serve this directory at the web root)")
+    return 0
+
+
 def add_full_parser(sub):
+    pv = sub.add_parser("preview")
+    pv.add_argument("--candidate", required=True); pv.add_argument("--pages", required=True)
+    pv.add_argument("--out", required=True); pv.set_defaults(fn=cmd_preview)
     e = sub.add_parser("extract")
     e.add_argument("--year", required=True); e.add_argument("--work", required=True)
     e.add_argument("--out", required=True)

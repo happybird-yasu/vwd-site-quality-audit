@@ -34,7 +34,7 @@ class DataChecksTests(unittest.TestCase):
     def test_no_privileged_urls_or_external_asset_crawl(self):
         self.assertFalse(public_url('https://app-navi.biz/wp-admin/'))
         self.assertFalse(public_url('https://app-navi.biz/?rest_route=/x'))
-        refs,_,_=references('const ROOT="../data/";fetch(ROOT+"index.json"); const x="https://evil.example/x.json";', 'https://app-navi.biz/maps/test/app.js')
+        refs,_,_=references('const ROOT="../data/";fetch(ROOT+"index.json"); const x="https://evil.example/x.json"; var y=slug+".json";', 'https://app-navi.biz/maps/test/app.js')
         self.assertEqual(refs,['https://app-navi.biz/maps/data/index.json'])
 
     def test_sitemap_classification(self):

@@ -205,9 +205,14 @@ def references(text, base, html=False):
     for m in QUOTED.finditer(text):
         v=m[1]
         if v in consumed or not EXT.search(v) or any(x in v for x in ['${','{','}', '<', '=>', ' ']):continue
+        if re.fullmatch(r'\.(?:json|geojson|csv|js|html)(?:\.gz)?(?:\?.*)?',v,re.I):continue
         refs.add(urljoin(base,v))
     # Computed paths are explicit remaining work, rather than guessed requests.
     dynamic = sorted(set(m[1] for m in re.finditer(r'`([^`]*\$\{[^`]+\.(?:json|csv|geojson)[^`]*)`',text)))
+    for m in re.finditer(r'\bfetch\(\s*([^\n)]+)',text):
+        expr=m[1].strip()
+        if expr and expr[0] not in [chr(39),chr(34)] and not (expr in constants and EXT.search(constants[expr])):
+            dynamic.append(expr[:250])
     urls = set()
     for u in refs:
         u=urldefrag(u)[0]

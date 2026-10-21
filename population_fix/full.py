@@ -247,7 +247,7 @@ def diff_report(gen, extracts, old_pop, old_attr):
                         "removed": len(set(old) - set(cs)),
                         "changed_total": sum(1 for c in both if cs[c]["total"] != old[c]["total"]),
                         "unchanged_total": sum(1 for c in both if cs[c]["total"] == old[c]["total"])}
-    affected, nodes = Counter(), 0
+    affected, affected_groups, nodes = Counter(), Counter(), 0
     for e in build.merge_extracts(extracts)[0].values():
         if e["kind"] != "nationality":
             continue
@@ -255,10 +255,15 @@ def diff_report(gen, extracts, old_pop, old_attr):
             top = d["ranks"].get("total", [])
             tenth = top[-1][1] if len(top) == 10 else 0
             nodes += 1
-            if max(d["excluded_max"].values(), default=0) > tenth:
+            single = max((d["excluded_max"].get(k, 0) for k in ("city_total", "special_wards_total")), default=0)
+            group = max((d["excluded_max"].get(k, 0) for k in ("other_wards", "other_municipalities")), default=0)
+            if single > tenth:
                 affected[f"{e['year']}/{e['direction']}"] += 1
+            if group > tenth:
+                affected_groups[f"{e['year']}/{e['direction']}"] += 1
     rep["ranking"] = {"tier": gen["tier"], "destinations_checked": nodes,
-                      "destinations_where_an_excluded_aggregate_row_exceeds_10th_value": dict(affected)}
+                      "destinations_where_an_excluded_single_city_total_exceeds_10th_value": dict(affected),
+                      "destinations_where_an_excluded_group_row_exceeds_10th_value": dict(affected_groups)}
     for key in ("2019", "2021", "2025"):
         for d in ("inflow", "outflow"):
             n, o = gen["pop"].get(key, {}).get(d, {}).get("13104"), old_pop.get(key, {}).get(d, {}).get("13104")
@@ -276,10 +281,13 @@ def diff_markdown(rep) -> str:
                  f"{v['unchanged_total']} | {v['changed_total']} | {v['top10_changed']} |")
     L += ["", "Examples (新宿区 13104):"] + [f"- {k}: new {v['new_total']} / old {v['old_total']}"
                                           for k, v in rep["examples"].items()]
-    L += ["", f"Ranking tier: `{rep['ranking']['tier']}`. Destinations where an excluded aggregate row "
-              f"exceeds the 10th ranked value: "
-              f"{rep['ranking']['destinations_where_an_excluded_aggregate_row_exceeds_10th_value']} "
-              f"of {rep['ranking']['destinations_checked']} checked."]
+    L += ["", f"Ranking tier: `{rep['ranking']['tier']}` (of {rep['ranking']['destinations_checked']} destination sheets checked).",
+          "Destinations where an excluded *single city total* (政令市・特別区部の市全体行) exceeds the 10th ranked value "
+          "- a comparable city is missing from the ranking: "
+          f"{rep['ranking']['destinations_where_an_excluded_single_city_total_exceeds_10th_value']}",
+          "Destinations where an excluded *group row* (「その他の区/市町村」) exceeds the 10th value "
+          "- many small places pooled, not a single competitor: "
+          f"{rep['ranking']['destinations_where_an_excluded_group_row_exceeds_10th_value']}"]
     return "\n".join(L) + "\n"
 
 
@@ -297,7 +305,13 @@ def cmd_assemble(a):
     # search index: current-boundary municipalities, regenerated from the data
     ref_page = next((pages / lg / "kanto.html" for lg in LANGS if (pages / lg / "kanto.html").exists()), None)
     old_index = render.read_const_json(ref_page.read_text(encoding="utf-8"), "SEARCH_INDEX") if ref_page else []
-    new_index = national.build_search_index(gen["pop"], national.slug_region_names(old_index))
+    polygon_codes = None
+    gdir = pages / "geo"
+    if gdir.exists() and all((gdir / f"{s}.geojson").exists() for s in SLUGS):
+        polygon_codes = set()
+        for s in SLUGS:
+            polygon_codes |= national.geometry_codes(json.loads((gdir / f"{s}.geojson").read_text(encoding="utf-8")))
+    new_index = national.build_search_index(gen["pop"], national.slug_region_names(old_index), polygon_codes)
     city_data = national.national_city_data(gen["pop"])
     pref_all_ref = None
     for lang in LANGS:
@@ -387,13 +401,6 @@ def cmd_assemble(a):
     official_net = national.pref_net_from_extracts(merged)
     pref_check = (national.check_pref_all(pref_all_ref, official_net) if pref_all_ref
                   else {"passed": False, "note": "PREF_ALL not readable"})
-    geo = {}
-    polygon_codes = None
-    gdir = pages / "geo"
-    if gdir.exists() and all((gdir / f"{s}.geojson").exists() for s in SLUGS):
-        polygon_codes = set()
-        for s in SLUGS:
-            polygon_codes |= national.geometry_codes(json.loads((gdir / f"{s}.geojson").read_text(encoding="utf-8")))
     boundary = national.boundary_report(gen["pop"], polygon_codes)
     write_json(out / "boundary_report.json", boundary)
     write_json(out / "pref_all_check.json", pref_check)

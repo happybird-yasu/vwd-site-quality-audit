@@ -30,14 +30,16 @@ def slug_region_names(old_index: list) -> dict:
     return names
 
 
-def build_search_index(pop: dict, region_names: dict) -> list:
-    """Current-boundary (2025) municipalities, both directions, schema unchanged."""
+def build_search_index(pop: dict, region_names: dict, polygon_codes: set | None = None) -> list:
+    """Current-boundary (2025) municipalities that have a map polygon (when known); schema unchanged."""
     cur = {}
     for d in ("inflow", "outflow"):
         for c, r in pop.get(CURRENT_YEAR, {}).get(d, {}).items():
             cur.setdefault(c, r["name"])
     out = []
     for c in sorted(cur):
+        if polygon_codes is not None and c not in polygon_codes:
+            continue
         slug = region_of(c)
         out.append({"code": c, "name": cur[c], "region": region_names.get(slug, ""), "slug": slug})
     return out

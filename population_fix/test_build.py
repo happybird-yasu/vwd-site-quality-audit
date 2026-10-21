@@ -65,3 +65,14 @@ class Classification(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class NameQualification(unittest.TestCase):
+    def test_new_hamamatsu_ward_gets_prefecture_and_city(self):
+        def ex(code, text):
+            e = fake_extract(2025, "inflow", "nationality", f"{code}.xlsx", {code: 50})
+            e["dests"][code]["sheet_name_text"] = text
+            return e
+        res = build.assemble([ex("22130", "静岡県浜松市"), ex("22138", "中央区"), ex("22101", "静岡県静岡市葵区")])
+        self.assertEqual(res["pop"]["2025"]["inflow"]["22138"]["name"], "静岡県浜松市中央区")
+        self.assertEqual(res["pop"]["2025"]["inflow"]["22101"]["name"], "静岡県静岡市葵区")

@@ -127,10 +127,11 @@ def assemble(extracts: list, public_names: dict | None = None) -> dict:
     """Combine per-file extracts into POP_DATA / attribute structures + issue lists."""
     public_names = public_names or {}
     sheet_names = defaultdict(dict)          # year -> code -> "東京都新宿区"
+    agg_names = defaultdict(dict)            # year -> aggregate code -> "静岡県浜松市"
     for e in extracts:
         for code, d in e["dests"].items():
-            if classify_origin(code, "") == "individual":
-                sheet_names[e["year"]].setdefault(code, d["sheet_name_text"])
+            tgt = sheet_names if classify_origin(code, "") == "individual" else agg_names
+            tgt[e["year"]].setdefault(code, d["sheet_name_text"])
     pop = defaultdict(lambda: defaultdict(dict))
     attr = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(dict))))
     age_unknown = defaultdict(lambda: defaultdict(dict))
@@ -139,8 +140,24 @@ def assemble(extracts: list, public_names: dict | None = None) -> dict:
               "duplicate_destination": []}
     name_fallbacks = set()
 
+    def qualify(year, code, n):
+        """Official sheets name some wards without prefecture/city (e.g. 2025 浜松市の区): add them."""
+        pref = off.PREF_NAMES[int(code[:2]) - 1]
+        if n.startswith(pref):
+            return n
+        parents = [dc for dc in off.DESIGNATED_CITY_CODES
+                   if dc[:2] == code[:2] and dc < code and int(code[2:]) < 200]
+        ptxt = agg_names[year].get(max(parents)) if parents else None
+        if ptxt and ptxt.startswith(pref):
+            return ptxt + n
+        issues["name_fallback"].append({"year": year, "code": code, "name": pref + n,
+                                        "reason": "parent designated-city name not found"})
+        return pref + n
+
     def name_of(year, code, label=""):
         n = public_names.get(code) or sheet_names[year].get(code)
+        if n:
+            return qualify(year, code, n)
         if not n:
             n = label or code
             if (year, code) not in name_fallbacks:

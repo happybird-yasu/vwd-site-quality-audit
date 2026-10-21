@@ -72,3 +72,15 @@ app-navi.biz の公開記事について、AdSense「有用性の低いコンテ
 ## 第2段階(未着手)
 
 地図表示速度、JavaScript地図初期化、画像読み込みなどのPlaywright系検査は、この第1段階が安定してから追加する。
+
+## 浜松市の年別境界（人口流動の修正候補）
+
+`population_fix.boundary_fix` は数値修正済み候補のコピーに対し、浜松市を2019・2021年の旧7区、2025年の新3区で描画する。全国50ページの検索候補と地方版へのリンクも対象年に合わせる。区の再編前後で人数を組み替えたり、旧北区を新3区へ推計配分したりしない。共有境界は上書きしない。
+
+新3区は国土交通省・国土数値情報の2025年1月1日時点の公式座標を使う。抽出元・利用条件・元ZIPのハッシュは `population_fix/fixtures/hamamatsu-n03-20250101-SOURCE.txt`。島を含む同一区のポリゴンをまとめる際も座標を保持する。追加の圧縮境界は約220KB。これは既存の共有境界・地名表示スクリプトを使う差分候補であり、単独サイト一式ではない。
+
+```text
+python -m population_fix.boundary_fix INPUT_CANDIDATE OUTPUT_NEW_DIRECTORY population_fix/fixtures/hamamatsu-n03-20250101.geojson.gz SOURCE_PAGES_GEO_DIRECTORY
+```
+
+数値修正ワークフローでもカード修正後にこの処理を実行する。WordPress・本番サーバーへの書込みや公開処理はない。新しい `boundary_report.json` は年ごとの実表示境界に対する照合結果。従来の数値監査レポート内にある「浜松市新3区の境界なし」は、この追補で解消する。

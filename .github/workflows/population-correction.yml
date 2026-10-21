@@ -150,11 +150,15 @@ jobs:
       - name: Regional data cards vs official prefecture totals (work-copy candidates only)
         if: always()
         run: python -m population_fix cards --extracts extracts --cards pages/cards --out build
+      - name: Year-correct Hamamatsu geometry and nationwide search (copies only)
+        run: >
+          python -m population_fix.boundary_fix build boundary-build
+          population_fix/fixtures/hamamatsu-n03-20250101.geojson.gz pages/geo
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: population-correction-candidate
-          path: build/
+          path: boundary-build/
           if-no-files-found: warn
           retention-days: 30
 

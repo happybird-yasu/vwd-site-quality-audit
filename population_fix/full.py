@@ -313,6 +313,7 @@ def cmd_assemble(a):
     site = out / SITE
     issues = {"pages": [], "slug_map_mismatch": [], "national": []}
     pages_written = national_written = 0
+    i18n_matrix = []
     # search index: current-boundary municipalities, regenerated from the data
     ref_page = next((pages / lg / "kanto.html" for lg in LANGS if (pages / lg / "kanto.html").exists()), None)
     old_index = render.read_const_json(ref_page.read_text(encoding="utf-8"), "SEARCH_INDEX") if ref_page else []
@@ -363,26 +364,33 @@ def cmd_assemble(a):
             except Exception as exc:  # noqa: BLE001
                 issues["national"].append({"lang": lang, "reason": safe_reason(exc)})
                 log_failure(out, f"{lang}/national", "render", exc, 0)
-        i18n_files = [("js/i18n.js", "js", lang)] + [
-            (f"i18n/{p.name}", "json", p.stem) for p in sorted((pages / lang / "i18n").glob("*.json"))]
-        if not (pages / lang / "i18n" / f"{lang}.json").exists():
-            issues["pages"].append({"lang": lang, "file": f"i18n/{lang}.json", "reason": "file missing"})
-        for fname, fn, code in i18n_files:
-            sp = pages / lang / fname
-            if not sp.exists():
-                issues["pages"].append({"lang": lang, "file": fname, "reason": "file missing"})
+        # js/i18n.js (Japanese fallback dictionary) of this folder
+        sp = pages / lang / "js" / "i18n.js"
+        try:
+            d = site / lang / "js" / "i18n.js"
+            d.parent.mkdir(parents=True, exist_ok=True)
+            d.write_text(render.patch_i18n_js(sp.read_text(encoding="utf-8"), lang), encoding="utf-8")
+        except Exception as exc:  # noqa: BLE001
+            issues["pages"].append({"lang": lang, "file": "js/i18n.js", "reason": safe_reason(exc)})
+        # translation dictionaries: every folder gets all five canonical dictionaries (?lang=xx works anywhere)
+        for code in LANGS:
+            canon = pages / code / "i18n" / f"{code}.json"
+            if not canon.exists():
+                issues["pages"].append({"lang": lang, "file": f"i18n/{code}.json",
+                                        "reason": f"canonical dictionary {code}/i18n/{code}.json missing"})
                 continue
             try:
-                if fn == "json":
-                    txt = json.dumps(render.patch_messages_json(json.loads(sp.read_text(encoding="utf-8")), code),
-                                     ensure_ascii=False)
-                else:
-                    txt = render.patch_i18n_js(sp.read_text(encoding="utf-8"), lang)
-                d = site / lang / fname
+                txt = json.dumps(render.patch_messages_json(json.loads(canon.read_text(encoding="utf-8")), code),
+                                 ensure_ascii=False)
+                d = site / lang / "i18n" / f"{code}.json"
                 d.parent.mkdir(parents=True, exist_ok=True)
                 d.write_text(txt, encoding="utf-8")
+                prod = pages / lang / "i18n" / f"{code}.json"
+                i18n_matrix.append({"folder": lang, "code": code,
+                                    "production_file_existed": prod.exists(),
+                                    "production_differs_from_canonical": prod.exists() and prod.read_bytes() != canon.read_bytes()})
             except Exception as exc:  # noqa: BLE001
-                issues["pages"].append({"lang": lang, "file": fname, "reason": safe_reason(exc)})
+                issues["pages"].append({"lang": lang, "file": f"i18n/{code}.json", "reason": safe_reason(exc)})
     for slug in SLUGS:
         base = site / "data" / slug
         for x in ATTRS:
@@ -439,6 +447,18 @@ def cmd_assemble(a):
             blockers.append(f"{name} failed")
     if pages_written != len(LANGS) * len(SLUGS):
         blockers.append(f"regional pages written {pages_written}/{len(LANGS) * len(SLUGS)}")
+    i18n_bad = []
+    for m in i18n_matrix:
+        dd = json.loads((site / m["folder"] / "i18n" / f"{m['code']}.json").read_text(encoding="utf-8"))
+        for k in ("no_published_data", "ranking_unavailable", "ranking_note", "age_unknown_note"):
+            if dd.get(k) != render.MESSAGES[k][m["code"]]:
+                i18n_bad.append(f"{m['folder']}/{m['code']}:{k}")
+        if "foreign_2019_unavailable" in dd:
+            i18n_bad.append(f"{m['folder']}/{m['code']}:foreign_2019_unavailable still present")
+    if i18n_bad:
+        blockers.append(f"translation dictionary content wrong: {i18n_bad[:5]}")
+    if len(i18n_matrix) != len(LANGS) * len(LANGS):
+        blockers.append(f"translation dictionaries written {len(i18n_matrix)}/{len(LANGS) * len(LANGS)}")
     if national_written != len(LANGS):
         blockers.append(f"national pages written {national_written}/{len(LANGS)}")
     if issues["pages"] or issues["slug_map_mismatch"] or issues["national"]:
@@ -451,6 +471,11 @@ def cmd_assemble(a):
                "pages_written": pages_written, "pages_expected": len(LANGS) * len(SLUGS),
                "national_pages_written": national_written,
                "search_index_entries": len(new_index),
+               "i18n_matrix_files": len(i18n_matrix),
+               "i18n_matrix_replacing_different_production_variants": [
+                   f"{m['folder']}/{m['code']}" for m in i18n_matrix if m["production_differs_from_canonical"]],
+               "i18n_matrix_new_files": [f"{m['folder']}/{m['code']}" for m in i18n_matrix
+                                         if not m["production_file_existed"]],
                "identity": {k: v for k, v in ident.items() if k != "failures"},
                "identity_failures": ident["failures"][:50], "anchors": anchors,
                "languages_identical_and_equal_to_data": lang_ok, "language_pages_checked": lang_checked,

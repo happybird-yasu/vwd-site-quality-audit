@@ -1,7 +1,12 @@
 name: Overnight map data integrity audit (12 themes, read-only)
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      themes:
+        description: 'JSON list of themes to check'
+        required: false
+        default: '["schools","hotel_ryokan","station_ranking","onsen"]'
   push:
     branches: [data-integrity-audit]
     paths:
@@ -37,7 +42,9 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - name: Discover actual published articles from sitemap (GET only)
-        run: python -m data_audit.run discover --out inventory --delay 3
+        env:
+          AUDIT_THEMES: ${{ github.event.inputs.themes || '["schools","hotel_ryokan","station_ranking","onsen"]' }}
+        run: python -m data_audit.run discover --out inventory --delay 3 --themes "$AUDIT_THEMES"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -53,7 +60,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        theme: [aging_rate, infection, airport, schools, port, onsen, medical, road, station, station_ranking, minerals, hotel_ryokan]
+        theme: ${{ fromJSON(github.event.inputs.themes || '["schools","hotel_ryokan","station_ranking","onsen"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

@@ -99,3 +99,33 @@ class RobotsSnapshotTests(unittest.TestCase):
             c.raw=lambda u: (_ for _ in ()).throw(AssertionError('unexpected robots request'))
             self.assertTrue(c.allowed('https://app-navi.biz/maps/data.json'))
             self.assertFalse(c.allowed('https://app-navi.biz/private/data.json'))
+
+class ReferenceContextTests(unittest.TestCase):
+    def test_classic_script_fetch_uses_document_directory(self):
+        refs,_,_=references("const DATA_BASE='data/';fetch(DATA_BASE+'prefecture_master.json')",'https://app-navi.biz/maps/lodging/ja/js/app.js',document_base='https://app-navi.biz/maps/lodging/ja/national.html')
+        self.assertEqual(refs,['https://app-navi.biz/maps/lodging/ja/data/prefecture_master.json'])
+
+    def test_html_entity_anchor_not_double_crawled_and_old_literal_ignored(self):
+        html='<a href="/maps/current.html?a=1&amp;b=2">Open</a><script>var oldMap="/maps/old.html";</script>'
+        refs,_,_=references(html,'https://app-navi.biz/article/',html=True)
+        self.assertEqual(refs,['https://app-navi.biz/maps/current.html?a=1&b=2'])
+
+    def test_station_rewritten_links_are_pending_not_reported_as_404(self):
+        html='<a class="station-link" href="/maps/old.html?station=x">X</a>'
+        refs,_,pending=references(html,'https://app-navi.biz/article/',html=True)
+        self.assertEqual(refs,[]);self.assertTrue(pending)
+
+    def test_confirmed_original_discrepancy_does_not_change_values(self):
+        obj={'ENV':{'16':{'total_springs':169,'used_springs':126,'unused_springs':44}}}
+        c=Checks();c.inspect(obj,'https://app-navi.biz/maps/onsen/ja/national-data-20260918.json#root','onsen')
+        self.assertEqual(c.counts['finding_error'],0)
+        self.assertEqual(c.counts['finding_source_note'],1)
+        self.assertEqual(obj['ENV']['16']['total_springs'],169)
+        c.inspect({'ENV':{'16':{'total_springs':170,'used_springs':120,'unused_springs':44}}},'https://app-navi.biz/maps/onsen/ja/national-data-20260918.json#root','onsen')
+        self.assertEqual(c.counts['finding_error'],1)
+
+    def test_targeted_summary_distinguishes_not_requested_from_missing(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);merge(root/'in',root/'out',{'requested_themes':['schools'],'groups':{'schools':[]}})
+            r=json.loads((root/'out/report.json').read_text())
+            self.assertEqual(r['missing_theme_reports'],['schools'])

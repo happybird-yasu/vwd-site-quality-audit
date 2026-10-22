@@ -56,7 +56,10 @@ class Checks:
             return
         self.counts['identity_checks'] += 1
         if abs(total - sum(parts)) > tolerance:
-            self.add('error', name, path, total=total, parts=parts, sum=sum(parts))
+            if name=='onsen_spring_total' and path.endswith('/ENV/16') and 'national-data-20260918.json' in path and total==169 and parts==[126,44]:
+                self.add('source_note', name, path, total=total, parts=parts, sum=sum(parts), source='https://www.env.go.jp/nature/onsen/pdf/6-7_p_1.pdf', source_checked='2026-10-22', explanation='Same discrepancy in FY2024 original: total 169, used 52+74, unused 13+31. Preserve published values; do not infer a correction.')
+            else:
+                self.add('error', name, path, total=total, parts=parts, sum=sum(parts))
 
     def inspect(self, obj, source, theme):
         stack = [(source, obj)]

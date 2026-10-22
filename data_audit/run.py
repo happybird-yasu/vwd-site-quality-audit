@@ -173,7 +173,7 @@ def sitemap(client, url, seen=None, depth=0):
     return [u for u in locs if public_url(u)]
 
 
-def discover(out, delay):
+def discover(out, delay, themes=None):
     c = Client(out, delay, 20)
     urls = sitemap(c, SITE+'/post-sitemap.xml')
     if not urls:
@@ -186,7 +186,10 @@ def discover(out, delay):
         if t in groups:groups[t].append(u)
         elif t == 'population':excluded.append(u)
         else:unknown.append(u)
-    result = {'generated_at':now(), 'groups':groups, 'counts':{t:len(v) for t,v in groups.items()}, 'excluded_population':excluded, 'unknown_urls':unknown, 'sitemap_articles':len(set(urls)), 'robots_snapshot':c.robot_sources}
+    requested=themes or list(THEMES)
+    if set(requested)-set(THEMES):raise ValueError('Unknown requested themes')
+    groups={t:v for t,v in groups.items() if t in requested}
+    result = {'requested_themes':requested, 'generated_at':now(), 'groups':groups, 'counts':{t:len(v) for t,v in groups.items()}, 'excluded_population':excluded, 'unknown_urls':unknown, 'sitemap_articles':len(set(urls)), 'robots_snapshot':c.robot_sources}
     write(out/'targets.json',result);write(out/'fetch_manifest.json',c.records)
     print(json.dumps({'counts':result['counts'],'unknown':unknown,'total':result['sitemap_articles']},ensure_ascii=False),flush=True)
 
@@ -198,41 +201,58 @@ def text_of(raw):
     return raw.decode('utf-8-sig')
 
 
-def references(text, base, html=False):
-    refs = set()
-    consumed = set()
+def references(text, base, html=False, document_base=None):
+    """Classic-script fetch URLs resolve against the document, not the JS file.
+
+    Static HTML links are followed only when actually present in the DOM markup.
+    Script constants containing historical HTML links are not active navigation.
+    Generated station links require a browser check because the parent rewrites them.
+    """
+    refs=set();consumed=set();dynamic=[]
+    runtime_base=document_base or base
+    code=text
     if html:
-        soup = BeautifulSoup(text,'html.parser')
+        soup=BeautifulSoup(text,'html.parser')
+        base_tag=soup.find('base',href=True)
+        if base_tag:
+            candidate=urljoin(base,base_tag['href'])
+            if public_url(candidate):runtime_base=candidate
+        else:runtime_base=base
         for node in soup.select('iframe,script[src]'):
-            val = node.get('src') or node.get('data-src')
-            if val:refs.add(urljoin(base,val))
+            val=node.get('src') or node.get('data-src')
+            if val:refs.add(urljoin(runtime_base,val))
         for a in soup.select('a[href]'):
-            u=urljoin(base,a['href'])
+            u=urljoin(runtime_base,a['href'])
+            if 'station-link' in a.get('class',[]):
+                dynamic.append('station-link anchor requires browser validation after parent rewrite')
+                continue
             if public_url(u) and urlparse(u).path.startswith(('/maps/','/cards/')) and EXT.search(u):refs.add(u)
-    constants = dict(re.findall(r'''(?:const|let|var)\s+(\w+)\s*=\s*["']([^"'\r\n]+)["']''',text))
-    # Resolve concrete fetch(ROOT + "file.json") expressions without executing code.
-    for m in re.finditer(r'''\b(?:fetch|loadScript|getJSON)\(\s*(\w+)\s*\+\s*["']([^"'\r\n]+)["']''',text):
+        code='\n'.join(node.string or node.get_text() for node in soup.select('script:not([src])'))
+    constants=dict(re.findall(r'''(?:const|let|var)\s+(\w+)\s*=\s*["']([^"'\r\n]+)["']''',code))
+    for m in re.finditer(r'''\b(?:fetch|loadScript|getJSON)\(\s*(\w+)\s*\+\s*["']([^"'\r\n]+)["']''',code):
         if m[1] in constants:
-            refs.add(urljoin(base, constants[m[1]]+m[2]));consumed.add(m[2])
-    for m in QUOTED.finditer(text):
+            refs.add(urljoin(runtime_base,constants[m[1]]+m[2]));consumed.add(m[2])
+    for m in QUOTED.finditer(code):
         v=m[1]
         if v in consumed or not EXT.search(v) or any(x in v for x in ['${','{','}', '<', '=>', ' ']):continue
         if re.fullmatch(r'\.(?:json|geojson|csv|js|html)(?:\.gz)?(?:\?.*)?',v,re.I):continue
-        refs.add(urljoin(base,v))
-    # Computed paths are explicit remaining work, rather than guessed requests.
-    dynamic = sorted(set(m[1] for m in re.finditer(r'`([^`]*\$\{[^`]+\.(?:json|csv|geojson)[^`]*)`',text)))
-    for m in re.finditer(r'\bfetch\(\s*([^\n)]+)',text):
+        if re.search(r'\.html(?:\?|$)',v,re.I):
+            # A string literal is not proof that an HTML navigation is used.
+            continue
+        refs.add(urljoin(runtime_base,v))
+    dynamic.extend(m[1] for m in re.finditer(r'`([^`]*\$\{[^`]+\.(?:json|csv|geojson)[^`]*)`',code))
+    for m in re.finditer(r'\bfetch\(\s*([^\n)]+)',code):
         expr=m[1].strip()
         if expr and expr[0] not in [chr(39),chr(34)] and not (expr in constants and EXT.search(constants[expr])):
             dynamic.append(expr[:250])
-    urls = set()
+    urls=set()
     for u in refs:
         u=urldefrag(u)[0]
         if public_url(u) and urlparse(u).path.startswith(('/maps/','/cards/')):
             path=urlparse(u).path.lower()
-            if not any(x in path for x in ['.min.js','/vendor/','/locales/','/i18n/']): urls.add(u)
-    sources = {u.rstrip('.,);') for u in OFFICIAL.findall(text) if official_url(u.rstrip('.,);'))}
-    return sorted(urls), sources, dynamic
+            if not any(x in path for x in ['.min.js','/vendor/','/locales/','/i18n/']):urls.add(u)
+    sources={u.rstrip('.,);') for u in OFFICIAL.findall(text) if official_url(u.rstrip('.,);'))}
+    return sorted(urls),sources,sorted(set(dynamic))
 
 
 def aging_official(c, data, checks):
@@ -279,8 +299,8 @@ def aging_official(c, data, checks):
 def audit(theme, targets, out, delay, minutes, max_assets):
     c=Client(out,delay,minutes,robots_snapshot=targets.get('robots_snapshot'));checks=Checks()
     urls=targets.get('groups',{}).get(theme,[])
-    q=deque((u,0) for u in urls)
-    seen=set();scheduled=set(urls);sources=set();dynamic=[];objects=0;age_data=None;infection_catalog=None;infection_series=[]
+    q=deque((u,0,u) for u in urls)
+    seen=set();scheduled={(u,urljoin(u,".")) for u in urls};sources=set();dynamic=[];objects=0;age_data=None;infection_catalog=None;infection_series=[]
     errors=[];page_count=0;expected=len(urls)
     def checkpoint():
         write(out/'fetch_manifest.json',c.records)
@@ -288,9 +308,10 @@ def audit(theme, targets, out, delay, minutes, max_assets):
         write(out/'checks.json',checks.result())
         write(out/'progress.json',{'theme':theme,'seen':len(seen),'queued':len(q),'generated_at':now(),'article_expected':expected,'article_fetched':page_count})
     while q and len(seen)<max_assets and time.monotonic()<c.deadline-min(20*60,minutes*60*.15):
-        u,depth=q.popleft()
-        if u in seen:continue
-        seen.add(u)
+        u,depth,document_base=q.popleft()
+        visit=(u,urljoin(document_base,"."))
+        if visit in seen:continue
+        seen.add(visit)
         raw,rec=c.get(u,'article' if u in urls else 'site_asset')
         if raw is None:
             errors.append({'url':u,'reason':rec.get('error')});continue
@@ -310,13 +331,15 @@ def audit(theme, targets, out, delay, minutes, max_assets):
                 if name=='INFECTION_DATA' and isinstance(obj,dict):infection_catalog=obj
                 if theme=='infection' and isinstance(obj,dict) and 'periodType' in obj and 'prefs' in obj:infection_series.append((u,obj))
             rec['parsed_data_objects']=len(values)
-            refs,src,computed=references(text,u,html)
+            runtime_base=u if html or is_json else document_base
+            refs,src,computed=references(text,u,html,document_base=runtime_base)
             sources.update(src)
             if computed:dynamic.append({'url':u,'expressions':computed[:25]})
             if depth<5:
                 for ref in refs:
-                    if ref not in scheduled:
-                        scheduled.add(ref);q.append((ref,depth+1))
+                    key=(ref,urljoin(runtime_base,"."))
+                    if key not in scheduled:
+                        scheduled.add(key);q.append((ref,depth+1,runtime_base))
             elif refs:checks.add('unchecked','dependency_depth_limit',u,unfollowed=len(refs))
         except Exception as e:
             errors.append({'url':u,'reason':type(e).__name__+': '+str(e)[:500]})
@@ -375,7 +398,8 @@ def merge(inputs,out,targets):
             if d.get('theme') in THEMES:reports[d['theme']]=d
         except Exception:continue
     expected=targets.get('groups',{})
-    missing=[t for t in THEMES if t not in reports]
+    requested=targets.get('requested_themes',list(THEMES))
+    missing=[t for t in requested if t not in reports]
     result={'generated_at':now(),'full_official_verification':False,'themes':reports,
             'missing_theme_reports':missing,'unknown_sitemap_urls':targets.get('unknown_urls',[]),
             'planned_articles':sum(len(v) for v in expected.values())}
@@ -387,7 +411,8 @@ def merge(inputs,out,targets):
     for theme,(_,label) in THEMES.items():
         d=reports.get(theme)
         if not d:
-            lines.append('| '+label+' | 未実行/結果なし | — | — | — | 未確認 |');continue
+            label_status='今回対象外（前回結果参照）' if theme not in requested else '未実行/結果なし'
+            lines.append('| '+label+' | '+label_status+' | — | — | — | 未確認 |');continue
         lines.append('| '+label+' | '+str(d['article_fetched'])+'/'+str(d['article_expected'])+' | '+str(len(d['errors']))+' | '+str(d['checks']['counts'].get('finding_error',0))+' | '+str(d['remaining_queue'])+' | '+d['official_comparison']['status']+' |')
     lines+=['','## 朝に見る順番','','1. 各テーマの `errors` と `checks.findings`（取得・構造・計算の問題）。',
        '2. 公式値比較の不一致と欠測。内部整合のみ確認したテーマは別途公式照合が必要。',
@@ -400,9 +425,10 @@ def merge(inputs,out,targets):
 def main():
     p=argparse.ArgumentParser();p.add_argument('mode',choices=['discover','audit','merge']);p.add_argument('--out',type=Path,required=True)
     p.add_argument('--theme',choices=sorted(THEMES));p.add_argument('--targets',type=Path);p.add_argument('--inputs',type=Path)
+    p.add_argument('--themes',help='JSON array selecting themes for discovery')
     p.add_argument('--delay',type=float,default=3);p.add_argument('--minutes',type=float,default=150);p.add_argument('--max-assets',type=int,default=1800)
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
-    if a.mode=='discover':discover(a.out,a.delay)
+    if a.mode=='discover':discover(a.out,a.delay,json.loads(a.themes) if a.themes else None)
     elif a.mode=='audit':audit(a.theme,json.loads(a.targets.read_text(encoding='utf-8')),a.out,a.delay,a.minutes,a.max_assets)
     else:merge(a.inputs,a.out,json.loads(a.targets.read_text(encoding='utf-8')))
 

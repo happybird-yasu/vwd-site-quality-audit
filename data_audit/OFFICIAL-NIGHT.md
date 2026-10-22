@@ -26,8 +26,27 @@ Implemented scopes:
   outside this adapter. Okinawa1965 and the documented Kanagawa correction stay
   explicitly unverified instead of being counted as ordinary matches.
 
-**Port, medical, minerals and hotel/ryokan do not yet have numerical adapters.**
-They produce explicit incomplete reports with zero comparisons; they cannot pass.
+Additional adapters requested for the same night:
+
+* Port: 134 published ports x three years x total/domestic/foreign passenger
+  fields, using nine original annual tables covering A/B ports. A single-route
+  row must start a new port; it cannot overwrite the previous port's subtype.
+  Omitted totals/subtypes and printed dashes remain explicitly unverified.
+* Medical: national +47 prefectures x three facility categories x2019/2021/2024,
+  using the MHLW December month-end provisional workbooks. October1 annual tables
+  are not substituted. Population denominators and2025 facility points are not
+  covered by this adapter.
+* Minerals: all national-map records matched by original GSJ record ID, checking
+  coordinates at published precision, status, original map publication year,
+  mineral/mine labels and source URI. Geography/category completeness and current
+  geological or operating conditions are not certified by this comparison.
+* Hotel/ryokan: six original fiscal-year facility CSVs and three original
+  calendar-year tourism workbooks. Checks the Japanese prefecture master's
+  counts, rooms, stays, occupancy and declared derived indicators. Printed
+  suppression, undefined denominators and edition revisions remain explicit.
+
+All ten themes now have an adapter for the declared scope. This does **not**
+mean every numerical field, map point, translation or card has been verified.
 Existing aging and infection adapters remain in `data_audit.run` and are run by
 the separate integrity workflow. Its remaining infection gaps still apply.
 
@@ -36,3 +55,7 @@ unverified cells are retained, not just a sample. Failed sources and themes do
 not stop other themes. Missing artifacts are marked missing in the morning
 summary. A green Actions run means report generation succeeded, not that every
 theme has been verified. `full_audit_complete` remains false.
+
+The initial six adapters ran in39797850888. The follow-up workflow defaults to
+the four additional themes; its summary labels the first six as not requested
+in that run, rather than incorrectly treating their missing artifacts as errors.

@@ -368,7 +368,8 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--theme',required=True);p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();q=Comparison(args.theme);c=Client(args.out,delay=3,minutes=300)
     try:
-        adapter=ADAPTERS.get(args.theme)
+        from .official_extra import EXTRA
+        adapter=ADAPTERS.get(args.theme) or EXTRA.get(args.theme)
         if adapter:adapter(c,q)
         else:q.result['limitations'].append('Official numerical adapter not yet implemented. This theme is UNVERIFIED, not passed.')
     except Exception as e:q.error(args.theme,e)

@@ -6,11 +6,14 @@ on:
       themes:
         description: 'JSON list of themes to check'
         required: false
-        default: '["schools","hotel_ryokan","station_ranking","onsen"]'
+        default: '["aging_rate","infection"]'
   push:
     branches: [data-integrity-audit]
     paths:
       - 'data_audit/**'
+      - '!data_audit/official_night.py'
+      - '!data_audit/test_official_night.py'
+      - '!data_audit/school-sources.json'
       - '.github/workflows/data-integrity-audit.yml'
 
 permissions:
@@ -43,7 +46,7 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Discover actual published articles from sitemap (GET only)
         env:
-          AUDIT_THEMES: ${{ github.event.inputs.themes || '["schools","hotel_ryokan","station_ranking","onsen"]' }}
+          AUDIT_THEMES: ${{ github.event.inputs.themes || '["aging_rate","infection"]' }}
         run: python -m data_audit.run discover --out inventory --delay 3 --themes "$AUDIT_THEMES"
       - uses: actions/upload-artifact@v4
         if: always()
@@ -60,7 +63,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        theme: ${{ fromJSON(github.event.inputs.themes || '["schools","hotel_ryokan","station_ranking","onsen"]') }}
+        theme: ${{ fromJSON(github.event.inputs.themes || '["aging_rate","infection"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

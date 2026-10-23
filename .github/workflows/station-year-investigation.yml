@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [data-integrity-audit]
-    paths: ['data_audit/station_year_investigation.py','data_audit/station-year-code-evidence.json','.github/workflows/station-year-investigation.yml']
+    paths: ['data_audit/station_year_investigation.py','data_audit/test_station_year.py','data_audit/station-year-code-evidence.json','.github/workflows/station-year-investigation.yml']
 permissions:
   contents: read
 jobs:
@@ -16,6 +16,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -r requirements.txt
+      - run: python -m unittest data_audit.test_station_year -v
       - name: Compare three official editions and retain every exception
         continue-on-error: true
         run: python -m data_audit.station_year_investigation

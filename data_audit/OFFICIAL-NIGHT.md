@@ -14,7 +14,7 @@ Implemented scopes:
   using the same official table. This does not certify ordering or geography.
 * Airport: all published 2019/2021/2023/2024 domestic, international and total
   passenger fields, compared to the MLIT calendar-year workbook. Fiscal years,
-  cargo and helicopter facilities are excluded from reference matching.
+  cargo is excluded. Heliports are matched as a separate kind; New Ishigaki uses the published ISG identity alias.
 * Road: every published section's 2015/2021 24h traffic and length across nine
   Japanese regional point files, compared by basic section ID to official
   prefecture CSVs. 2015 is the comparison value included in the 2021 source.
@@ -59,3 +59,5 @@ theme has been verified. `full_audit_complete` remains false.
 The initial six adapters ran in39797850888. The follow-up workflow defaults to
 the four additional themes; its summary labels the first six as not requested
 in that run, rather than incorrectly treating their missing artifacts as errors.
+
+Follow-up review: accept official leading-decimal notation (.1), compare the Japanese COVID disease-name alias, and recompute explicit month/season week groups (counts sum; rates arithmetic mean rounded to4 decimals). These are not official calendar-month incidence totals. The local-only prepare_review_candidates command preserves source evidence and validates candidate lodging/airport files without deployment.

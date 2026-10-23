@@ -25,7 +25,7 @@ def number(v):
         return None
     try:
         s = str(v).strip().replace(',', '')
-        return float(s) if re.fullmatch(r'-?\d+(?:\.\d+)?', s) else None
+        return float(s) if re.fullmatch(r'-?(?:\d+(?:\.\d*)?|\.\d+)', s) else None
     except (ValueError, TypeError):
         return None
 
@@ -244,7 +244,7 @@ def compact(v):
     return re.sub(r'\s+','',unicodedata.normalize('NFKC',str(v or '')))
 
 
-def airport_rows(raw):
+def airport_rows(raw,include_kind=False):
     import openpyxl
     w=openpyxl.load_workbook(io.BytesIO(raw),data_only=True,read_only=True)
     ws=w['暦年・年度別空港管理状況調書'];rows=list(ws.values);out={}
@@ -252,14 +252,15 @@ def airport_rows(raw):
     # ten CALENDAR rows count: following fiscal-year/cargo rows are excluded.
     for i,row in enumerate(rows):
         if len(row)<13 or compact(row[1])!='空港名:':continue
-        if 'ヘリ' in compact(row[2]) or 'へリ' in compact(row[2]):continue
+        heli='ヘリ' in compact(row[2]) or 'へリ' in compact(row[2])
+        if heli and not include_kind:continue
         name=re.split('[（(]',str(row[2]))[0].strip(); block=rows[i:i+16]
         header=''.join(compact(v) for r in block[:4] for v in r)
         if '乗降客数' not in header or '国際線' not in header:raise ValueError('Airport passenger schema changed')
         for offset,year in [(9,2019),(11,2021),(13,2023),(14,2024)]:
             r=rows[i+offset];label=compact(r[1]);expected='元' if year==2019 else str(year-2018)
             if label!=expected:raise ValueError(f'Airport calendar row changed {name} {year}: {label}')
-            key=(compact(name),year)
+            key=(compact(name),year,'heli' if heli else 'airport') if include_kind else (compact(name),year)
             if key in out:raise ValueError('Duplicate airport calendar record '+str(key))
             out[key]=dict(intl=r[8],dom=r[11],total=r[12])
     if len(out)<300:raise ValueError('Too few airport rows')
@@ -268,14 +269,19 @@ def airport_rows(raw):
 
 def airports(c,q):
     source='https://www.mlit.go.jp/koku/content/001905536.xlsx'
-    original=airport_rows(fetch(c,source))
+    original=airport_rows(fetch(c,source),include_kind=True)
     q.result['scopes'].append(dict(source=source,years=[2019,2021,2023,2024],
         fields=['intl','dom','total'],unit='passengers/calendar year',
         definition='International subtotal includes transit passengers as in official source.'))
     data=load(c,SITE+'/maps/airport/airports.json')
     for row in data:
         for year in [2019,2021,2023,2024]:
-            src=original.get((compact(row['name']),year))
+            # Explicit published identity metadata, never choosing the source by
+            # whichever passenger value happens to match. Ishigaki's display
+            # alias differs from the original workbook's New Ishigaki label.
+            name='新石垣' if row['name']=='石垣' and row.get('iata')=='ISG' else row['name']
+            kind='heli' if 'heliport' in row.get('name_en','').lower() else 'airport'
+            src=original.get((compact(name),year,kind))
             for field in ['intl','dom','total']:
                 q.cell([row['name'],year],field,(row.get('p'+str(year)) or {}).get(field),(src or {}).get(field),
                        None if src else 'official_airport_name_not_matched')

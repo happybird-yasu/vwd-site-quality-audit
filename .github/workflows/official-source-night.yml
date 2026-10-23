@@ -5,7 +5,7 @@ on:
       themes:
         description: 'JSON list of official comparison themes'
         required: false
-        default: '["port","medical","minerals","hotel_ryokan"]'
+        default: '["airport","road","schools","hotel_ryokan","port"]'
   push:
     branches: [data-integrity-audit]
     paths: ['data_audit/official_night.py', 'data_audit/official_extra.py', 'data_audit/test_official_night.py', 'data_audit/test_official_extra.py', 'data_audit/port-sources.json', 'data_audit/hotel-sources.json', '.github/workflows/official-source-night.yml']
@@ -33,7 +33,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        theme: ${{ fromJSON(github.event.inputs.themes || '["port","medical","minerals","hotel_ryokan"]') }}
+        theme: ${{ fromJSON(github.event.inputs.themes || '["airport","road","schools","hotel_ryokan","port"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -61,7 +61,7 @@ jobs:
           path: results
       - name: Explicit coverage and missing jobs
         env:
-          REQUESTED_THEMES: ${{ github.event.inputs.themes || '["port","medical","minerals","hotel_ryokan"]' }}
+          REQUESTED_THEMES: ${{ github.event.inputs.themes || '["airport","road","schools","hotel_ryokan","port"]' }}
         run: |
           python - <<'PY'
           import json,os

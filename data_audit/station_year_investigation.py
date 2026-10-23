@@ -12,7 +12,7 @@ from .official_night import fetch, load, number
 def parse_edition(raw):
     z=zipfile.ZipFile(io.BytesIO(raw))
     names=[n for n in z.namelist() if n.lower().endswith('.geojson')]
-    utf=[n for n in names if '/UTF-8/' in n]
+    utf=[n for n in names if 'UTF-8' in n.split('/')]
     if utf:names=utf
     if len(names)!=1:raise ValueError('Official GeoJSON selection ambiguous')
     b=z.read(names[0])

@@ -21,6 +21,28 @@ class OfficialTests(unittest.TestCase):
         self.assertEqual(Comparison('empty').finish()['status'],'incomplete')
         for v in ['N/A','…','-',float('nan'),True]:self.assertIsNone(number(v))
 
+    def test_official_leading_decimal_is_numeric(self):
+        self.assertEqual(number('.1'),0.1)
+        self.assertEqual(number('-.8'),-0.8)
+        self.assertIsNone(number('.'))
+
+    def test_covid_official_japanese_name_alias(self):
+        from .infection import csv_table
+        b='2021年23週\n,新型コロナウイルス感染症,,Ｅ型肝炎,\n,報告,累積,報告,累積\n総数,5,575,9,100\n'.encode('cp932')
+        self.assertEqual(csv_table(b,'COVID-19',2021,23)['総数']['count'],'5')
+        self.assertEqual(csv_table(b,'Ｅ型肝炎',2021,23)['総数']['count'],'9')
+
+    def test_aggregate_rate_mean_is_not_sum(self):
+        from .infection import compare_aggregates
+        class Fixture:
+            def get(self,url,kind):
+                week=int(url.split('-')[-2]);rate={23:0.1,24:0.2,25:0.2}[week]
+                return (f'2021年{week}週\n,病名,\n,報告,定当\n総数,2,{rate}\n'.encode('cp932'),{})
+        data={'periodType':'month','weeks':[23,24,25],'sources':[f'https://example.go.jp/2021-{w}-teiten.csv' for w in [23,24,25]],'prefs':{'00':{'rate':0.1667,'count':6}}}
+        catalog={'seriesIndex':{'2021-m06-病名':{'path':'data/m06.json'}},'prefs':{}}
+        r=compare_aggregates(Fixture(),catalog,[('https://example.com/data/m06.json',data)])
+        self.assertEqual((r['numeric_values_compared'],r['numeric_mismatches']),(2,0))
+
     def test_road_year_and_duplicate_guard(self):
         import csv
         header=['']*159;header[0]='令和３年度';row=['']*159

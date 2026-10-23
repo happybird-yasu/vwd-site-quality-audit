@@ -355,8 +355,9 @@ def audit(theme, targets, out, delay, minutes, max_assets):
         except Exception as e:official={'status':'error','error':str(e)[:500]}
     if theme=='infection' and infection_catalog:
         try:
-            from .infection import compare
+            from .infection import compare,compare_aggregates
             official=compare(c,infection_catalog,infection_series)
+            official['week_group_recalculation']=compare_aggregates(c,infection_catalog,infection_series)
         except Exception as e:official={'status':'error','error':str(e)[:500]}
     source_results=[]
     for u in sorted(sources)[:12]:

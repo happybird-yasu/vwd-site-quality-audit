@@ -1,0 +1,35 @@
+name: Investigate station publication year versus statistical year
+on:
+  workflow_dispatch:
+  push:
+    branches: [data-integrity-audit]
+    paths: ['data_audit/station_year_investigation.py','data_audit/station-year-code-evidence.json','.github/workflows/station-year-investigation.yml']
+permissions:
+  contents: read
+jobs:
+  investigate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Compare three official editions and retain every exception
+        continue-on-error: true
+        run: python -m data_audit.station_year_investigation
+      - name: Show investigation summary
+        if: always()
+        run: |
+          if [ -f station-year-report/report.md ]; then
+            cat station-year-report/report.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Investigation report missing; NOT complete.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: station-year-investigation
+          path: station-year-report/
+          retention-days: 90

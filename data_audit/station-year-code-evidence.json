@@ -1,0 +1,18 @@
+[
+  {
+    "file": "build_station_top25.py",
+    "sha256": "d9a33f2cf0e692e526d81c1093aa4029cdad43394ca47aab441396488554d40b",
+    "first_line": 182,
+    "last_line": 200,
+    "excerpt": "    meta = {\"source\": \"国土交通省 国土数値情報「駅別乗降客数」(S12-25:2024年公開 / S12-23:2023年公開)\",\n            \"unit\": \"人/日\", \"ranking\": \"標準競技順位（1,2,2,4）、同値内は station_name, operator, line 昇順\",\n            \"years\": json_years}\n    with open(out / f\"{stem}.json\", \"w\", encoding=\"utf-8\") as fh:\n        json.dump(meta, fh, ensure_ascii=False, indent=2); fh.write(\"\\n\")\n\n    md = [\"# 全国 駅別乗降客数ランキング TOP25（試作）\", \"\",\n          \"対象年: 2019年・2021年・2023年・2024年 ／ 単位: 人/日 ／ 出典: 国土交通省 国土数値情報「駅別乗降客数」(S12-25・S12-23)\", \"\"]\n    for year, _, _ in YEARS:\n        md += [f\"## {year}年\", \"\", \"| 順位 | 駅名 | 事業者 | 路線 | 地域 | 乗降客数(人/日) |\", \"|---:|---|---|---|---|---:|\"]\n        for x in json_years[str(year)][\"rows\"]:\n            md.append(f\"| {x['rank']} | {x['station_name']} | {x['operator']} | {x['line']} | {x['region']} | {x['passengers_per_day']:,} |\")\n        md.append(\"\")\n    md += [\"## 注意書き\", \"\",\n           \"- 元データの1行を1項目として扱い、同名駅・複数事業者・複数路線の駅は合算していません（同じ駅でも事業者・路線ごとに別行）。\",\n           \"- 順位は標準競技順位。同値内の表示順は駅名・事業者・路線の昇順です。\",\n           \"- 欠損・非数値は0にせず対象外としました。2023年データには0が446件あり、元の数値として保持しています（欠損が0で入っている可能性があります）。\",\n           \"- 2023年は2023年公開(S12-23)、2024年は2024年公開(S12-25)のデータを使用。2019・2021年は両ファイルで値が一致しています。\",\n           \"- ランキング形式確認のための試作であり、公開用の記事ではありません。\"]",
+    "note": "Historical local generator copy; not proof of the first upstream JSON extraction."
+  },
+  {
+    "file": "area_ranking.py",
+    "sha256": "c6edfaf65d5b98936a3762eda43191104da1db13dc50bdb19f7ff97646acb492",
+    "first_line": 7,
+    "last_line": 26,
+    "excerpt": "YEARS = list(YEAR_FIELD)\nTOP_N = 25\n\n\ndef positive(v):\n    return is_num(v) and v > 0\n\n\ndef load_merged(file24, file23):\n    \"\"\"2024年側ファイルに2023年側の f23 を複合キーで結合し、都道府県・地方を付与する。ID（複合キー昇順の連番）も付ける。\"\"\"\n    d24 = json.load(open(file24, encoding=\"utf-8\"))\n    d23 = {key(r): r for r in json.load(open(file23, encoding=\"utf-8\"))}\n    merged = []\n    for r in d24:\n        k = key(r)\n        if k not in d23:\n            raise SystemExit(f\"2023年側に存在しないキー: {k}\")\n        m = dict(r); m[\"f23\"] = d23[k][\"f23\"]; m[\"region_src\"] = r[\"region\"]\n        merged.append(m)\n    if len(merged) != len(d23):",
+    "note": "Historical local generator copy; not proof of the first upstream JSON extraction."
+  }
+]

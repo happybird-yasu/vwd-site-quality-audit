@@ -1,5 +1,7 @@
 # vwd-site-quality-audit
 
+人口流動以外の12分類を夜間チェックする仕組みは [data_audit/README.md](data_audit/README.md)。取得・内部整合・公式数値照合の対応範囲を分け、エラーを記録して継続する。朝の入口は Actions の `morning-data-audit-summary`。
+
 app-navi.biz の公開記事について、AdSense「有用性の低いコンテンツ」対応のための**読み取り専用**品質監査ツール。パイロット(20〜30ページ)での検証を経て、全件クロール(`post-sitemap.xml`の全URL、2026年10月時点で635件)にも対応。
 
 ## スコープと安全性

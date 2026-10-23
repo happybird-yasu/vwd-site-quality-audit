@@ -1,0 +1,93 @@
+name: Overnight official numeric comparison (read-only)
+on:
+  workflow_dispatch:
+    inputs:
+      themes:
+        description: 'JSON list of official comparison themes'
+        required: false
+        default: '["airport","road","schools","hotel_ryokan","port"]'
+  push:
+    branches: [data-integrity-audit]
+    paths: ['data_audit/official_night.py', 'data_audit/official_extra.py', 'data_audit/test_official_night.py', 'data_audit/test_official_extra.py', 'data_audit/port-sources.json', 'data_audit/hotel-sources.json', '.github/workflows/official-source-night.yml']
+permissions:
+  contents: read
+concurrency:
+  group: official-numeric-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt pdfplumber
+      - run: python -m unittest data_audit.test_official_night data_audit.test_official_extra data_audit.test_audit -v
+  compare:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        theme: ${{ fromJSON(github.event.inputs.themes || '["airport","road","schools","hotel_ryokan","port"]') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt pdfplumber
+      - name: Compare actual official values; preserve unimplemented scopes as incomplete
+        continue-on-error: true
+        run: python -m data_audit.official_night --theme '${{ matrix.theme }}' --out report
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: official-${{ matrix.theme }}
+          path: report/
+          retention-days: 30
+  morning-report:
+    needs: [test, compare]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: official-*
+          path: results
+      - name: Explicit coverage and missing jobs
+        env:
+          REQUESTED_THEMES: ${{ github.event.inputs.themes || '["airport","road","schools","hotel_ryokan","port"]' }}
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          themes=['station','airport','road','onsen','station_ranking','port','schools','medical','minerals','hotel_ryokan']
+          requested=json.loads(os.environ['REQUESTED_THEMES'])
+          rows=[]
+          for t in themes:
+            p=Path('results')/('official-'+t)/'official-report.json'
+            r=json.loads(p.read_text()) if p.exists() else {'theme':t,'status':'JOB_REPORT_MISSING' if t in requested else 'NOT_REQUESTED_IN_THIS_RUN','full_theme_verification':False}
+            rows.append(r)
+          Path('morning').mkdir(exist_ok=True)
+          Path('morning/report.json').write_text(json.dumps({'full_audit_complete':False,'themes':rows},ensure_ascii=False,indent=2))
+          text=['# Official numerical comparison - morning report','**NOT a complete all-theme accuracy certification.**',
+                'Aging/infection use separate existing adapters. Other numeric scopes were checked in run39797850888. Missing requested jobs are incomplete.',
+                '|Theme|Status|Expected|Compared|Mismatch|Unverified|Errors|','|---|---|---:|---:|---:|---:|---:|']
+          for r in rows:
+            text.append('|'+ '|'.join(str(x) for x in [r['theme'],r['status'],r.get('expected',0),r.get('compared',0),r.get('mismatches',0),r.get('unverified',0),len(r.get('errors',[]))])+'|')
+          text+='','All mismatches, failed sources, limitations and raw-source hashes are retained in per-theme artifacts.'
+          body='\n\n'.join(text[:3])+'\n\n'+'\n'.join(text[3:])
+          Path('morning/report.md').write_text(body)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write(body)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: morning-official-comparison
+          path: morning/
+          retention-days: 90

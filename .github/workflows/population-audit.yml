@@ -15,6 +15,11 @@ on:
         description: "Limit to prefecture codes <= N (0 = all 47)"
         required: false
         default: "0"
+      fresh_comparison:
+        description: "Recompare the current site snapshot; do not reuse old comparison results"
+        required: false
+        type: boolean
+        default: true
   push:
     branches: [population-numeric-audit]
     paths:
@@ -92,6 +97,20 @@ jobs:
           key: official-v1-${{ matrix.year }}-${{ github.run_id }}
           restore-keys: |
             official-v1-${{ matrix.year }}-
+      - name: Clear old comparison state for a fresh site audit
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.fresh_comparison }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          # Retain official source downloads; discard only cached comparison
+          # state/results so a previous successful audit cannot skip this snapshot.
+          for folder in (Path('work/state'), Path('work/results')):
+              if folder.exists():
+                  for file in folder.iterdir():
+                      if file.is_file():
+                          file.unlink()
+          print('Fresh comparison requested; previous comparison results are not reused.')
+          PY
       - name: Audit year ${{ matrix.year }} (resumable)
         run: >
           python -m population_audit year --year ${{ matrix.year }}

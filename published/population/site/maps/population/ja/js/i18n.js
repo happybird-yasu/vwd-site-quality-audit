@@ -1,0 +1,49 @@
+(function(global){
+  'use strict';
+  const SUPPORTED=['ja','en','es','de','fr'];
+  const JA={"regional_subtitle":"POPULATION FLOW ／ 地方版","back_to_national":"← 全国版へ","search_placeholder":"市区町村名で全国検索（例：大阪府大阪市北区）","voice_search_title":"音声で検索","voice_search_hint":"🎤 マイクボタンを押すと音声で検索できます（Chrome・Safari対応）","view_inflow":"転入元を見る","view_outflow":"転出先を見る","click_municipality":"地図の市区町村をクリックしてください","data_source":"データ出典：総務省統計局「住民基本台帳人口移動報告」（e-Stat）／ 2019・2021・2025年","map_source_before":"地図データ：国土交通省 国土数値情報（行政区域）を ","map_source_after":" が加工 ／ 地図タイル：国土地理院","attr_total":"総合","attr_nationality":"国籍","attr_sex":"男女","attr_age":"年齢","nationality_japanese":"日本人","nationality_foreign":"外国人","sex_male":"男性","sex_female":"女性","age_0_19":"0～19歳","age_20_39":"20～39歳","age_40_59":"40～59歳","age_60_plus":"60歳以上","year_suffix":"年","loading_data":"データを読み込んでいます…","load_error":"⚠️ データを読み込めませんでした","inflow":"転入","outflow":"転出","no_published_data":"この地域・年・条件の値を表示できません。","ranking_unavailable":"上位10件の内訳は表示できません（個別の市区町村に分けた値が公式表にない、または集約・秘匿されているため）。上の人数は公式表の総数です。","ranking_note":"ランキングは公式表に個別掲載された市区町村・区の上位です。「その他」などの集約行に含まれる自治体は順位に反映されないため、全自治体の完全な順位ではありません。上の人数は公式表の総数で、ランキングの合計ではありません。","age_unknown_note":"年齢別の4区分には「不詳」が含まれません（公式表では別掲）。4区分の合計が総数より少ないことがあります。","inflow_ranking":"転入元ランキング（上位10）","outflow_ranking":"転出先ランキング（上位10）","total_people":"{direction}者数（合計）","ranking_caution":"※ 市区町村の転入・転出ランキングには、県内の市区町村間移動も含まれています。そのため、ランキングの合計は都道府県の転入超過・転出超過とは一致しません。","foreign_resident_note":"※日本国内に住民登録済みの外国籍住民が対象です","people_suffix":"人","this_region":"この地方","other_region":"→ {region}版","voice_listening":"🎤 聞いています…","voice_error":"⚠️ 音声認識に失敗しました。もう一度お試しください。","voice_unsupported":"⚠️ このブラウザは音声認識に対応していません","mobile_tap_municipality":"市区町村をタップしてください。","mobile_data_below_map":"※ スマートフォンでは選択したデータは地図の下に表示されます。","tap_to_operate_map":"タップして地図を操作","nationality_data_note":"※ 国籍別データは住民基本台帳に基づくため、短期滞在者や未登録の外国籍の方は含まれていません。","boundary_data_note":"※ 市区町村の境界データおよび名称は、一部統計データの集計時点と異なる場合があります（例：2024年1月の浜松市区再編など）。","condition_out_of_scope":"この条件のデータは対象範囲外です","geojson_load_error":"地図の読み込みに失敗しました","region_navigation":"地域記事を順番に巡る","previous_region":"前の地方：{region}","next_region":"次の地方：{region}","all_japan":"全国へ","hamamatsu_chuo_no_data":"2024年の区再編により、旧5区（中区・東区・西区・南区・北区）が浜松市中央区となりました。","hamamatsu_hamana_no_data":"2024年の区再編により、旧北区（三方原地区）と浜北区が浜松市浜名区となりました。","hamamatsu_tenryu_no_data":"2024年の区再編後も天竜区の範囲は変わりません。","hamamatsu_old_ward_data":"（旧区のデータは各地方版でご確認ください）","hamamatsu_chuo_note":"※2024年の区再編により旧5区（中区・東区・西区・南区・北区）が統合されました。旧区の範囲でハイライト表示しています。","hamamatsu_hamana_note":"※2024年の区再編により旧2区（北区・浜北区）が統合されました。旧区の範囲でハイライト表示しています。","hamamatsu_tenryu_note":"※天竜区は区再編後も同一範囲です。","region_hokkaido":"北海道","page_title_hokkaido":"北海道の人口流動 ― どこから来て、どこへ行くのか","heading_hokkaido":"北海道の人口流動","region_tohoku":"東北","page_title_tohoku":"東北の人口流動 ― どこから来て、どこへ行くのか","heading_tohoku":"東北の人口流動","region_kanto":"関東","page_title_kanto":"関東の人口流動 ― どこから来て、どこへ行くのか","heading_kanto":"関東の人口流動","region_koshinetsu":"甲信越","page_title_koshinetsu":"甲信越の人口流動 ― どこから来て、どこへ行くのか","heading_koshinetsu":"甲信越の人口流動","region_chubu_hokuriku":"中部・北陸","page_title_chubu_hokuriku":"中部・北陸の人口流動 ― どこから来て、どこへ行くのか","heading_chubu_hokuriku":"中部・北陸の人口流動","region_kinki":"近畿","page_title_kinki":"近畿の人口流動 ― どこから来て、どこへ行くのか","heading_kinki":"近畿の人口流動","region_chugoku":"中国","page_title_chugoku":"中国の人口流動 ― どこから来て、どこへ行くのか","heading_chugoku":"中国の人口流動","region_shikoku":"四国","page_title_shikoku":"四国の人口流動 ― どこから来て、どこへ行くのか","heading_shikoku":"四国の人口流動","region_kyushu_okinawa":"九州・沖縄","page_title_kyushu_okinawa":"九州・沖縄の人口流動 ― どこから来て、どこへ行くのか","heading_kyushu_okinawa":"九州・沖縄の人口流動"};
+  let messages=JA;
+  let language='ja';
+
+  function normalize(value){
+    const code=String(value||'').toLowerCase().split('-')[0];
+    return SUPPORTED.includes(code)?code:null;
+  }
+  function chooseLanguage(){
+    const params=new URLSearchParams(location.search);
+    if(params.has('lang')) return normalize(params.get('lang'))||'ja';
+    let saved=null;
+    try{saved=normalize(localStorage.getItem('population_flow_language'));}catch(_){}
+    return saved||normalize(navigator.language)||'ja';
+  }
+  function format(value,params){
+    return String(value).replace(/\{([a-z0-9_]+)\}/g,(_,key)=>params&&params[key]!==undefined?params[key]:`{${key}}`);
+  }
+  function t(key,params){return format(messages[key]!==undefined?messages[key]:(JA[key]!==undefined?JA[key]:key),params);}
+  function applyTranslations(root){
+    const scope=root||document;
+    scope.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
+    scope.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.i18nPlaceholder));});
+    scope.querySelectorAll('[data-i18n-title]').forEach(el=>{el.setAttribute('title',t(el.dataset.i18nTitle));});
+    scope.querySelectorAll('[data-i18n-aria-label]').forEach(el=>{el.setAttribute('aria-label',t(el.dataset.i18nAriaLabel));});
+    document.documentElement.lang=language;
+  }
+  async function loadJson(code){
+    const response=await fetch('i18n/'+code+'.json');
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    return response.json();
+  }
+  async function initialize(){
+    language=chooseLanguage();
+    try{
+      const loaded=await loadJson(language);
+      messages=Object.assign({},JA,loaded);
+    }catch(_){messages=JA;language='ja';}
+    try{localStorage.setItem('population_flow_language',language);}catch(_){}
+    if(document.readyState==='loading'){await new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));}
+    applyTranslations();
+    return language;
+  }
+  global.t=t;
+  global.I18n={t,applyTranslations,get language(){return language;},ready:initialize()};
+})(window);

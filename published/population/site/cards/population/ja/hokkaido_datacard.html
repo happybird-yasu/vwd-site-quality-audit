@@ -1,0 +1,68 @@
+<!--
+================================================================
+  &copy; 2025-2026 app-navi.biz / データで視える世界
+  無断複製・転載・再配布を禁じます
+  Data source: 総務省統計局「住民基本台帳人口移動報告」（e-Stat）
+================================================================
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北海道の人口はどれだけ動いた？</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>body{-webkit-user-select:none;-moz-user-select:none;user-select:none;}</style>
+<script>
+document.addEventListener('contextmenu',function(e){e.preventDefault();});
+document.addEventListener('keydown',function(e){
+    if(e.ctrlKey&&(e.key==='c'||e.key==='C'||e.key==='u'||e.key==='U'||e.key==='s'||e.key==='S'))e.preventDefault();
+    if(e.key==='F12')e.preventDefault();
+});
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;}
+body{font-family:'Noto Sans JP',sans-serif;background:#ffffff;padding:32px 40px;}
+.title{text-align:center;font-size:clamp(18px,2.4vw,26px);font-weight:500;color:#333;margin-bottom:24px;}
+table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+th, td{border:1px solid #999;padding:14px 10px;text-align:center;font-size:clamp(13px,1.6vw,18px);}
+th{background:#fafafa;font-weight:500;color:#444;}
+td.region-label{font-weight:500;}
+td.pos{color:#2B6CB0;}
+td.neg{color:#B0453A;}
+.note{font-size:12px;color:#555;margin-bottom:14px;}
+.source{font-size:12px;color:#333;margin-bottom:4px;}
+.method-title{font-size:12px;color:#333;margin-bottom:4px;}
+.method-list{font-size:11px;color:#555;line-height:1.7;padding-left:16px;}
+.watermark{text-align:right;margin-top:20px;opacity:0.5;}
+.watermark-text{font-size:11px;color:#888;letter-spacing:0.05em;}
+</style>
+</head>
+<body>
+<div class="title">北海道の人口はどれだけ動いた？<br>―転入超過数の推移(2019・2021・2025年)―</div>
+<table>
+  <tr>
+    <th>地域</th>
+    <th>2019年</th>
+    <th>2021年</th>
+    <th>2025年</th>
+  </tr>
+  <tr>
+    <td class="region-label">北海道</td>
+    <td class="neg">-5,568</td>
+    <td class="neg">-2,025</td>
+    <td class="neg">-5,162</td>
+  </tr>
+</table>
+<div class="note">* 転入超過数＝転入者数－転出者数。プラスは人口が流入、マイナスは流出を示す（単位：人）</div>
+<div class="source">出典：総務省統計局「住民基本台帳人口移動報告」（e-Stat）</div>
+<div class="method-title">算出方法：</div>
+<div class="method-list">
+  &bull; 北海道に含まれる都道府県の転入超過数を合算<br>
+  &bull; 2019年・2021年・2025年の3時点で比較<br>
+  &bull; 全国合計は理論上ゼロ（国内移動の収支のため）
+</div>
+<div class="watermark"><span class="watermark-text">&copy; データで視える世界 / app-navi.biz</span></div>
+</body>
+</html>

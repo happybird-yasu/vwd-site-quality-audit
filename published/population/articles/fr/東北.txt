@@ -1,0 +1,94 @@
+# Carte des migrations intérieures : Tohoku (2019, 2021 et 2025)
+
+La région de Tohoku se trouve dans le nord-est de Honshu, la plus grande île du Japon, et sa ville principale est Sendai, dans la préfecture de Miyagi.
+
+Des montagnes couvertes de neige et de vastes champs ; des ports sur le Pacifique et sur la mer du Japon, des stations thermales dans les montagnes et des villes animées par des fêtes traditionnelles. Tohoku offre des modes de vie très variés, qui changent au fil des saisons.
+
+Si Tohoku est nouveau pour vous, essayez d’imaginer ces paysages. Ce qu’il y a là, c’est la vie quotidienne des gens.
+
+Les gens déménagent, par exemple pour les études, pour un nouveau travail ou pour la vie de famille. Dans chacune de ces villes, d’où viennent les gens, et où vont-ils lorsqu’ils partent ?
+
+Et si vous suiviez la carte pour découvrir les mouvements de population dans les différentes parties de Tohoku ?
+
+## Pourquoi nous avons réalisé l’édition de Tohoku
+
+« Les habitants de tout Tohoku se rassemblent-ils à Tokyo et à Sendai ? » Cette question nous a donné envie d’examiner de plus près les mouvements de population à l’intérieur de Tohoku.
+
+Tokyo est la capitale du Japon et Sendai la ville principale de la région de Tohoku. Outre le flux de personnes vers ces villes, quels mouvements existe-t-il entre les localités de Tohoku ?
+
+L’édition de Tohoku s’intéresse aux communes et permet de comparer 2019, 2021 et 2025.
+
+Je voulais aussi savoir quelles personnes déménagent ; la carte peut donc aussi être réglée par sexe, par nationalité et par groupe d’âge.
+
+## Explorer sur la carte les migrations intérieures de Tohoku
+
+Cette carte permet de comparer les migrations intérieures de Tohoku en 2019, 2021 et 2025.
+
+Passez du sexe à la nationalité ou au groupe d’âge pour voir, commune par commune, d’où les personnes sont arrivées et où elles sont parties. « Arrivée » signifie transférer son adresse enregistrée vers ce territoire ; « départ » signifie la transférer de ce territoire vers un autre.
+
+Inutile de connaître le nom des lieux de Tohoku. Choisissez un endroit de la carte qui attire votre regard et suivez les lignes et les chiffres pour voir d’où les gens sont venus et où ils sont allés ensuite.
+
+En quoi le côté du Pacifique diffère-t-il du côté de la mer du Japon, ou les villes des localités de montagne ?
+
+【Carte des migrations intérieures : Tohoku】
+
+## Ce qui m’a frappé sur la carte
+
+Sur la carte de Tohoku, ce qui m’a frappé, c’est que, dans de nombreuses zones, les gens semblaient se diriger vers la ville centrale de chaque zone.
+
+J’avais de Tohoku l’image d’une région où « la population ne cesse de diminuer ». Mais sur la carte, j’ai remarqué non seulement des personnes qui partent de différents endroits, mais aussi des flux de personnes qui arrivent.
+
+En regardant les liens avec Tokyo et Sendai et en suivant les déménagements entre localités voisines, on voit apparaître des mouvements de population qu’une image à sens unique ne permet pas de saisir.
+
+Dans votre pays, les gens se rassemblent-ils dans les grandes villes et dans les localités centrales de chaque zone ?
+
+Pensez à des lieux que vous connaissez et demandez-vous ce qu’ils ont en commun avec les mouvements de population de Tohoku, et en quoi ils en diffèrent.
+
+Quels mouvements de population voyez-vous sur cette carte ?
+
+## Solde migratoire de l’ensemble de Tohoku
+
+Comment la différence entre les arrivées et les départs a-t-elle évolué dans l’ensemble de Tohoku ?
+
+La fiche de données ci-dessous compare le solde migratoire de 2019, 2021 et 2025.
+
+【Fiche de données du solde migratoire : Tohoku】
+
+Le solde migratoire est le nombre de personnes arrivées moins le nombre de personnes parties. Une valeur positive signifie que plus de personnes sont arrivées que parties (solde migratoire positif) ; une valeur négative signifie que plus de personnes sont parties qu’arrivées (solde migratoire négatif).
+
+## À propos des données
+
+Les totaux et les soldes migratoires présentés ici concernent les déménagements à l’intérieur du Japon des personnes de nationalité japonaise et de nationalité étrangère, ensemble.
+
+L’affichage par âge de la carte utilise quatre groupes : 0–19 ans, 20–39 ans, 40–59 ans et 60 ans et plus. Les personnes dont l’âge est inconnu ne sont pas comprises dans ces quatre groupes.
+
+Cette page repose sur les données publiées par le Bureau des statistiques du Japon dans son « Rapport sur les migrations intérieures au Japon ». Visible World by Data a compilé et tabulé ces données pour en faire la carte et la fiche de données.
+
+Les années couvertes sont 2019, 2021 et 2025. L’édition de Tohoku de ce site couvre six préfectures : Aomori, Iwate, Miyagi, Akita, Yamagata et Fukushima.
+
+Les migrations présentées ici désignent les personnes qui ont changé leur adresse enregistrée à l’intérieur du Japon en franchissant les limites d’une commune ou d’une entité comparable. Elles ne montrent ni les entrées au Japon en provenance de l’étranger, ni les sorties du Japon vers l’étranger.
+
+Elles diffèrent aussi des déplacements domicile-travail ou domicile-études, de l’affluence des voyageurs et touristes, et de la variation de population qui inclut les naissances et les décès. Si une même personne a déménagé plusieurs fois pendant la période, chaque déménagement est compté.
+
+Les données par commune de la carte incluent les déménagements à l’intérieur d’une même préfecture. Dans la ville de Sendai, les déménagements vers un autre arrondissement de la même ville sont également comptés.
+
+La fiche de données additionne les soldes migratoires des six préfectures couvertes. Les déménagements entre ces six préfectures s’annulent et totalisent zéro pour l’ensemble de la région ; la fiche montre donc la différence entre les arrivées et les départs par rapport aux lieux situés hors de la région. C’est une mesure différente du nombre d’arrivées par commune affiché sur la carte ou de la somme des classements.
+
+### Remarques pour lire les chiffres
+
+- « Ce qui m’a frappé sur la carte » rassemble des impressions en regardant la carte et les chiffres. Ce n’est pas une conclusion vérifiée statistiquement sur les raisons des déménagements ni sur les tendances de la région.
+- Les migrations seules ne permettent pas de juger si la population totale d’une région a augmenté ou diminué.
+- Les classements portent sur les communes et arrondissements qui figurent individuellement dans le tableau officiel. Les zones regroupées dans des lignes de synthèse comme « autres » ne sont pas classées ; ce n’est donc pas un classement complet de toutes les communes.
+- Le total affiché est le total du tableau officiel, et non la somme du classement des 10 premiers.
+- Le sélecteur de nationalité présente les personnes qui ont déménagé à l’intérieur du Japon, selon leur nationalité. Il ne montre pas de déplacements à travers les frontières nationales.
+- Lorsque les limites ou les classements des communes ont changé, les comparaisons entre années demandent de la prudence.
+
+## Sources
+
+[Bureau des statistiques du Japon, « Rapport sur les migrations intérieures au Japon »](https://www.stat.go.jp/data/idou/)
+
+[Bureau des statistiques du Japon, « Rapport sur les migrations intérieures au Japon : explication des termes »](https://www.stat.go.jp/data/idou/2.html)
+
+Compilation, tabulation et visualisation des données : Visible World by Data
+
+Soldes migratoires par préfecture et base des fiches de données : vérifiés le 3 novembre 2026 avec le tableau 1 des rapports annuels de 2019, 2021 et 2025 (Bureau des statistiques du Japon / e-Stat).

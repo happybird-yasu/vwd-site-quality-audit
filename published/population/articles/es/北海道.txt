@@ -1,0 +1,94 @@
+# Mapa de migración interna: Hokkaido (2019, 2021 y 2025)
+
+Hokkaido es una isla del norte de Japón, la más grande después de Honshu. Su ciudad principal es Sapporo.
+
+Montañas cubiertas de nieve y amplios pastos; carreteras que atraviesan rectas los campos, pueblos portuarios junto al mar y el paisaje urbano de Sapporo. Hokkaido ofrece formas de vida muy variadas.
+
+Quizá hayas viajado allí, o hayas pensado alguna vez: «Algún día me gustaría vivir allí».
+
+Las personas que viven en Hokkaido también se mudan, por ejemplo, por estudios, por un nuevo trabajo o por la vida familiar.
+
+En cada uno de estos pueblos y ciudades, ¿de dónde viene la gente y adónde se va cuando se marcha?
+
+¿Por qué no sigues el mapa para descubrir los flujos de personas en las distintas partes de Hokkaido?
+
+## Por qué creamos la edición de Hokkaido
+
+«¿Se concentra la gente en Tokio y Sapporo?» Esa pregunta nos llevó a querer mirar con más detalle los movimientos de personas dentro de Hokkaido.
+
+Tokio es la capital de Japón y Sapporo la ciudad principal de Hokkaido. Además del flujo de personas desde Hokkaido hacia estas ciudades, ¿qué movimientos hay entre los pueblos del interior de Hokkaido?
+
+La edición de Hokkaido se fija en los municipios y permite comparar 2019, 2021 y 2025.
+
+También quería saber qué tipo de personas se trasladan, así que el mapa se puede cambiar además por sexo, nacionalidad y grupo de edad.
+
+## Explora en el mapa la migración interna de Hokkaido
+
+Este mapa permite comparar la migración interna de Hokkaido en 2019, 2021 y 2025.
+
+Cambia entre sexo, nacionalidad y grupo de edad para ver, municipio por municipio, de dónde llegaron las personas y adónde se fueron. «Entrada» significa cambiar el domicilio registrado a esa zona; «salida» significa cambiarlo de esa zona a otra.
+
+Para empezar, busca Sapporo, un pueblo que visitaste de viaje o una zona cuyo nombre hayas oído.
+
+¿En qué se diferencian los pueblos de la costa y los del interior, o las ciudades y las zonas rurales? Haz clic en un municipio que te interese y sigue las cifras.
+
+【Mapa de migración interna: Hokkaido】
+
+## Lo que me llamó la atención en el mapa
+
+Lo que me llamó la atención en el mapa de Hokkaido fue que me pareció que había más movimiento de personas dentro de Hokkaido de lo que imaginaba.
+
+Tenía la imagen de que la gente se va de Hokkaido a otras zonas una y otra vez. Pero en el mapa me fijé no solo en las personas que salen de distintos lugares, sino también en los flujos de personas que llegan.
+
+Si te fijas en las conexiones con lugares fuera de Hokkaido y sigues los traslados entre pueblos dentro de Hokkaido, aparecen movimientos de personas que una imagen en un solo sentido no deja ver.
+
+Cambia entre los lugares de origen y los de destino y explora también las conexiones entre los pueblos que te interesan y otras zonas.
+
+¿Qué flujos de personas ves tú en este mapa?
+
+## Saldo migratorio del conjunto de Hokkaido
+
+¿Cómo ha cambiado la diferencia entre las personas que llegan y las que se van en el conjunto de Hokkaido?
+
+La ficha de datos siguiente compara el saldo migratorio de 2019, 2021 y 2025.
+
+【Ficha de datos del saldo migratorio: Hokkaido】
+
+El saldo migratorio es el número de personas que llegaron menos el número de personas que se fueron. Un valor positivo significa que llegaron más personas de las que se fueron (entrada neta); un valor negativo significa que se fueron más de las que llegaron (salida neta).
+
+Esta ficha muestra la diferencia en los traslados dentro de Japón entre Hokkaido y los lugares fuera de Hokkaido.
+
+## Sobre los datos
+
+Los totales y los saldos migratorios que se muestran aquí corresponden a los traslados dentro de Japón de personas de nacionalidad japonesa y extranjera en conjunto.
+
+La vista por edad del mapa usa cuatro grupos: 0–19, 20–39, 40–59 y 60 años o más. Las personas de edad desconocida no están incluidas en estos cuatro grupos.
+
+Esta página se basa en los datos publicados por la Oficina de Estadística de Japón en su «Informe sobre migración interna en Japón». Visible World by Data recopiló y tabuló los datos y los convirtió en el mapa.
+
+Los años considerados son 2019, 2021 y 2025. La edición de Hokkaido de este sitio abarca los municipios del interior de Hokkaido.
+
+La migración que se muestra aquí se refiere a las personas que cambiaron su domicilio registrado dentro de Japón cruzando los límites de un municipio o similar. No indica la entrada de personas desde el extranjero a Japón ni la salida de Japón al extranjero.
+
+Tampoco equivale a los desplazamientos por trabajo o estudios, ni a la afluencia de viajeros o turistas, ni al cambio de población que incluye nacimientos y defunciones. Si una misma persona se trasladó varias veces durante el período, se cuenta cada traslado.
+
+Los datos por municipio del mapa incluyen los traslados dentro de Hokkaido. En la ciudad de Sapporo, también se cuentan los traslados a otro distrito de la misma ciudad.
+
+### Notas para leer las cifras
+
+- «Lo que me llamó la atención en el mapa» recoge impresiones al mirar el mapa y las cifras. No es una conclusión comprobada estadísticamente sobre los motivos de los traslados ni sobre las tendencias de la región.
+- Solo con la migración no se puede juzgar si la población total de una región aumentó o disminuyó.
+- Los rankings incluyen los municipios y distritos que figuran por separado en la tabla oficial. Las zonas agrupadas en filas como «otros» no se clasifican, por lo que no es un ranking completo de todos los municipios.
+- El total que se muestra es el total de la tabla oficial, no la suma del ranking de los 10 primeros.
+- El selector de nacionalidad muestra a las personas que se trasladaron dentro de Japón, según su nacionalidad. No indica movimientos a través de fronteras nacionales.
+- Donde han cambiado los límites o las clasificaciones de los municipios, hay que tener cuidado al comparar entre años.
+
+## Fuentes
+
+[Oficina de Estadística de Japón, «Informe sobre migración interna en Japón»](https://www.stat.go.jp/data/idou/)
+
+[Oficina de Estadística de Japón, «Informe sobre migración interna en Japón: explicación de términos»](https://www.stat.go.jp/data/idou/2.html)
+
+Recopilación, tabulación y visualización de los datos: Visible World by Data
+
+Saldos migratorios por prefectura y base de las fichas de datos: comprobados el 3 de noviembre de 2026 con la tabla 1 de los informes anuales de 2019, 2021 y 2025 (Oficina de Estadística de Japón / e-Stat).

@@ -1,5 +1,9 @@
 # vwd-site-quality-audit
 
+2026年11月3日に公開した人口流動50記事・地図・カードの保存内容は
+[published/population](published/population/README.md) に記録しています。
+公開済みファイルの照合と、下記の読み取り専用監査・候補生成は別の処理です。
+
 app-navi.biz の公開記事について、AdSense「有用性の低いコンテンツ」対応のための**読み取り専用**品質監査ツール。パイロット(20〜30ページ)での検証を経て、全件クロール(`post-sitemap.xml`の全URL、2026年10月時点で635件)にも対応。
 
 ## スコープと安全性

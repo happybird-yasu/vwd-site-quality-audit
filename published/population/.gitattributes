@@ -1,0 +1,5 @@
+# These are byte-for-byte records of the published files, including the CSV's CRLF.
+* -text
+# Existing source whitespace is retained so the live SHA-256 checks remain valid.
+site/** -whitespace
+glossary.csv -whitespace

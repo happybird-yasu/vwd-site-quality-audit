@@ -1,0 +1,67 @@
+<!--
+================================================================
+  &copy; 2025-2026 app-navi.biz / Visible World by Data
+  Data source: Statistics Bureau of Japan, "Report on Internal Migration in Japan" (e-Stat)
+================================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Cuánto se movió la población en Kyushu/Okinawa?</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>body{-webkit-user-select:none;-moz-user-select:none;user-select:none;}</style>
+<script>
+document.addEventListener('contextmenu',function(e){e.preventDefault();});
+document.addEventListener('keydown',function(e){
+    if(e.ctrlKey&&(e.key==='c'||e.key==='C'||e.key==='u'||e.key==='U'||e.key==='s'||e.key==='S'))e.preventDefault();
+    if(e.key==='F12')e.preventDefault();
+});
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;}
+body{font-family:'Noto Sans JP',sans-serif;background:#ffffff;padding:32px 40px;}
+.title{text-align:center;font-size:clamp(18px,2.4vw,26px);font-weight:500;color:#333;margin-bottom:24px;}
+table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+th, td{border:1px solid #999;padding:14px 10px;text-align:center;font-size:clamp(13px,1.6vw,18px);}
+th{background:#fafafa;font-weight:500;color:#444;}
+td.region-label{font-weight:500;}
+td.pos{color:#2B6CB0;}
+td.neg{color:#B0453A;}
+.note{font-size:12px;color:#555;margin-bottom:14px;}
+.source{font-size:12px;color:#333;margin-bottom:4px;}
+.method-title{font-size:12px;color:#333;margin-bottom:4px;}
+.method-list{font-size:11px;color:#555;line-height:1.7;padding-left:16px;}
+.watermark{text-align:right;margin-top:20px;opacity:0.5;}
+.watermark-text{font-size:11px;color:#888;letter-spacing:0.05em;}
+</style>
+</head>
+<body>
+<div class="title">¿Cuánto se movió la población en Kyushu/Okinawa?<br>―Evolución del saldo migratorio (2019, 2021 y 2025)―</div>
+<table>
+  <tr>
+    <th>Región</th>
+    <th>2019</th>
+    <th>2021</th>
+    <th>2025</th>
+  </tr>
+  <tr>
+    <td class="region-label">Kyushu/Okinawa</td>
+    <td class="neg">-19,107</td>
+    <td class="neg">-7,296</td>
+    <td class="neg">-15,514</td>
+  </tr>
+</table>
+<div class="note">* Saldo migratorio = personas que llegaron − personas que se fueron. Positivo = entrada neta; negativo = salida neta (unidad: personas)</div>
+<div class="source">Fuente: Oficina de Estadística de Japón, «Informe sobre migración interna en Japón» (e-Stat)</div>
+<div class="method-title">Método de cálculo:</div>
+<div class="method-list">
+  &bull; Suma del saldo migratorio de las prefecturas incluidas en Kyushu/Okinawa<br>
+  &bull; Se comparan tres años: 2019, 2021 y 2025<br>
+  &bull; El total de todo Japón es teóricamente cero (los traslados dentro de Japón se compensan en el conjunto del país)
+</div>
+<div class="watermark"><span class="watermark-text">&copy; Visible World by Data / app-navi.biz</span></div>
+</body>
+</html>

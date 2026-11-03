@@ -1,0 +1,92 @@
+# Karte der Binnenwanderung: Kanto (2019, 2021 und 2025)
+
+Die Region Kanto liegt im Osten von Honshu, der größten Insel Japans, und besteht aus Tokio, der Hauptstadt Japans, und den umliegenden Präfekturen.
+
+Straßen mit Hochhäusern in Tokio und der Hafen von Yokohama; Wohngebiete in den Vororten, weites Ackerland und Bergorte. Kanto bietet von der Großstadt bis zum Land ganz unterschiedliche Lebenswelten.
+
+Auch die Menschen in solchen Großstädten und Dörfern ziehen um – etwa wegen Ausbildung oder Studium, Arbeit oder des Familienlebens.
+
+Woher kommen in diesen Städten und Orten die Menschen, und wohin ziehen sie fort?
+
+Möchten Sie nicht anhand der Karte den Bewegungen der Menschen in den verschiedenen Teilen von Kanto nachgehen?
+
+## Warum wir die Ausgabe zu Kanto erstellt haben
+
+„Strömen Menschen aus ganz Kanto nach Tokio?“ Aus dieser Frage entstand der Wunsch, die Bewegungen der Menschen zwischen Tokio und seinem Umland genauer zu betrachten.
+
+Die Ausgabe zu Kanto betrachtet einzelne Gemeinden und ermöglicht den Vergleich von 2019, 2021 und 2025.
+
+Außerdem wollte ich wissen, was für Menschen umziehen. Deshalb lässt sich die Karte auch nach Geschlecht, Staatsangehörigkeit und Altersgruppe umschalten.
+
+## Die Binnenwanderung in Kanto auf der Karte erkunden
+
+Diese Karte ermöglicht den Vergleich der Binnenwanderung in Kanto in den Jahren 2019, 2021 und 2025.
+
+Schalten Sie zwischen Geschlecht, Staatsangehörigkeit und Altersgruppe um und sehen Sie für jede Gemeinde, woher Menschen zugezogen und wohin sie fortgezogen sind. „Zuzug“ bedeutet, die Adresse in dieses Gebiet zu verlegen; „Fortzug“ bedeutet, die Adresse von diesem Gebiet in ein anderes Gebiet zu verlegen.
+
+Sie müssen keine Ortsnamen in Kanto kennen. Wählen Sie einfach einen Ort auf der Karte, der Ihnen auffällt, und folgen Sie den Zahlen, um zu sehen, woher Menschen kamen und wohin sie weitergezogen sind.
+
+Worin unterscheiden sich Tokio und die Städte in seiner Umgebung von Wohngebieten in den Vororten und von Bergorten?
+
+【Karte der Binnenwanderung: Kanto】
+
+## Was mir auf der Karte aufgefallen ist
+
+Auf der Karte von Kanto ist mir besonders aufgefallen, dass Umzüge über Präfekturgrenzen hinweg häufiger zu sein schienen, als ich erwartet hatte.
+
+Menschen zogen nicht nur nach Tokio, sondern auch von Tokio in die umliegenden Orte und zwischen den umliegenden Orten selbst.
+
+Wenn man nicht nur Tokio als Mittelpunkt betrachtet, sondern die umliegenden Orte einzeln auswählt, werden Verbindungen zu ganz verschiedenen Gebieten sichtbar.
+
+Welche Bewegungen gibt es in Ihrem Land zwischen einer großen Stadt und den Orten in ihrer Umgebung und zwischen diesen umliegenden Orten selbst?
+
+Denken Sie an Orte, die Sie kennen, und überlegen Sie, was die Bewegungen in Kanto mit ihnen gemeinsam haben und worin sie sich unterscheiden.
+
+Welche Bewegungen von Menschen erkennen Sie auf dieser Karte?
+
+## Wanderungssaldo von Kanto insgesamt
+
+Wie hat sich die Differenz zwischen Zuzügen und Fortzügen in ganz Kanto verändert?
+
+Die folgende Datenkarte vergleicht den Wanderungssaldo für 2019, 2021 und 2025.
+
+【Datenkarte zum Wanderungssaldo: Kanto】
+
+Der Wanderungssaldo ist die Zahl der Zuzüge abzüglich der Zahl der Fortzüge. Ein positiver Wert bedeutet einen Nettozuzug (mehr Zuzüge als Fortzüge), ein negativer Wert einen Nettofortzug (mehr Fortzüge als Zuzüge).
+
+## Zu den Daten
+
+Die hier gezeigten Gesamtzahlen und Wanderungssalden beziehen sich auf Umzüge innerhalb Japans von japanischen und ausländischen Staatsangehörigen zusammen.
+
+Die Altersansicht der Karte verwendet vier Gruppen: 0–19, 20–39, 40–59 und 60 Jahre und älter. Personen mit unbekanntem Alter sind in diesen vier Gruppen nicht enthalten.
+
+Diese Seite beruht auf den vom Statistikamt Japans veröffentlichten Daten des „Berichts zur Binnenwanderung in Japan“. Visible World by Data hat die Daten aufbereitet und ausgewertet und daraus die Karte und die Datenkarte erstellt.
+
+Berücksichtigt werden die Jahre 2019, 2021 und 2025. Die Ausgabe zu Kanto auf dieser Website umfasst die Metropole Tokio und sechs Präfekturen: Ibaraki, Tochigi, Gunma, Saitama, Chiba, Tokio und Kanagawa.
+
+Gemeint sind hier Menschen, die innerhalb Japans ihre gemeldete Adresse über Gemeindegrenzen oder vergleichbare Grenzen hinweg verlegt haben. Die Daten zeigen keine Einreisen aus dem Ausland nach Japan und keine Ausreisen aus Japan ins Ausland.
+
+Sie unterscheiden sich außerdem vom Pendel- und Reiseverkehr und von der Bevölkerungsveränderung einschließlich Geburten und Sterbefällen. Zieht dieselbe Person im Berichtszeitraum mehrmals um, wird jeder Umzug gezählt.
+
+Die Gemeindedaten der Karte enthalten auch Umzüge innerhalb derselben Präfektur bzw. der Metropole Tokio. Umzüge zwischen den Sonderbezirken Tokios werden ebenfalls erfasst. In einigen Großstädten mit Sonderstatus, den sogenannten designierten Städten, werden außerdem Umzüge in einen anderen Stadtbezirk derselben Stadt erfasst.
+
+Die Datenkarte addiert die Wanderungssalden der sieben einbezogenen Präfekturen (Metropole Tokio und sechs Präfekturen). Umzüge zwischen diesen sieben heben sich für die Region insgesamt auf null auf; die Karte zeigt daher die Differenz zwischen Zu- und Fortzügen gegenüber Orten außerhalb der Region. Das ist eine andere Kennzahl als die Zuzüge nach Gemeinden auf der Karte oder die Summe der Ranglisten.
+
+### Hinweise zum Lesen der Zahlen
+
+- „Was mir auf der Karte aufgefallen ist“ hält Eindrücke beim Betrachten der Karte und der Zahlen fest. Es ist keine statistisch geprüfte Schlussfolgerung über die Gründe für Umzüge oder über Trends in der Region.
+- Allein anhand der Wanderung lässt sich nicht beurteilen, ob die Gesamtbevölkerung einer Region gestiegen oder gesunken ist.
+- Die Ranglisten umfassen die Gemeinden und Stadtbezirke, die in der amtlichen Tabelle einzeln aufgeführt sind. Gebiete in Sammelzeilen wie „Sonstige“ werden nicht gerankt; es ist daher keine vollständige Rangliste aller Gemeinden.
+- Die angezeigte Gesamtzahl ist die Gesamtzahl der amtlichen Tabelle, nicht die Summe der Top-10-Rangliste.
+- Die Umschaltung nach Staatsangehörigkeit zeigt Menschen, die innerhalb Japans umgezogen sind, nach Staatsangehörigkeit. Sie zeigt keine Bewegungen über Staatsgrenzen hinweg.
+- Wo sich Gemeindegrenzen oder Gebietseinteilungen geändert haben, ist bei Vergleichen über mehrere Jahre Vorsicht geboten.
+
+## Quellen
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan“](https://www.stat.go.jp/data/idou/)
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan: Erläuterung der Begriffe“](https://www.stat.go.jp/data/idou/2.html)
+
+Datenaufbereitung, Auswertung und Visualisierung: Visible World by Data
+
+Wanderungssalden nach Präfektur und Grundlage der Datenkarten: am 3. November 2026 mit Tabelle 1 der Jahresberichte für 2019, 2021 und 2025 abgeglichen (Statistikamt Japans / e-Stat).

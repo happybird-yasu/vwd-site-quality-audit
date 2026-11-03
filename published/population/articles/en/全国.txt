@@ -1,0 +1,88 @@
+# Population Flow Map of Japan (2019, 2021 and 2025)
+
+In your country, is there a place that has changed a little lately?
+
+A new house goes up, shops change hands. A new neighbor arrives, or a close friend moves to another town.
+
+People changing where they live is something you can see all over Japan, too.
+
+It is not only in cities like Tokyo and Kyoto. In snowy northern regions, in mountain towns and on southern islands, people move house as well.
+
+In each of these areas, where do people come from, and where do they go when they leave?
+
+Why not trace the flows of people across Japan by following the map?
+
+## Why We Made the Population Flow Map of Japan
+
+“Are people from all over Japan gathering in Tokyo?” That question made us want to look more closely at the movement of people across Japan.
+
+Tokyo is the capital of Japan, but what kinds of movement are there in other cities and in the towns around them?
+
+So we made a map that lets you compare 2019, 2021 and 2025 and trace where people moved in from and moved out to in each place.
+
+I also wanted to know what kinds of people are moving, so the regional maps can also be switched by sex, nationality and age group.
+
+## Exploring Population Flow in Japan on the Map
+
+This map lets you compare internal migration across Japan in 2019, 2021 and 2025.
+
+Japan is divided into 47 prefectures, and each prefecture contains municipalities. A prefecture is a larger area; a municipality is a smaller unit closer to everyday life.
+
+To start, look for a place you have visited or a region whose name you have heard.
+
+Click a prefecture on the national map to go to the regional page. On a regional map, you can choose a municipality and see where people moved in from and moved out to.
+
+【Population Flow Map of Japan】
+
+How might cities differ from mountain towns, or the north from the southern islands?
+
+Switch between years or compare with nearby towns, and follow the numbers for the places that interest you.
+
+## What I Noticed on the Map
+
+What stood out to me on the map was that, in many areas, people were both leaving and arriving, more than I had imagined.
+
+I had the picture that “people gather in cities and leave the countryside,” but the real flows of people may be much more complicated.
+
+If you look not only at the flow of people toward a town but also at the flow of people moving from that town to other areas, the picture changes.
+
+Even in towns you have visited or regions whose names you know, you may find unexpected connections between people.
+
+Switch between moves in and moves out, and trace the connections between towns across Japan.
+
+What flows of people do you see on this map?
+
+## About the Data
+
+The totals and net migration figures shown here cover domestic moves by Japanese nationals and foreign nationals combined.
+
+The map's age view uses four groups: 0–19, 20–39, 40–59 and 60 and over. People whose age is unknown are not included in these four groups.
+
+This page is based on data published by the Statistics Bureau of Japan in its “Report on Internal Migration in Japan.” Visible World by Data compiled and tabulated the data and turned it into the map.
+
+The years covered are 2019, 2021 and 2025.
+
+The migration shown here means people who changed their registered address across municipal or similar boundaries within Japan. It does not show people entering Japan from abroad or leaving Japan for other countries.
+
+It also differs from commuting, travel or tourist crowds, and from population change that includes births and deaths. If the same person moved more than once during the period, each move is counted.
+
+The municipality-level data on the regional maps include moves within the same prefecture. In some large cities known as designated cities, moves to a different ward within the same city are also counted.
+
+### Notes on Reading the Figures
+
+- “What I Noticed on the Map” records impressions from looking at the map and the figures. It is not a statistically verified conclusion about the reasons for moving or about regional trends.
+- Migration alone cannot tell you whether a region's total population went up or down.
+- The rankings on the regional maps cover the municipalities and wards listed individually in the official table. Areas grouped under “others” and similar rows are not ranked, so this is not a complete ranking of all municipalities.
+- The total shown is the official table's total, not the sum of the top-10 ranking.
+- The nationality switch shows people who moved within Japan, by nationality. It does not show movement across national borders.
+- Where municipal boundaries or classifications have changed, comparisons across years need care.
+
+## Sources
+
+[Statistics Bureau of Japan, “Report on Internal Migration in Japan”](https://www.stat.go.jp/data/idou/)
+
+[Statistics Bureau of Japan, “Report on Internal Migration in Japan: Explanation of Terms”](https://www.stat.go.jp/data/idou/2.html)
+
+Data compilation, tabulation and visualization: Visible World by Data
+
+Prefecture-level net migration figures and data card basis: checked on November 3, 2026, against Table 1 of the 2019, 2021 and 2025 annual reports (Statistics Bureau of Japan / e-Stat).

@@ -1,0 +1,94 @@
+# Population Flow Map: Chugoku (2019, 2021 and 2025)
+
+The Chugoku region lies in the west of Honshu, Japan's largest island, and includes cities such as Hiroshima and Okayama. “Chugoku” here is the name of a region within Japan; it has nothing to do with the country China.
+
+To the south lies the Seto Inland Sea, between Honshu and Shikoku. To the north lies the Sea of Japan, and the Chugoku Mountains run between the two.
+
+Islands scattered across the Seto Inland Sea and harbor towns by the water; the sand dunes of Tottori and the coast of Shimane on the Sea of Japan; villages tucked among the mountains and historic castle towns. Surrounded by two seas and by mountains, the Chugoku region has many different ways of life.
+
+People who live in towns and farming villages like these also move for reasons such as school, a new job, or family life.
+
+In each of these towns and cities, where do people come from, and where do they go when they leave?
+
+Why not trace the flows of people in each part of the Chugoku region by following the map?
+
+## Why We Made the Chugoku Edition
+
+“Are people from all over the Chugoku region gathering in Tokyo and Hiroshima?” That question made us want to look more closely at the movement of people within the Chugoku region.
+
+The Chugoku edition looks at individual municipalities and lets you compare 2019, 2021 and 2025.
+
+I also wanted to know what kinds of people are moving, so the map can also be switched by sex, nationality and age group.
+
+## Exploring Population Flow in Chugoku on the Map
+
+This map lets you compare internal migration in the Chugoku region across 2019, 2021 and 2025.
+
+Switch between sex, nationality and age group to see where people moved in from and moved out to, municipality by municipality. “Moving in” means changing your registered address to that area; “moving out” means changing it from that area to another area.
+
+You don't need to know any place names in the Chugoku region. Just pick a spot on the map that catches your eye and follow the numbers to see where people came from and where they moved on to.
+
+How might the Seto Inland Sea side differ from the Sea of Japan side, or cities from mountain towns?
+
+【Population Flow Map: Chugoku】
+
+## What I Noticed on the Map
+
+What stood out to me on the map of the Chugoku region was that, in Hiroshima, Okayama and Yamaguchi prefectures, the flow of people to other prefectures looked larger than I had expected.
+
+I also felt that the flows of people seemed to differ between the Seto Inland Sea side and the Sea of Japan side.
+
+Looking at connections beyond the prefecture, or following moves between towns inside it, reveals many different movements of people even within the single Chugoku region.
+
+In your country, what kinds of movements are there between coastal towns and areas separated by mountains?
+
+Picture the places you know, and think about what is similar to and different from the flows of people in the Chugoku region.
+
+What flows of people do you see on this map?
+
+## Net Migration for the Whole Chugoku Region
+
+How has the difference between people moving in and people moving out changed across the whole Chugoku region?
+
+The data card below compares net migration for 2019, 2021 and 2025.
+
+【Net Migration Data Card: Chugoku】
+
+Net migration is the number of people who moved in minus the number who moved out. A positive figure means more people moved in than out (net inflow); a negative figure means more moved out than in (net outflow).
+
+## About the Data
+
+The totals and net migration figures shown here cover domestic moves by Japanese nationals and foreign nationals combined.
+
+The map's age view uses four groups: 0–19, 20–39, 40–59 and 60 and over. People whose age is unknown are not included in these four groups.
+
+This page is based on data published by the Statistics Bureau of Japan in its “Report on Internal Migration in Japan.” Visible World by Data compiled and tabulated the data and turned it into the map and the data card.
+
+The years covered are 2019, 2021 and 2025. The Chugoku edition of this site covers five prefectures: Tottori, Shimane, Okayama, Hiroshima and Yamaguchi.
+
+The migration shown here means people who changed their registered address across municipal or similar boundaries within Japan. It does not show people entering Japan from abroad or leaving Japan for other countries.
+
+It also differs from commuting, travel or tourist crowds, and from population change that includes births and deaths. If the same person moved more than once during the period, each move is counted.
+
+The municipality-level data on the map include moves within the same prefecture. In some large cities known as designated cities, moves to a different ward within the same city are also counted.
+
+The data card adds up the net migration of the five covered prefectures. Moves between prefectures within the Chugoku region cancel out to zero for the region as a whole, so the card shows the difference between moves in and out relative to places outside the region. This is a different measure from the municipal in-migration figures shown on the map or from the sum of the rankings.
+
+### Notes on Reading the Figures
+
+- “What I Noticed on the Map” records impressions from looking at the map and the figures. It is not a statistically verified conclusion about the reasons for moving or about regional trends.
+- Migration alone cannot tell you whether a region's total population went up or down.
+- The rankings cover the municipalities and wards listed individually in the official table. Areas grouped under “others” and similar rows are not ranked, so this is not a complete ranking of all municipalities.
+- The total shown is the official table's total, not the sum of the top-10 ranking.
+- The nationality switch shows people who moved within Japan, by nationality. It does not show movement across national borders.
+- Where municipal boundaries or classifications have changed, comparisons across years need care.
+
+## Sources
+
+[Statistics Bureau of Japan, “Report on Internal Migration in Japan”](https://www.stat.go.jp/data/idou/)
+
+[Statistics Bureau of Japan, “Report on Internal Migration in Japan: Explanation of Terms”](https://www.stat.go.jp/data/idou/2.html)
+
+Data compilation, tabulation and visualization: Visible World by Data
+
+Prefecture-level net migration figures and data card basis: checked on November 3, 2026, against Table 1 of the 2019, 2021 and 2025 annual reports (Statistics Bureau of Japan / e-Stat).

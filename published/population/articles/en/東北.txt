@@ -1,0 +1,94 @@
+# Population Flow Map: Tohoku (2019, 2021 and 2025)
+
+The Tohoku region lies in the northeast of Honshu, Japan's largest island, and its main city is Sendai in Miyagi Prefecture.
+
+Snow-covered mountains and wide rice fields; harbor towns on the Pacific and the Sea of Japan, hot-spring villages in the mountains, and towns lively with traditional festivals. Tohoku has many different ways of life that change with the seasons.
+
+If Tohoku is new to you, try picturing these scenes. What is there is people's everyday life.
+
+People move to a new place for reasons such as school, a new job, or family life. In each of these towns, where do people come from, and where do they go when they leave?
+
+Why not trace the flows of people in each part of Tohoku by following the map?
+
+## Why We Made the Tohoku Edition
+
+“Are people from all over Tohoku gathering in Tokyo and Sendai?” That question made us want to look more closely at the movement of people within Tohoku.
+
+Tokyo is the capital of Japan and Sendai is the main city of the Tohoku region. Besides the flows of people toward these cities, what kinds of movement are there among the towns of Tohoku?
+
+The Tohoku edition looks at individual municipalities and lets you compare 2019, 2021 and 2025.
+
+I also wanted to know what kinds of people are moving, so the map can also be switched by sex, nationality and age group.
+
+## Exploring Population Flow in Tohoku on the Map
+
+This map lets you compare internal migration in Tohoku across 2019, 2021 and 2025.
+
+Switch between sex, nationality and age group to see where people moved in from and moved out to, municipality by municipality. “Moving in” means changing your registered address to that area; “moving out” means changing it from that area to another area.
+
+You don't need to know any place names in Tohoku. Just pick a spot on the map that catches your eye and follow the lines and numbers to see where people came from and where they moved on to.
+
+How might the Pacific side differ from the Sea of Japan side, or cities from mountain towns?
+
+【Population Flow Map: Tohoku】
+
+## What I Noticed on the Map
+
+What stood out to me on the map of Tohoku was that, in many areas, people seemed to be moving toward the central city of the area.
+
+I had the picture of Tohoku as a region where “the population keeps shrinking.” But on the map, I noticed not only people leaving from various places but also flows of people coming in.
+
+Looking at the connections with Tokyo and Sendai, and following the moves between nearby towns, reveals movements of people that a one-way picture cannot show.
+
+In your country, are people gathering in big cities and in the central towns of each area?
+
+Picture the places you know, and think about what is similar to and different from the flows of people in Tohoku.
+
+What flows of people do you see on this map?
+
+## Net Migration for the Whole of Tohoku
+
+How has the difference between people moving in and people moving out changed across the whole of Tohoku?
+
+The data card below compares net migration for 2019, 2021 and 2025.
+
+【Net Migration Data Card: Tohoku】
+
+Net migration is the number of people who moved in minus the number who moved out. A positive figure means more people moved in than out (net inflow); a negative figure means more moved out than in (net outflow).
+
+## About the Data
+
+The totals and net migration figures shown here cover domestic moves by Japanese nationals and foreign nationals combined.
+
+The map's age view uses four groups: 0–19, 20–39, 40–59 and 60 and over. People whose age is unknown are not included in these four groups.
+
+This page is based on data published by the Statistics Bureau of Japan in its “Report on Internal Migration in Japan.” Visible World by Data compiled and tabulated the data and turned it into the map and the data card.
+
+The years covered are 2019, 2021 and 2025. The Tohoku edition of this site covers six prefectures: Aomori, Iwate, Miyagi, Akita, Yamagata and Fukushima.
+
+The migration shown here means people who changed their registered address across municipal or similar boundaries within Japan. It does not show people entering Japan from abroad or leaving Japan for other countries.
+
+It also differs from commuting, travel or tourist crowds, and from population change that includes births and deaths. If the same person moved more than once during the period, each move is counted.
+
+The municipality-level data on the map include moves within the same prefecture. In the city of Sendai, moves to a different ward within the same city are also counted.
+
+The data card adds up the net migration of the six covered prefectures. Moves among the six prefectures cancel out to zero for the region as a whole, so the card shows the difference between moves in and out relative to places outside the region. This is a different measure from the municipal in-migration figures shown on the map or from the sum of the rankings.
+
+### Notes on Reading the Figures
+
+- “What I Noticed on the Map” records impressions from looking at the map and the figures. It is not a statistically verified conclusion about the reasons for moving or about regional trends.
+- Migration alone cannot tell you whether a region's total population went up or down.
+- The rankings cover the municipalities and wards listed individually in the official table. Areas grouped under “others” and similar rows are not ranked, so this is not a complete ranking of all municipalities.
+- The total shown is the official table's total, not the sum of the top-10 ranking.
+- The nationality switch shows people who moved within Japan, by nationality. It does not show movement across national borders.
+- Where municipal boundaries or classifications have changed, comparisons across years need care.
+
+## Sources
+
+[Statistics Bureau of Japan, “Report on Internal Migration in Japan”](https://www.stat.go.jp/data/idou/)
+
+[Statistics Bureau of Japan, “Report on Internal Migration in Japan: Explanation of Terms”](https://www.stat.go.jp/data/idou/2.html)
+
+Data compilation, tabulation and visualization: Visible World by Data
+
+Prefecture-level net migration figures and data card basis: checked on November 3, 2026, against Table 1 of the 2019, 2021 and 2025 annual reports (Statistics Bureau of Japan / e-Stat).

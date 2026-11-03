@@ -1,0 +1,97 @@
+# Karte der Binnenwanderung: Chubu und Hokuriku (2019, 2021 und 2025)
+
+Chubu und Hokuriku liegen im Zentrum von Honshu, der größten Insel Japans, und reichen von der pazifischen Seite bis zur Seite am Japanischen Meer. Auf dieser Website werden sechs Präfekturen gemeinsam vorgestellt: Toyama, Ishikawa, Fukui, Gifu, Shizuoka und Aichi.
+
+Straßen mit Hochhäusern in Nagoya und Orte voller Autofabriken; Bergdörfer und Teefelder, Hafenstädte am Japanischen Meer und schneebedeckte Berge. In Chubu und Hokuriku liegen Industriestädte und reiche Natur nebeneinander, und es gibt ganz unterschiedliche Lebenswelten.
+
+Auch die Menschen in solchen Städten und Dörfern ziehen um – etwa wegen Ausbildung oder Studium, Arbeit oder des Familienlebens.
+
+Woher kommen in diesen Städten und Orten die Menschen, und wohin ziehen sie fort?
+
+Möchten Sie nicht anhand der Karte den Bewegungen der Menschen in den verschiedenen Teilen von Chubu und Hokuriku nachgehen?
+
+## Warum wir die Ausgabe zu Chubu/Hokuriku erstellt haben
+
+„Strömen Menschen aus ganz Chubu und Hokuriku nach Tokio, Nagoya und Kanazawa?“ Aus dieser Frage entstand der Wunsch, die Bewegungen der Menschen innerhalb von Chubu und Hokuriku genauer zu betrachten.
+
+Die Ausgabe zu Chubu/Hokuriku betrachtet einzelne Gemeinden und ermöglicht den Vergleich von 2019, 2021 und 2025.
+
+Außerdem wollte ich wissen, was für Menschen umziehen. Deshalb lässt sich die Karte auch nach Geschlecht, Staatsangehörigkeit und Altersgruppe umschalten.
+
+## Die Binnenwanderung in Chubu und Hokuriku auf der Karte erkunden
+
+Diese Karte ermöglicht den Vergleich der Binnenwanderung in Chubu und Hokuriku in den Jahren 2019, 2021 und 2025.
+
+Schalten Sie zwischen Geschlecht, Staatsangehörigkeit und Altersgruppe um und sehen Sie für jede Gemeinde, woher Menschen zugezogen und wohin sie fortgezogen sind. „Zuzug“ bedeutet, die Adresse in dieses Gebiet zu verlegen; „Fortzug“ bedeutet, die Adresse von diesem Gebiet in ein anderes Gebiet zu verlegen.
+
+Sie müssen keine Ortsnamen in Chubu und Hokuriku kennen. Wählen Sie einfach einen Ort auf der Karte, der Ihnen auffällt, und folgen Sie den Zahlen, um zu sehen, woher Menschen kamen und wohin sie weitergezogen sind.
+
+Nagoya liegt in der Präfektur Aichi und ist eine der wichtigsten Städte dieser Region. Worin unterscheiden sich die umliegenden Orte von Orten am Japanischen Meer oder in den Bergen?
+
+【Karte der Binnenwanderung: Chubu und Hokuriku】
+
+## Was mir auf der Karte aufgefallen ist
+
+Auf der Karte von Chubu und Hokuriku ist mir besonders aufgefallen, dass die Präfektur Aichi mit ihrer starken Industrie in allen drei Jahren – 2019, 2021 und 2025 – einen Nettofortzug aufwies.
+
+Der Eindruck, dass Menschen dorthin ziehen, wo die Industrie stark ist, reicht vielleicht nicht aus, um die Bewegungen der Menschen zu erfassen.
+
+Ein Nettofortzug für die gesamte Präfektur bedeutet jedoch nicht, dass Menschen aus allen Orten der Präfektur abwandern. Betrachtet man die einzelnen Gemeinden, zeigen sich auch Bewegungen, die vom Bild der gesamten Präfektur abweichen.
+
+Auch Verbindungen zwischen Orten, die das Bild „alle ziehen nach Tokio“ nicht erfasst, werden sichtbar.
+
+Wenn man den Bewegungen in Richtung der großen Städte und den Umzügen zwischen nahe gelegenen Orten folgt, wird einem bewusst, dass es selbst innerhalb von Chubu und Hokuriku ganz verschiedene Bewegungen gibt.
+
+Welche Bewegungen gibt es in Ihrem Land in Orten voller Fabriken und in den Orten rund um sie?
+
+Denken Sie an Orte, die Sie kennen, und überlegen Sie, was die Bewegungen in Chubu und Hokuriku mit ihnen gemeinsam haben und worin sie sich unterscheiden.
+
+Welche Bewegungen von Menschen erkennen Sie auf dieser Karte?
+
+## Wanderungssaldo von Chubu und Hokuriku insgesamt
+
+Wie hat sich die Differenz zwischen Zuzügen und Fortzügen in ganz Chubu und Hokuriku verändert?
+
+Die folgende Datenkarte vergleicht den Wanderungssaldo für 2019, 2021 und 2025.
+
+【Datenkarte zum Wanderungssaldo: Chubu und Hokuriku】
+
+Der Wanderungssaldo ist die Zahl der Zuzüge abzüglich der Zahl der Fortzüge. Ein positiver Wert bedeutet einen Nettozuzug (mehr Zuzüge als Fortzüge), ein negativer Wert einen Nettofortzug (mehr Fortzüge als Zuzüge).
+
+## Zu den Daten
+
+Die hier gezeigten Gesamtzahlen und Wanderungssalden beziehen sich auf Umzüge innerhalb Japans von japanischen und ausländischen Staatsangehörigen zusammen.
+
+Die Altersansicht der Karte verwendet vier Gruppen: 0–19, 20–39, 40–59 und 60 Jahre und älter. Personen mit unbekanntem Alter sind in diesen vier Gruppen nicht enthalten.
+
+Diese Seite beruht auf den vom Statistikamt Japans veröffentlichten Daten des „Berichts zur Binnenwanderung in Japan“. Visible World by Data hat die Daten aufbereitet und ausgewertet und daraus die Karte und die Datenkarte erstellt.
+
+Berücksichtigt werden die Jahre 2019, 2021 und 2025. Die Ausgabe zu Chubu/Hokuriku auf dieser Website umfasst sechs Präfekturen: Toyama, Ishikawa, Fukui, Gifu, Shizuoka und Aichi.
+
+Gemeint sind hier Menschen, die innerhalb Japans ihre gemeldete Adresse über Gemeindegrenzen oder vergleichbare Grenzen hinweg verlegt haben. Die Daten zeigen keine Einreisen aus dem Ausland nach Japan und keine Ausreisen aus Japan ins Ausland.
+
+Sie unterscheiden sich außerdem vom Pendel- und Reiseverkehr und von der Bevölkerungsveränderung einschließlich Geburten und Sterbefällen. Zieht dieselbe Person im Berichtszeitraum mehrmals um, wird jeder Umzug gezählt.
+
+Die Gemeindedaten der Karte enthalten auch Umzüge innerhalb derselben Präfektur. In einigen Großstädten mit Sonderstatus, den sogenannten designierten Städten, werden auch Umzüge in einen anderen Stadtbezirk derselben Stadt erfasst.
+
+Die Datenkarte addiert die Wanderungssalden der sechs einbezogenen Präfekturen. Umzüge zwischen diesen sechs Präfekturen heben sich für die Region insgesamt auf null auf; die Karte zeigt daher die Differenz zwischen Zu- und Fortzügen gegenüber Orten außerhalb der Region. Das ist eine andere Kennzahl als die Zuzüge nach Gemeinden auf der Karte oder die Summe der Ranglisten.
+
+### Hinweise zum Lesen der Zahlen
+
+- Hamamatsu wird 2019 und 2021 nach den sieben früheren Stadtbezirken und 2025 nach den drei neuen Stadtbezirken (Chuo, Hamana und Tenryu) ausgewiesen. Da die Gebiete der Stadtbezirke verschieden sind, lassen sich die Zahlen je Stadtbezirk nicht direkt über die Jahre hinweg vergleichen.
+- „Was mir auf der Karte aufgefallen ist“ hält Eindrücke beim Betrachten der Karte und der Zahlen fest. Es ist keine statistisch geprüfte Schlussfolgerung über die Gründe für Umzüge oder über Trends in der Region.
+- Allein anhand der Wanderung lässt sich nicht beurteilen, ob die Gesamtbevölkerung einer Region gestiegen oder gesunken ist.
+- Die Ranglisten umfassen die Gemeinden und Stadtbezirke, die in der amtlichen Tabelle einzeln aufgeführt sind. Gebiete in Sammelzeilen wie „Sonstige“ werden nicht gerankt; es ist daher keine vollständige Rangliste aller Gemeinden.
+- Die angezeigte Gesamtzahl ist die Gesamtzahl der amtlichen Tabelle, nicht die Summe der Top-10-Rangliste.
+- Die Umschaltung nach Staatsangehörigkeit zeigt Menschen, die innerhalb Japans umgezogen sind, nach Staatsangehörigkeit. Sie zeigt keine Bewegungen über Staatsgrenzen hinweg.
+- Wo sich Gemeindegrenzen oder Gebietseinteilungen geändert haben, ist bei Vergleichen über mehrere Jahre Vorsicht geboten.
+
+## Quellen
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan“](https://www.stat.go.jp/data/idou/)
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan: Erläuterung der Begriffe“](https://www.stat.go.jp/data/idou/2.html)
+
+Datenaufbereitung, Auswertung und Visualisierung: Visible World by Data
+
+Wanderungssalden nach Präfektur und Grundlage der Datenkarten: am 3. November 2026 mit Tabelle 1 der Jahresberichte für 2019, 2021 und 2025 abgeglichen (Statistikamt Japans / e-Stat).

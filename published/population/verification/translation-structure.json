@@ -1,0 +1,16 @@
+{
+  "counts": {
+    "input_files": 174,
+    "articles": 40,
+    "paragraph_pairs": 1992,
+    "localized_dates_verified": 40,
+    "site_files": 164,
+    "card_values": 135,
+    "site_byte_identical": 67,
+    "protected_files": 63,
+    "embedded_objects": 105
+  },
+  "errors": [],
+  "notes": [],
+  "scope": "Independent structural, numeric and source-correspondence checks; not native-language proofreading or full municipality UI coverage."
+}

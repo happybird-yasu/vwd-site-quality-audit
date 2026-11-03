@@ -1,0 +1,94 @@
+# Karte der Binnenwanderung: Hokkaido (2019, 2021 und 2025)
+
+Hokkaido ist eine Insel im Norden Japans, die nach Honshu größte Insel des Landes. Die wichtigste Stadt ist Sapporo.
+
+Schneebedeckte Berge und weite Weiden; Straßen, die schnurgerade durch Ackerland führen, Hafenstädte am Meer und das Stadtbild von Sapporo. Hokkaido bietet ganz unterschiedliche Lebenswelten.
+
+Vielleicht waren Sie schon einmal dort auf Reisen, oder Sie haben gedacht: „Irgendwann würde ich dort gern leben.“
+
+Auch die Menschen, die in Hokkaido leben, ziehen um – etwa wegen Ausbildung oder Studium, Arbeit oder des Familienlebens.
+
+Woher kommen in diesen Städten und Orten die Menschen, und wohin ziehen sie fort?
+
+Möchten Sie nicht anhand der Karte den Bewegungen der Menschen in den verschiedenen Teilen Hokkaidos nachgehen?
+
+## Warum wir die Ausgabe zu Hokkaido erstellt haben
+
+„Strömen Menschen nach Tokio und Sapporo?“ Aus dieser Frage entstand der Wunsch, die Bewegungen der Menschen innerhalb Hokkaidos genauer zu betrachten.
+
+Tokio ist die Hauptstadt Japans und Sapporo die wichtigste Stadt Hokkaidos. Welche Bewegungen gibt es neben dem Strom der Menschen aus Hokkaido in diese Städte zwischen den Orten innerhalb Hokkaidos?
+
+Die Ausgabe zu Hokkaido betrachtet einzelne Gemeinden und ermöglicht den Vergleich von 2019, 2021 und 2025.
+
+Außerdem wollte ich wissen, was für Menschen umziehen. Deshalb lässt sich die Karte auch nach Geschlecht, Staatsangehörigkeit und Altersgruppe umschalten.
+
+## Die Binnenwanderung in Hokkaido auf der Karte erkunden
+
+Diese Karte ermöglicht den Vergleich der Binnenwanderung in Hokkaido in den Jahren 2019, 2021 und 2025.
+
+Schalten Sie zwischen Geschlecht, Staatsangehörigkeit und Altersgruppe um und sehen Sie für jede Gemeinde, woher Menschen zugezogen und wohin sie fortgezogen sind. „Zuzug“ bedeutet, die Adresse in dieses Gebiet zu verlegen; „Fortzug“ bedeutet, die Adresse von diesem Gebiet in ein anderes Gebiet zu verlegen.
+
+Suchen Sie zunächst Sapporo, einen Ort, den Sie auf einer Reise besucht haben, oder eine Region, deren Namen Sie schon einmal gehört haben.
+
+Worin unterscheiden sich Orte am Meer und im Landesinneren, oder Städte und ländliche Gebiete? Klicken Sie auf eine Gemeinde, die Sie interessiert, und folgen Sie den Zahlen.
+
+【Karte der Binnenwanderung: Hokkaido】
+
+## Was mir auf der Karte aufgefallen ist
+
+Auf der Karte von Hokkaido ist mir besonders aufgefallen, dass innerhalb Hokkaidos mehr Menschen unterwegs zu sein schienen, als ich erwartet hatte.
+
+Ich hatte das Bild im Kopf, dass die Menschen Hokkaido in großer Zahl in andere Gebiete verlassen. Auf der Karte fielen mir jedoch nicht nur Menschen auf, die von überall wegziehen, sondern auch Ströme von Menschen, die zuziehen.
+
+Wenn man auf die Verbindungen zu Orten außerhalb Hokkaidos schaut und den Umzügen zwischen Orten innerhalb Hokkaidos folgt, zeigen sich Bewegungen, die ein einseitiges Bild nicht erkennen lässt.
+
+Schalten Sie zwischen Herkunftsorten und Zielorten um und erkunden Sie auch die Verbindungen zwischen den Orten, die Sie interessieren, und anderen Gebieten.
+
+Welche Bewegungen von Menschen erkennen Sie auf dieser Karte?
+
+## Wanderungssaldo von Hokkaido insgesamt
+
+Wie hat sich die Differenz zwischen Zuzügen und Fortzügen in ganz Hokkaido verändert?
+
+Die folgende Datenkarte vergleicht den Wanderungssaldo für 2019, 2021 und 2025.
+
+【Datenkarte zum Wanderungssaldo: Hokkaido】
+
+Der Wanderungssaldo ist die Zahl der Zuzüge abzüglich der Zahl der Fortzüge. Ein positiver Wert bedeutet einen Nettozuzug (mehr Zuzüge als Fortzüge), ein negativer Wert einen Nettofortzug (mehr Fortzüge als Zuzüge).
+
+Diese Datenkarte zeigt die Differenz der Umzüge innerhalb Japans zwischen Hokkaido und Orten außerhalb Hokkaidos.
+
+## Zu den Daten
+
+Die hier gezeigten Gesamtzahlen und Wanderungssalden beziehen sich auf Umzüge innerhalb Japans von japanischen und ausländischen Staatsangehörigen zusammen.
+
+Die Altersansicht der Karte verwendet vier Gruppen: 0–19, 20–39, 40–59 und 60 Jahre und älter. Personen mit unbekanntem Alter sind in diesen vier Gruppen nicht enthalten.
+
+Diese Seite beruht auf den vom Statistikamt Japans veröffentlichten Daten des „Berichts zur Binnenwanderung in Japan“. Visible World by Data hat die Daten aufbereitet und ausgewertet und daraus die Karte erstellt.
+
+Berücksichtigt werden die Jahre 2019, 2021 und 2025. Die Ausgabe zu Hokkaido auf dieser Website umfasst die Gemeinden innerhalb Hokkaidos.
+
+Gemeint sind hier Menschen, die innerhalb Japans ihre gemeldete Adresse über Gemeindegrenzen oder vergleichbare Grenzen hinweg verlegt haben. Die Daten zeigen keine Einreisen aus dem Ausland nach Japan und keine Ausreisen aus Japan ins Ausland.
+
+Sie unterscheiden sich außerdem vom Pendel- und Reiseverkehr und von der Bevölkerungsveränderung einschließlich Geburten und Sterbefällen. Zieht dieselbe Person im Berichtszeitraum mehrmals um, wird jeder Umzug gezählt.
+
+Die Gemeindedaten der Karte enthalten auch Umzüge innerhalb Hokkaidos. In der Stadt Sapporo werden außerdem Umzüge in einen anderen Stadtbezirk derselben Stadt erfasst.
+
+### Hinweise zum Lesen der Zahlen
+
+- „Was mir auf der Karte aufgefallen ist“ hält Eindrücke beim Betrachten der Karte und der Zahlen fest. Es ist keine statistisch geprüfte Schlussfolgerung über die Gründe für Umzüge oder über Trends in der Region.
+- Allein anhand der Wanderung lässt sich nicht beurteilen, ob die Gesamtbevölkerung einer Region gestiegen oder gesunken ist.
+- Die Ranglisten umfassen die Gemeinden und Stadtbezirke, die in der amtlichen Tabelle einzeln aufgeführt sind. Gebiete in Sammelzeilen wie „Sonstige“ werden nicht gerankt; es ist daher keine vollständige Rangliste aller Gemeinden.
+- Die angezeigte Gesamtzahl ist die Gesamtzahl der amtlichen Tabelle, nicht die Summe der Top-10-Rangliste.
+- Die Umschaltung nach Staatsangehörigkeit zeigt Menschen, die innerhalb Japans umgezogen sind, nach Staatsangehörigkeit. Sie zeigt keine Bewegungen über Staatsgrenzen hinweg.
+- Wo sich Gemeindegrenzen oder Gebietseinteilungen geändert haben, ist bei Vergleichen über mehrere Jahre Vorsicht geboten.
+
+## Quellen
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan“](https://www.stat.go.jp/data/idou/)
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan: Erläuterung der Begriffe“](https://www.stat.go.jp/data/idou/2.html)
+
+Datenaufbereitung, Auswertung und Visualisierung: Visible World by Data
+
+Wanderungssalden nach Präfektur und Grundlage der Datenkarten: am 3. November 2026 mit Tabelle 1 der Jahresberichte für 2019, 2021 und 2025 abgeglichen (Statistikamt Japans / e-Stat).

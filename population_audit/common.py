@@ -55,6 +55,11 @@ def http_get(url: str, *, host_key: str, min_interval: float, retries: int = 3,
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 body = resp.read()
                 return body, dict(resp.headers), attempt
+        except urllib.error.HTTPError as exc:
+            last_exc = exc
+            if exc.code in (404, 410):      # definitive answer: do not retry
+                raise
+            time.sleep(min(30, 5 * attempt))
         except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
             last_exc = exc
             time.sleep(min(30, 5 * attempt))

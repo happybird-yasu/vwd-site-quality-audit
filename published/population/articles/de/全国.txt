@@ -1,0 +1,88 @@
+# Karte der Binnenwanderung in Japan (2019, 2021 und 2025)
+
+Gibt es in Ihrem Land einen Ort, der sich in letzter Zeit ein wenig verändert hat?
+
+Ein neues Haus entsteht, Geschäfte wechseln. Neue Nachbarn ziehen ein, oder gute Bekannte ziehen in eine andere Stadt.
+
+Dass Menschen ihren Wohnort wechseln, ist auch an vielen Orten in Japan zu beobachten.
+
+Nicht nur in Städten wie Tokio und Kyoto: auch in schneereichen Regionen im Norden, in Bergorten und auf den Inseln im Süden ziehen Menschen um.
+
+Woher kommen in diesen Gebieten die Menschen, und wohin ziehen sie fort?
+
+Möchten Sie nicht anhand der Karte den Bewegungen der Menschen in ganz Japan nachgehen?
+
+## Warum wir die Karte der Binnenwanderung in Japan erstellt haben
+
+„Strömen Menschen aus ganz Japan nach Tokio?“ Aus dieser Frage entstand der Wunsch, die Bewegungen der Menschen in Japan genauer zu betrachten.
+
+Tokio ist die Hauptstadt Japans – doch welche Bewegungen gibt es in anderen Städten und in den Orten rund um sie?
+
+Deshalb haben wir eine Karte erstellt, mit der man 2019, 2021 und 2025 vergleichen und nachverfolgen kann, woher Menschen an den einzelnen Orten zugezogen und wohin sie fortgezogen sind.
+
+Außerdem wollte ich wissen, was für Menschen umziehen. Deshalb lassen sich die Regionalkarten auch nach Geschlecht, Staatsangehörigkeit und Altersgruppe umschalten.
+
+## Die Binnenwanderung in Japan auf der Karte erkunden
+
+Diese Karte ermöglicht den Vergleich der Binnenwanderung in ganz Japan in den Jahren 2019, 2021 und 2025.
+
+Japan ist in 47 Präfekturen gegliedert, und jede Präfektur enthält Gemeinden. Eine Präfektur ist eine größere Gebietseinheit, eine Gemeinde eine kleinere Einheit, die dem Alltag näher ist.
+
+Suchen Sie zunächst einen Ort, den Sie besucht haben, oder eine Region, deren Namen Sie schon einmal gehört haben.
+
+Klicken Sie auf der Landeskarte auf eine Präfektur, um zur Regionalseite zu gelangen. Auf einer Regionalkarte können Sie eine Gemeinde auswählen und sehen, woher Menschen zugezogen und wohin sie fortgezogen sind.
+
+【Karte der Binnenwanderung in Japan】
+
+Worin unterscheiden sich Städte und Bergorte, oder der Norden und die Inseln im Süden?
+
+Schalten Sie zwischen den Jahren um oder vergleichen Sie mit Nachbarorten, und folgen Sie den Zahlen der Gebiete, die Sie interessieren.
+
+## Was mir auf der Karte aufgefallen ist
+
+Auf der Karte ist mir besonders aufgefallen, dass in vielen Gebieten mehr Menschen weg- und zuzogen, als ich erwartet hatte.
+
+Ich hatte das Bild im Kopf, dass „Menschen in die Städte strömen und das Land verlassen“, doch die tatsächlichen Bewegungen sind möglicherweise weit komplexer.
+
+Betrachtet man nicht nur den Strom der Menschen in einen Ort hinein, sondern auch den Strom der Menschen, die von dort in andere Gebiete ziehen, ändert sich das Bild.
+
+Auch in Orten, die Sie besucht haben, oder in Regionen, deren Namen Sie kennen, entdecken Sie vielleicht unerwartete Verbindungen zwischen Menschen.
+
+Schalten Sie zwischen Zuzug und Fortzug um und gehen Sie den Verbindungen zwischen den Orten in ganz Japan nach.
+
+Welche Bewegungen von Menschen erkennen Sie auf dieser Karte?
+
+## Zu den Daten
+
+Die hier gezeigten Gesamtzahlen und Wanderungssalden beziehen sich auf Umzüge innerhalb Japans von japanischen und ausländischen Staatsangehörigen zusammen.
+
+Die Altersansicht der Karte verwendet vier Gruppen: 0–19, 20–39, 40–59 und 60 Jahre und älter. Personen mit unbekanntem Alter sind in diesen vier Gruppen nicht enthalten.
+
+Diese Seite beruht auf den vom Statistikamt Japans veröffentlichten Daten des „Berichts zur Binnenwanderung in Japan“. Visible World by Data hat die Daten aufbereitet und ausgewertet und daraus die Karte erstellt.
+
+Berücksichtigt werden die Jahre 2019, 2021 und 2025.
+
+Gemeint sind hier Menschen, die innerhalb Japans ihre gemeldete Adresse über Gemeindegrenzen oder vergleichbare Grenzen hinweg verlegt haben. Die Daten zeigen keine Einreisen aus dem Ausland nach Japan und keine Ausreisen aus Japan ins Ausland.
+
+Sie unterscheiden sich außerdem vom Pendel- und Reiseverkehr und von der Bevölkerungsveränderung einschließlich Geburten und Sterbefällen. Zieht dieselbe Person im Berichtszeitraum mehrmals um, wird jeder Umzug gezählt.
+
+Die Gemeindedaten der Regionalkarten enthalten auch Umzüge innerhalb derselben Präfektur. In einigen Großstädten mit Sonderstatus, den sogenannten designierten Städten, werden auch Umzüge in einen anderen Stadtbezirk derselben Stadt erfasst.
+
+### Hinweise zum Lesen der Zahlen
+
+- „Was mir auf der Karte aufgefallen ist“ hält Eindrücke beim Betrachten der Karte und der Zahlen fest. Es ist keine statistisch geprüfte Schlussfolgerung über die Gründe für Umzüge oder über Trends in der Region.
+- Allein anhand der Wanderung lässt sich nicht beurteilen, ob die Gesamtbevölkerung einer Region gestiegen oder gesunken ist.
+- Die Ranglisten auf den Regionalkarten umfassen die Gemeinden und Stadtbezirke, die in der amtlichen Tabelle einzeln aufgeführt sind. Gebiete in Sammelzeilen wie „Sonstige“ werden nicht gerankt; es ist daher keine vollständige Rangliste aller Gemeinden.
+- Die angezeigte Gesamtzahl ist die Gesamtzahl der amtlichen Tabelle, nicht die Summe der Top-10-Rangliste.
+- Die Umschaltung nach Staatsangehörigkeit zeigt Menschen, die innerhalb Japans umgezogen sind, nach Staatsangehörigkeit. Sie zeigt keine Bewegungen über Staatsgrenzen hinweg.
+- Wo sich Gemeindegrenzen oder Gebietseinteilungen geändert haben, ist bei Vergleichen über mehrere Jahre Vorsicht geboten.
+
+## Quellen
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan“](https://www.stat.go.jp/data/idou/)
+
+[Statistikamt Japans, „Bericht zur Binnenwanderung in Japan: Erläuterung der Begriffe“](https://www.stat.go.jp/data/idou/2.html)
+
+Datenaufbereitung, Auswertung und Visualisierung: Visible World by Data
+
+Wanderungssalden nach Präfektur und Grundlage der Datenkarten: am 3. November 2026 mit Tabelle 1 der Jahresberichte für 2019, 2021 und 2025 abgeglichen (Statistikamt Japans / e-Stat).

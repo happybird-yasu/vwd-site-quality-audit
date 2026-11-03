@@ -227,7 +227,8 @@ def parse_sheet(name: str, rows, kind: str) -> Sheet:
             vals[c] = n
             if n is None and row[c] not in (None, ""):
                 sh.non_numeric.append({"row": idx, "col": col_letter(c), "raw": str(row[c])[:20]})
-        rec = {"row": idx, "vals": vals}
+        label = re.sub(r"\s+", "", str(row[7])) if len(row) > 7 and row[7] is not None else ""
+        rec = {"row": idx, "vals": vals, "label": label}
         if code == "00000":
             sh.total_row = rec
         sh.records[code] = rec

@@ -1,0 +1,32 @@
+name: Population published-release integrity
+
+on:
+  push:
+    branches: [population-data-correction]
+    paths:
+      - "published/population/**"
+      - ".github/workflows/population-publication-check.yml"
+  pull_request:
+    paths:
+      - "published/population/**"
+      - ".github/workflows/population-publication-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify published bodies, assets and recorded evidence
+        run: python published/population/verify_snapshot.py
+      - name: Install existing generator dependencies
+        run: pip install -r requirements.txt
+      - name: Run the existing regression checks
+        run: python -m unittest discover -s . -p "test_*.py" -t .

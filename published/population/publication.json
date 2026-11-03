@@ -1,0 +1,890 @@
+{
+  "publication_date": "2026-11-03",
+  "site": "https://app-navi.biz",
+  "published_posts": [
+    {
+      "id": 348,
+      "language": "ja",
+      "region": "全国",
+      "slug": "population-national",
+      "url": "https://app-navi.biz/population-national/",
+      "title": "日本の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/national.html",
+      "body_sha256": "89f88394bf83a06ab60b20c77291dddda09dcc88102567b69e71e04647b327a8",
+      "source_article": "articles/ja-domestic/全国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/national.html?v=20261103"
+      ]
+    },
+    {
+      "id": 368,
+      "language": "ja",
+      "region": "北海道",
+      "slug": "population-hokkaido",
+      "url": "https://app-navi.biz/population-hokkaido/",
+      "title": "北海道の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/hokkaido.html",
+      "body_sha256": "cc3063f70b6e7c3e9dcfe370d83c420b8f5a783fd872ca04128b22a5dc329548",
+      "source_article": "articles/ja-domestic/北海道.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/hokkaido.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/hokkaido_datacard.html"
+      ]
+    },
+    {
+      "id": 373,
+      "language": "ja",
+      "region": "東北",
+      "slug": "population-tohoku",
+      "url": "https://app-navi.biz/population-tohoku/",
+      "title": "東北の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/tohoku.html",
+      "body_sha256": "96a0c1dd2593fcb96873a60dfefcc51c58b7e106d15533116b3468cb2e277929",
+      "source_article": "articles/ja-domestic/東北.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/tohoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/tohoku_datacard.html"
+      ]
+    },
+    {
+      "id": 415,
+      "language": "ja",
+      "region": "関東",
+      "slug": "population-kanto",
+      "url": "https://app-navi.biz/population-kanto/",
+      "title": "関東の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/kanto.html",
+      "body_sha256": "1852307cd5e9c329926580b76ca356902ea045d539c4dbfbb527d1fb306a9459",
+      "source_article": "articles/ja-domestic/関東.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/kanto.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/kanto_datacard.html"
+      ]
+    },
+    {
+      "id": 382,
+      "language": "ja",
+      "region": "甲信越",
+      "slug": "population-koshinetsu",
+      "url": "https://app-navi.biz/population-koshinetsu/",
+      "title": "甲信越の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/koshinetsu.html",
+      "body_sha256": "19b5da1cc1fa27b0b920fcae260b19972ab5c840a7349a67b2e61b3641061adc",
+      "source_article": "articles/ja-domestic/甲信越.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/koshinetsu.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/koshinetsu_datacard.html"
+      ]
+    },
+    {
+      "id": 385,
+      "language": "ja",
+      "region": "中部・北陸",
+      "slug": "population-chubu-hokuriku",
+      "url": "https://app-navi.biz/population-chubu-hokuriku/",
+      "title": "中部・北陸の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/chubu_hokuriku.html",
+      "body_sha256": "a4231b7c708f534cc5f4fc7d154acc774f77020aa763b82628d3a837515721c6",
+      "source_article": "articles/ja-domestic/中部・北陸.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/chubu_hokuriku.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/chubu_hokuriku_datacard.html"
+      ]
+    },
+    {
+      "id": 391,
+      "language": "ja",
+      "region": "近畿",
+      "slug": "population-kinki",
+      "url": "https://app-navi.biz/population-kinki/",
+      "title": "近畿の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/kinki.html",
+      "body_sha256": "1b3b8f988e0b21cb4cfc0f15882756e1c484e1ecd2451960ca6e61d119a27133",
+      "source_article": "articles/ja-domestic/近畿.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/kinki.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/kinki_datacard.html"
+      ]
+    },
+    {
+      "id": 407,
+      "language": "ja",
+      "region": "中国地方",
+      "slug": "population-chugoku",
+      "url": "https://app-navi.biz/population-chugoku/",
+      "title": "中国地方の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/chugoku.html",
+      "body_sha256": "e2df8d1afd3c26dead0bc353db4c27426bab1d0e8ab18e9b6e7b1bc8dce4ccc2",
+      "source_article": "articles/ja-domestic/中国地方.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/chugoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/chugoku_datacard.html"
+      ]
+    },
+    {
+      "id": 404,
+      "language": "ja",
+      "region": "四国",
+      "slug": "population-shikoku",
+      "url": "https://app-navi.biz/population-shikoku/",
+      "title": "四国の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/shikoku.html",
+      "body_sha256": "8e37b77aabf867c78bbf1cc76cfe673053498d6f260b2744814bc939042ed15c",
+      "source_article": "articles/ja-domestic/四国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/shikoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/shikoku_datacard.html"
+      ]
+    },
+    {
+      "id": 410,
+      "language": "ja",
+      "region": "九州・沖縄",
+      "slug": "population-kyushu-okinawa",
+      "url": "https://app-navi.biz/population-kyushu-okinawa/",
+      "title": "九州・沖縄の人口流動マップ（2019・2021・2025年）",
+      "status": "publish",
+      "body_file": "wordpress/ja/kyushu_okinawa.html",
+      "body_sha256": "2bb07fecc7cdef776499040231c17f6c38792a3ef8410cd3ad24f26557a2da6c",
+      "source_article": "articles/ja-domestic/九州・沖縄.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/ja/kyushu_okinawa.html?v=20261103",
+        "https://app-navi.biz/cards/population/ja/kyushu_okinawa_datacard.html"
+      ]
+    },
+    {
+      "id": 460,
+      "language": "en",
+      "region": "全国",
+      "slug": "population-national-en",
+      "url": "https://app-navi.biz/en/population-national-en/",
+      "title": "Population Flow Map of Japan (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/national.html",
+      "body_sha256": "dc10e56d4c3db7587e3ad6f7e172599cabff8c97e5297dfa4c8884a212355a65",
+      "source_article": "articles/en/全国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/national.html?v=20261103"
+      ]
+    },
+    {
+      "id": 455,
+      "language": "en",
+      "region": "北海道",
+      "slug": "population-hokkaido-en",
+      "url": "https://app-navi.biz/en/population-hokkaido-en/",
+      "title": "Population Flow Map: Hokkaido (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/hokkaido.html",
+      "body_sha256": "2059e9b25e3a30552b50540cdd09b96ed961c9749e6ba731d10125482b522047",
+      "source_article": "articles/en/北海道.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/hokkaido.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/hokkaido_datacard_en.html"
+      ]
+    },
+    {
+      "id": 463,
+      "language": "en",
+      "region": "東北",
+      "slug": "population-tohoku-en",
+      "url": "https://app-navi.biz/en/population-tohoku-en/",
+      "title": "Population Flow Map: Tohoku (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/tohoku.html",
+      "body_sha256": "50a6fee54d61ba88557635eb0c5056a92e0a85065f59608de4935e35b0d78401",
+      "source_article": "articles/en/東北.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/tohoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/tohoku_datacard_en.html"
+      ]
+    },
+    {
+      "id": 466,
+      "language": "en",
+      "region": "関東",
+      "slug": "population-kanto-en",
+      "url": "https://app-navi.biz/en/population-kanto-en/",
+      "title": "Population Flow Map: Kanto (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/kanto.html",
+      "body_sha256": "29954c1468a52c7b4153c12e5ba3c90e37e4e36e0299f7c59df2353f3914bcd2",
+      "source_article": "articles/en/関東.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/kanto.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/kanto_datacard_en.html"
+      ]
+    },
+    {
+      "id": 469,
+      "language": "en",
+      "region": "甲信越",
+      "slug": "population-koshinetsu-en",
+      "url": "https://app-navi.biz/en/population-koshinetsu-en/",
+      "title": "Population Flow Map: Koshinetsu (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/koshinetsu.html",
+      "body_sha256": "06a02c0bc0a6a87d9bfc3e48feef0fa455e171a900a1f070cee7f28e379de669",
+      "source_article": "articles/en/甲信越.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/koshinetsu.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/koshinetsu_datacard_en.html"
+      ]
+    },
+    {
+      "id": 472,
+      "language": "en",
+      "region": "中部・北陸",
+      "slug": "population-chubu-hokuriku-en",
+      "url": "https://app-navi.biz/en/population-chubu-hokuriku-en/",
+      "title": "Population Flow Map: Chubu and Hokuriku (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/chubu_hokuriku.html",
+      "body_sha256": "7c768dc9580c2add0303f2d959ba0d3db7bcd37ade7c0ed6bc563f5bebe29e82",
+      "source_article": "articles/en/中部・北陸.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/chubu_hokuriku.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/chubu_hokuriku_datacard_en.html"
+      ]
+    },
+    {
+      "id": 475,
+      "language": "en",
+      "region": "近畿",
+      "slug": "population-kinki-en",
+      "url": "https://app-navi.biz/en/population-kinki-en/",
+      "title": "Population Flow Map: Kinki (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/kinki.html",
+      "body_sha256": "a05d6684e7790f266ac7b8c5a43d215bee181fac2782d63caf96708a1deb26ba",
+      "source_article": "articles/en/近畿.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/kinki.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/kinki_datacard_en.html"
+      ]
+    },
+    {
+      "id": 478,
+      "language": "en",
+      "region": "中国地方",
+      "slug": "population-chugoku-en",
+      "url": "https://app-navi.biz/en/population-chugoku-en/",
+      "title": "Population Flow Map: Chugoku (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/chugoku.html",
+      "body_sha256": "5449f8b4946e451bbd31123eded438cc1356e5d6e0a758cedb8a328c02e487b8",
+      "source_article": "articles/en/中国地方.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/chugoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/chugoku_datacard_en.html"
+      ]
+    },
+    {
+      "id": 481,
+      "language": "en",
+      "region": "四国",
+      "slug": "population-shikoku-en",
+      "url": "https://app-navi.biz/en/population-shikoku-en/",
+      "title": "Population Flow Map: Shikoku (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/shikoku.html",
+      "body_sha256": "49ba369ffdc819d798b45606b8d7737419bef862db004fcdcc9e6e9f8bda4d06",
+      "source_article": "articles/en/四国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/shikoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/shikoku_datacard_en.html"
+      ]
+    },
+    {
+      "id": 484,
+      "language": "en",
+      "region": "九州・沖縄",
+      "slug": "population-kyushu-okinawa-en",
+      "url": "https://app-navi.biz/en/population-kyushu-okinawa-en/",
+      "title": "Population Flow Map: Kyushu and Okinawa (2019, 2021 and 2025)",
+      "status": "publish",
+      "body_file": "wordpress/en/kyushu_okinawa.html",
+      "body_sha256": "dbeba1e45f847c9e8e112de597a6131befcddd61e16adc19ed1504154be6d792",
+      "source_article": "articles/en/九州・沖縄.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/en/kyushu_okinawa.html?v=20261103",
+        "https://app-navi.biz/cards/population/en/kyushu_okinawa_datacard_en.html"
+      ]
+    },
+    {
+      "id": 461,
+      "language": "es",
+      "region": "全国",
+      "slug": "population-national-es",
+      "url": "https://app-navi.biz/es/population-national-es/",
+      "title": "Mapa de migración interna de Japón (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/national.html",
+      "body_sha256": "994bc62258da0df072110d398189924ed9c7d2015c69acb3874d7d9c92f7b392",
+      "source_article": "articles/es/全国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/national.html?v=20261103"
+      ]
+    },
+    {
+      "id": 458,
+      "language": "es",
+      "region": "北海道",
+      "slug": "population-hokkaido-es",
+      "url": "https://app-navi.biz/es/population-hokkaido-es/",
+      "title": "Mapa de migración interna: Hokkaido (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/hokkaido.html",
+      "body_sha256": "9d528ccb1b34ec9abcb590d4bc20bb0554f5ed49f278de4cbeb5abd9b1fa01d6",
+      "source_article": "articles/es/北海道.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/hokkaido.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/hokkaido_datacard_es.html"
+      ]
+    },
+    {
+      "id": 464,
+      "language": "es",
+      "region": "東北",
+      "slug": "population-tohoku-es",
+      "url": "https://app-navi.biz/es/population-tohoku-es/",
+      "title": "Mapa de migración interna: Tohoku (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/tohoku.html",
+      "body_sha256": "2e6fe3e782c53f363099e83e16d0c538eaf1c0f2242fb5dd20c01ff4f7975e17",
+      "source_article": "articles/es/東北.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/tohoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/tohoku_datacard_es.html"
+      ]
+    },
+    {
+      "id": 467,
+      "language": "es",
+      "region": "関東",
+      "slug": "population-kanto-es",
+      "url": "https://app-navi.biz/es/population-kanto-es/",
+      "title": "Mapa de migración interna: Kanto (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/kanto.html",
+      "body_sha256": "5d1bf306b0afe5ab3350acfd566985b5e9a63e672cbc21fb24e5f468acc53924",
+      "source_article": "articles/es/関東.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/kanto.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/kanto_datacard_es.html"
+      ]
+    },
+    {
+      "id": 470,
+      "language": "es",
+      "region": "甲信越",
+      "slug": "population-koshinetsu-es",
+      "url": "https://app-navi.biz/es/population-koshinetsu-es/",
+      "title": "Mapa de migración interna: Koshinetsu (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/koshinetsu.html",
+      "body_sha256": "41c10aca850e1a0a7d950948ae649b2fbd896a54e8b5fca90b2be02158b5464d",
+      "source_article": "articles/es/甲信越.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/koshinetsu.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/koshinetsu_datacard_es.html"
+      ]
+    },
+    {
+      "id": 473,
+      "language": "es",
+      "region": "中部・北陸",
+      "slug": "population-chubu-hokuriku-es",
+      "url": "https://app-navi.biz/es/population-chubu-hokuriku-es/",
+      "title": "Mapa de migración interna: Chubu y Hokuriku (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/chubu_hokuriku.html",
+      "body_sha256": "e71e15703530b64bbb629e2c6aeae4ce06d7c12fe60c14d84a71cd4106927fce",
+      "source_article": "articles/es/中部・北陸.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/chubu_hokuriku.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/chubu_hokuriku_datacard_es.html"
+      ]
+    },
+    {
+      "id": 476,
+      "language": "es",
+      "region": "近畿",
+      "slug": "population-kinki-es",
+      "url": "https://app-navi.biz/es/population-kinki-es/",
+      "title": "Mapa de migración interna: Kinki (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/kinki.html",
+      "body_sha256": "9fd95afe8d288854998028c54635dba57790e97967ff238bdb4a4da7fe97120c",
+      "source_article": "articles/es/近畿.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/kinki.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/kinki_datacard_es.html"
+      ]
+    },
+    {
+      "id": 479,
+      "language": "es",
+      "region": "中国地方",
+      "slug": "population-chugoku-es",
+      "url": "https://app-navi.biz/es/population-chugoku-es/",
+      "title": "Mapa de migración interna: Chugoku (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/chugoku.html",
+      "body_sha256": "4ac4fe700d02be9e248178c86e7ea4bb1e49b8c968b1dbfccea5b43864e2e664",
+      "source_article": "articles/es/中国地方.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/chugoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/chugoku_datacard_es.html"
+      ]
+    },
+    {
+      "id": 482,
+      "language": "es",
+      "region": "四国",
+      "slug": "population-shikoku-es",
+      "url": "https://app-navi.biz/es/population-shikoku-es/",
+      "title": "Mapa de migración interna: Shikoku (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/shikoku.html",
+      "body_sha256": "7f94fbe060dd4b1fae45132d69f77786784348aef24386ca71a2f6049d8731f4",
+      "source_article": "articles/es/四国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/shikoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/shikoku_datacard_es.html"
+      ]
+    },
+    {
+      "id": 485,
+      "language": "es",
+      "region": "九州・沖縄",
+      "slug": "population-kyushu-okinawa-es",
+      "url": "https://app-navi.biz/es/population-kyushu-okinawa-es/",
+      "title": "Mapa de migración interna: Kyushu y Okinawa (2019, 2021 y 2025)",
+      "status": "publish",
+      "body_file": "wordpress/es/kyushu_okinawa.html",
+      "body_sha256": "ad35a04309b7ab528b42d47a9f033cc46f5c9b7618b7242cda0512426c7f73c6",
+      "source_article": "articles/es/九州・沖縄.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/es/kyushu_okinawa.html?v=20261103",
+        "https://app-navi.biz/cards/population/es/kyushu_okinawa_datacard_es.html"
+      ]
+    },
+    {
+      "id": 462,
+      "language": "de",
+      "region": "全国",
+      "slug": "population-national-de",
+      "url": "https://app-navi.biz/de/population-national-de/",
+      "title": "Karte der Binnenwanderung in Japan (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/national.html",
+      "body_sha256": "3a196497e1d999bed9ccac9791f6fcd95b023151258d74250af99098658065fc",
+      "source_article": "articles/de/全国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/national.html?v=20261103"
+      ]
+    },
+    {
+      "id": 459,
+      "language": "de",
+      "region": "北海道",
+      "slug": "population-hokkaido-de",
+      "url": "https://app-navi.biz/de/population-hokkaido-de/",
+      "title": "Karte der Binnenwanderung: Hokkaido (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/hokkaido.html",
+      "body_sha256": "c0ba87fee36f8475e8072b010213c020b73b0423ee78e73e6f301ac688a41e2f",
+      "source_article": "articles/de/北海道.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/hokkaido.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/hokkaido_datacard_de.html"
+      ]
+    },
+    {
+      "id": 465,
+      "language": "de",
+      "region": "東北",
+      "slug": "population-tohoku-de",
+      "url": "https://app-navi.biz/de/population-tohoku-de/",
+      "title": "Karte der Binnenwanderung: Tohoku (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/tohoku.html",
+      "body_sha256": "e720af1f8a7c51902c0da03fea2b1688f15adc3b48c9e1cf784f1224b5c29e7f",
+      "source_article": "articles/de/東北.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/tohoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/tohoku_datacard_de.html"
+      ]
+    },
+    {
+      "id": 468,
+      "language": "de",
+      "region": "関東",
+      "slug": "population-kanto-de",
+      "url": "https://app-navi.biz/de/population-kanto-de/",
+      "title": "Karte der Binnenwanderung: Kanto (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/kanto.html",
+      "body_sha256": "b187d34d9814f574e1d5fa4901fdb215ee26fccdb494e384b70962745cc828e6",
+      "source_article": "articles/de/関東.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/kanto.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/kanto_datacard_de.html"
+      ]
+    },
+    {
+      "id": 471,
+      "language": "de",
+      "region": "甲信越",
+      "slug": "population-koshinetsu-de",
+      "url": "https://app-navi.biz/de/population-koshinetsu-de/",
+      "title": "Karte der Binnenwanderung: Koshinetsu (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/koshinetsu.html",
+      "body_sha256": "9459443ddc8f84e0801e8e8266f047b615ea29dac10a5d0f0a2cf0f3b66c2974",
+      "source_article": "articles/de/甲信越.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/koshinetsu.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/koshinetsu_datacard_de.html"
+      ]
+    },
+    {
+      "id": 474,
+      "language": "de",
+      "region": "中部・北陸",
+      "slug": "population-chubu-hokuriku-de",
+      "url": "https://app-navi.biz/de/population-chubu-hokuriku-de/",
+      "title": "Karte der Binnenwanderung: Chubu und Hokuriku (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/chubu_hokuriku.html",
+      "body_sha256": "10cbd89011fecd93f72b722af438c024a977db54c5e2814443e6881cd46f13ad",
+      "source_article": "articles/de/中部・北陸.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/chubu_hokuriku.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/chubu_hokuriku_datacard_de.html"
+      ]
+    },
+    {
+      "id": 477,
+      "language": "de",
+      "region": "近畿",
+      "slug": "population-kinki-de",
+      "url": "https://app-navi.biz/de/population-kinki-de/",
+      "title": "Karte der Binnenwanderung: Kinki (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/kinki.html",
+      "body_sha256": "79b901669ae591c5249f65f3483728e2e6f90e5065225c5d23390b467f335207",
+      "source_article": "articles/de/近畿.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/kinki.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/kinki_datacard_de.html"
+      ]
+    },
+    {
+      "id": 480,
+      "language": "de",
+      "region": "中国地方",
+      "slug": "population-chugoku-de",
+      "url": "https://app-navi.biz/de/population-chugoku-de/",
+      "title": "Karte der Binnenwanderung: Chugoku (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/chugoku.html",
+      "body_sha256": "16078324dd3ac5f6401747e864d3c33a5a1bfc8daeeb7e772fc66d0af44cf3f5",
+      "source_article": "articles/de/中国地方.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/chugoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/chugoku_datacard_de.html"
+      ]
+    },
+    {
+      "id": 483,
+      "language": "de",
+      "region": "四国",
+      "slug": "population-shikoku-de",
+      "url": "https://app-navi.biz/de/population-shikoku-de/",
+      "title": "Karte der Binnenwanderung: Shikoku (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/shikoku.html",
+      "body_sha256": "aee8d558132db635dbe499addb64e212cb02d351956e260890d8824fa704834a",
+      "source_article": "articles/de/四国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/shikoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/shikoku_datacard_de.html"
+      ]
+    },
+    {
+      "id": 486,
+      "language": "de",
+      "region": "九州・沖縄",
+      "slug": "population-kyushu-okinawa-de",
+      "url": "https://app-navi.biz/de/population-kyushu-okinawa-de/",
+      "title": "Karte der Binnenwanderung: Kyushu und Okinawa (2019, 2021 und 2025)",
+      "status": "publish",
+      "body_file": "wordpress/de/kyushu_okinawa.html",
+      "body_sha256": "3cfc57552bc4393446bbb7192d079fc9c59d1664d5e1c8005455aca985f7a3a7",
+      "source_article": "articles/de/九州・沖縄.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/de/kyushu_okinawa.html?v=20261103",
+        "https://app-navi.biz/cards/population/de/kyushu_okinawa_datacard_de.html"
+      ]
+    },
+    {
+      "id": 939,
+      "language": "fr",
+      "region": "全国",
+      "slug": "population-national-fr",
+      "url": "https://app-navi.biz/fr/population-national-fr/",
+      "title": "Carte des migrations intérieures du Japon (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/national.html",
+      "body_sha256": "aca390ff941ce98eabe79d5f0731cdc38171d8af7d9769f5c503bd7d8ee1f659",
+      "source_article": "articles/fr/全国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/national.html?v=20261103"
+      ]
+    },
+    {
+      "id": 940,
+      "language": "fr",
+      "region": "北海道",
+      "slug": "population-hokkaido-fr",
+      "url": "https://app-navi.biz/fr/population-hokkaido-fr/",
+      "title": "Carte des migrations intérieures : Hokkaido (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/hokkaido.html",
+      "body_sha256": "838cfc2af8b3709999753328398f8f287c761a4eaf3d241fcfdf697285df4c4c",
+      "source_article": "articles/fr/北海道.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/hokkaido.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/hokkaido_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 941,
+      "language": "fr",
+      "region": "東北",
+      "slug": "population-tohoku-fr",
+      "url": "https://app-navi.biz/fr/population-tohoku-fr/",
+      "title": "Carte des migrations intérieures : Tohoku (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/tohoku.html",
+      "body_sha256": "4a8cedae510d54cbef08dfeaf4b4ce63033a2630aa00dbbed5e51c1e2ab7dd2f",
+      "source_article": "articles/fr/東北.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/tohoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/tohoku_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 942,
+      "language": "fr",
+      "region": "関東",
+      "slug": "population-kanto-fr",
+      "url": "https://app-navi.biz/fr/population-kanto-fr/",
+      "title": "Carte des migrations intérieures : Kanto (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/kanto.html",
+      "body_sha256": "8354306a67e8ab68b4d1b6e04a0a5c48da3d456128dcacb06b070d67b1acfb2c",
+      "source_article": "articles/fr/関東.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/kanto.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/kanto_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 943,
+      "language": "fr",
+      "region": "甲信越",
+      "slug": "population-koshinetsu-fr",
+      "url": "https://app-navi.biz/fr/population-koshinetsu-fr/",
+      "title": "Carte des migrations intérieures : Koshinetsu (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/koshinetsu.html",
+      "body_sha256": "226bda772aefa536b9502482dca58e6b695bea1becb9568c6704e10fb9fafa01",
+      "source_article": "articles/fr/甲信越.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/koshinetsu.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/koshinetsu_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 944,
+      "language": "fr",
+      "region": "中部・北陸",
+      "slug": "population-chubu-hokuriku-fr",
+      "url": "https://app-navi.biz/fr/population-chubu-hokuriku-fr/",
+      "title": "Carte des migrations intérieures : Chubu et Hokuriku (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/chubu_hokuriku.html",
+      "body_sha256": "2efef40f0241449d8629aa19ef07e44696533a2b34e4e6561264551d614da516",
+      "source_article": "articles/fr/中部・北陸.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/chubu_hokuriku.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/chubu_hokuriku_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 945,
+      "language": "fr",
+      "region": "近畿",
+      "slug": "population-kinki-fr",
+      "url": "https://app-navi.biz/fr/population-kinki-fr/",
+      "title": "Carte des migrations intérieures : Kinki (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/kinki.html",
+      "body_sha256": "d3bab3ef687279d41d760ffb8d268b53172bf96633ff46ad6550609d05075519",
+      "source_article": "articles/fr/近畿.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/kinki.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/kinki_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 946,
+      "language": "fr",
+      "region": "中国地方",
+      "slug": "population-chugoku-fr",
+      "url": "https://app-navi.biz/fr/population-chugoku-fr/",
+      "title": "Carte des migrations intérieures : Chugoku (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/chugoku.html",
+      "body_sha256": "a1a1d968cdc0a467c134ac02e35ba887f429876eaa6275820dd8890d64cf943f",
+      "source_article": "articles/fr/中国地方.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/chugoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/chugoku_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 947,
+      "language": "fr",
+      "region": "四国",
+      "slug": "population-shikoku-fr",
+      "url": "https://app-navi.biz/fr/population-shikoku-fr/",
+      "title": "Carte des migrations intérieures : Shikoku (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/shikoku.html",
+      "body_sha256": "c884eceab2ad4f59e51be3b19dfd042638e79464782d180ea2bb1d9ba78db73d",
+      "source_article": "articles/fr/四国.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/shikoku.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/shikoku_datacard_fr.html"
+      ]
+    },
+    {
+      "id": 948,
+      "language": "fr",
+      "region": "九州・沖縄",
+      "slug": "population-kyushu-okinawa-fr",
+      "url": "https://app-navi.biz/fr/population-kyushu-okinawa-fr/",
+      "title": "Carte des migrations intérieures : Kyushu et Okinawa (2019, 2021 et 2025)",
+      "status": "publish",
+      "body_file": "wordpress/fr/kyushu_okinawa.html",
+      "body_sha256": "99f7b67f45bcc9c1ff1f216922b1b60268b084cd8fa47e49a1accf040ea6142c",
+      "source_article": "articles/fr/九州・沖縄.txt",
+      "embeds": [
+        "https://app-navi.biz/maps/population/fr/kyushu_okinawa.html?v=20261103",
+        "https://app-navi.biz/cards/population/fr/kyushu_okinawa_datacard_fr.html"
+      ]
+    }
+  ],
+  "deployed_asset_count": 164,
+  "existing_dependency_count": 14,
+  "shared_dependencies": [
+    {
+      "path": "maps/shared/kyushu_okinawa.geojson",
+      "url": "https://app-navi.biz/maps/shared/kyushu_okinawa.geojson",
+      "sha256": "fffd46acbe0b32f139091a1c31896190d019b7a90aa733b6cc38b59c206d6d42",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/koshinetsu.geojson",
+      "url": "https://app-navi.biz/maps/shared/koshinetsu.geojson",
+      "sha256": "d7fd9f7c797580b3dcd88b89f1b9ef939a6289fa3af6365dce89edac34b2d383",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/kinki.geojson",
+      "url": "https://app-navi.biz/maps/shared/kinki.geojson",
+      "sha256": "7bd1c84206f949222ad42c877de0d76e4a2eed3acd24ca2118790a0678bc5e6d",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/tohoku.geojson",
+      "url": "https://app-navi.biz/maps/shared/tohoku.geojson",
+      "sha256": "65b806d1b9814c0a8811bcf22d3b18133e71a5d1a5e0fd29e2948ed0314c855c",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/chugoku.geojson",
+      "url": "https://app-navi.biz/maps/shared/chugoku.geojson",
+      "sha256": "73dd67e7629db4944196bd52f72572fdb025064814c463dce3183db2aa490164",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/hokkaido.geojson",
+      "url": "https://app-navi.biz/maps/shared/hokkaido.geojson",
+      "sha256": "d1daae10138214e94ba3dc71745b3b46d52fc6eeb08105345e6fd03117f50ef0",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/shikoku.geojson",
+      "url": "https://app-navi.biz/maps/shared/shikoku.geojson",
+      "sha256": "5caa72945a5e64f97d23311f3a73b8546cad4da23555e0ac68a71ee67533a264",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/kanto.geojson",
+      "url": "https://app-navi.biz/maps/shared/kanto.geojson",
+      "sha256": "89b0512cdb3a56e909a289b7eb527544dee6193900827393028e85e4c0c9d508",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/shared/chubu_hokuriku.geojson",
+      "url": "https://app-navi.biz/maps/shared/chubu_hokuriku.geojson",
+      "sha256": "16411aa91d52c167555d26e53d1f3a35890f99f75885f0b7151f2928eea198df",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/population/en/js/municipality-romaji.js",
+      "url": "https://app-navi.biz/maps/population/en/js/municipality-romaji.js",
+      "sha256": "997bb86029c75154fc6501036d8625164f76ae9356f6bad17cc0de89fa5e0551",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/population/de/js/municipality-romaji.js",
+      "url": "https://app-navi.biz/maps/population/de/js/municipality-romaji.js",
+      "sha256": "997bb86029c75154fc6501036d8625164f76ae9356f6bad17cc0de89fa5e0551",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/population/es/js/municipality-romaji.js",
+      "url": "https://app-navi.biz/maps/population/es/js/municipality-romaji.js",
+      "sha256": "997bb86029c75154fc6501036d8625164f76ae9356f6bad17cc0de89fa5e0551",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/population/fr/js/municipality-romaji.js",
+      "url": "https://app-navi.biz/maps/population/fr/js/municipality-romaji.js",
+      "sha256": "997bb86029c75154fc6501036d8625164f76ae9356f6bad17cc0de89fa5e0551",
+      "role": "existing_shared_dependency"
+    },
+    {
+      "path": "maps/aging/loading-worker.svg",
+      "url": "https://app-navi.biz/maps/aging/loading-worker.svg",
+      "sha256": "f004002d2522144b6dec4f2340c6930814e9c33747cca5e55a14a6bf41dda4c1",
+      "role": "existing_shared_dependency"
+    }
+  ],
+  "scope": "Snapshot of the published population release; not an automatic deployment tool."
+}

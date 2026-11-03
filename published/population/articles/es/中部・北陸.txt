@@ -1,0 +1,97 @@
+# Mapa de migración interna: Chubu y Hokuriku (2019, 2021 y 2025)
+
+Chubu y Hokuriku se encuentran en el centro de Honshu, la isla más grande de Japón, y se extienden desde el lado del Pacífico hasta el del mar de Japón. En este sitio se presentan juntas seis prefecturas: Toyama, Ishikawa, Fukui, Gifu, Shizuoka y Aichi.
+
+Calles con rascacielos en Nagoya y localidades llenas de fábricas de automóviles; aldeas de montaña y campos de té, pueblos portuarios junto al mar de Japón y montañas cubiertas de nieve. En Chubu y Hokuriku conviven ciudades industriales y una naturaleza rica, con formas de vida muy variadas.
+
+Las personas que viven en pueblos y aldeas agrícolas como estos también se mudan, por ejemplo, por estudios, por un nuevo trabajo o por la vida familiar.
+
+En cada uno de estos pueblos y ciudades, ¿de dónde viene la gente y adónde se va cuando se marcha?
+
+¿Por qué no sigues el mapa para descubrir los flujos de personas en las distintas partes de Chubu y Hokuriku?
+
+## Por qué creamos la edición de Chubu/Hokuriku
+
+«¿Se concentra en Tokio, Nagoya y Kanazawa la gente de todo Chubu y Hokuriku?» Esa pregunta nos llevó a querer mirar con más detalle los movimientos de personas dentro de Chubu y Hokuriku.
+
+La edición de Chubu/Hokuriku se fija en los municipios y permite comparar 2019, 2021 y 2025.
+
+También quería saber qué tipo de personas se trasladan, así que el mapa se puede cambiar además por sexo, nacionalidad y grupo de edad.
+
+## Explora en el mapa la migración interna de Chubu y Hokuriku
+
+Este mapa permite comparar la migración interna de Chubu y Hokuriku en 2019, 2021 y 2025.
+
+Cambia entre sexo, nacionalidad y grupo de edad para ver, municipio por municipio, de dónde llegaron las personas y adónde se fueron. «Entrada» significa cambiar el domicilio registrado a esa zona; «salida» significa cambiarlo de esa zona a otra.
+
+No necesitas conocer ningún nombre de lugar de Chubu y Hokuriku. Elige un punto del mapa que te llame la atención y sigue las cifras para ver de dónde llegó la gente y adónde se mudó.
+
+Nagoya está en la prefectura de Aichi y es una de las principales ciudades de esta región. ¿En qué se diferencian los pueblos de sus alrededores de los del lado del mar de Japón o de las montañas?
+
+【Mapa de migración interna: Chubu y Hokuriku】
+
+## Lo que me llamó la atención en el mapa
+
+Lo que me llamó la atención en el mapa de Chubu y Hokuriku fue que la prefectura de Aichi, con una industria manufacturera próspera, tuvo salida neta en los tres años: 2019, 2021 y 2025.
+
+Quizá la impresión de que la gente se concentra donde la industria es fuerte no basta para captar cómo se mueven las personas.
+
+Sin embargo, una salida neta del conjunto de la prefectura no significa que la gente se vaya de todos los pueblos de la prefectura. Si te fijas en los municipios, también aparecen movimientos distintos a los de la prefectura en su conjunto.
+
+También se ven conexiones entre lugares que la imagen de que todo el mundo se concentra en Tokio no logra captar.
+
+Al seguir los flujos hacia las grandes ciudades y los traslados entre pueblos cercanos, me di cuenta de que incluso dentro de Chubu y Hokuriku hay movimientos de personas muy variados.
+
+En tu país, ¿qué movimientos hay en las localidades llenas de fábricas y en los pueblos de sus alrededores?
+
+Piensa en lugares que conoces y reflexiona sobre lo que tienen en común con los flujos de personas de Chubu y Hokuriku y en qué se diferencian.
+
+¿Qué flujos de personas ves tú en este mapa?
+
+## Saldo migratorio del conjunto de Chubu y Hokuriku
+
+¿Cómo ha cambiado la diferencia entre las personas que llegan y las que se van en el conjunto de Chubu y Hokuriku?
+
+La ficha de datos siguiente compara el saldo migratorio de 2019, 2021 y 2025.
+
+【Ficha de datos del saldo migratorio: Chubu y Hokuriku】
+
+El saldo migratorio es el número de personas que llegaron menos el número de personas que se fueron. Un valor positivo significa que llegaron más personas de las que se fueron (entrada neta); un valor negativo significa que se fueron más de las que llegaron (salida neta).
+
+## Sobre los datos
+
+Los totales y los saldos migratorios que se muestran aquí corresponden a los traslados dentro de Japón de personas de nacionalidad japonesa y extranjera en conjunto.
+
+La vista por edad del mapa usa cuatro grupos: 0–19, 20–39, 40–59 y 60 años o más. Las personas de edad desconocida no están incluidas en estos cuatro grupos.
+
+Esta página se basa en los datos publicados por la Oficina de Estadística de Japón en su «Informe sobre migración interna en Japón». Visible World by Data recopiló y tabuló los datos y los convirtió en el mapa y la ficha de datos.
+
+Los años considerados son 2019, 2021 y 2025. La edición de Chubu/Hokuriku de este sitio abarca seis prefecturas: Toyama, Ishikawa, Fukui, Gifu, Shizuoka y Aichi.
+
+La migración que se muestra aquí se refiere a las personas que cambiaron su domicilio registrado dentro de Japón cruzando los límites de un municipio o similar. No indica la entrada de personas desde el extranjero a Japón ni la salida de Japón al extranjero.
+
+Tampoco equivale a los desplazamientos por trabajo o estudios, ni a la afluencia de viajeros o turistas, ni al cambio de población que incluye nacimientos y defunciones. Si una misma persona se trasladó varias veces durante el período, se cuenta cada traslado.
+
+Los datos por municipio del mapa incluyen los traslados dentro de la misma prefectura. En algunas grandes ciudades llamadas ciudades designadas, también se cuentan los traslados a otro distrito de la misma ciudad.
+
+La ficha de datos suma el saldo migratorio de las seis prefecturas incluidas. Los traslados entre esas seis prefecturas se compensan y suman cero para el conjunto de la región, por lo que la ficha muestra la diferencia entre llegadas y salidas respecto a lugares fuera de la región. Es una medida distinta de las entradas por municipio que se muestran en el mapa o de la suma de los rankings.
+
+### Notas para leer las cifras
+
+- Hamamatsu se tabula con sus siete antiguos distritos en 2019 y 2021, y con sus tres nuevos distritos (Chuo, Hamana y Tenryu) en 2025. Como los ámbitos de los distritos son distintos, las cifras de cada distrito no se pueden comparar directamente entre años.
+- «Lo que me llamó la atención en el mapa» recoge impresiones al mirar el mapa y las cifras. No es una conclusión comprobada estadísticamente sobre los motivos de los traslados ni sobre las tendencias de la región.
+- Solo con la migración no se puede juzgar si la población total de una región aumentó o disminuyó.
+- Los rankings incluyen los municipios y distritos que figuran por separado en la tabla oficial. Las zonas agrupadas en filas como «otros» no se clasifican, por lo que no es un ranking completo de todos los municipios.
+- El total que se muestra es el total de la tabla oficial, no la suma del ranking de los 10 primeros.
+- El selector de nacionalidad muestra a las personas que se trasladaron dentro de Japón, según su nacionalidad. No indica movimientos a través de fronteras nacionales.
+- Donde han cambiado los límites o las clasificaciones de los municipios, hay que tener cuidado al comparar entre años.
+
+## Fuentes
+
+[Oficina de Estadística de Japón, «Informe sobre migración interna en Japón»](https://www.stat.go.jp/data/idou/)
+
+[Oficina de Estadística de Japón, «Informe sobre migración interna en Japón: explicación de términos»](https://www.stat.go.jp/data/idou/2.html)
+
+Recopilación, tabulación y visualización de los datos: Visible World by Data
+
+Saldos migratorios por prefectura y base de las fichas de datos: comprobados el 3 de noviembre de 2026 con la tabla 1 de los informes anuales de 2019, 2021 y 2025 (Oficina de Estadística de Japón / e-Stat).

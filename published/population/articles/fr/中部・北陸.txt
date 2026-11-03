@@ -1,0 +1,97 @@
+# Carte des migrations intérieures : Chubu et Hokuriku (2019, 2021 et 2025)
+
+Chubu et Hokuriku se trouvent au centre de Honshu, la plus grande île du Japon, et s’étendent du côté du Pacifique jusqu’au côté de la mer du Japon. Sur ce site, six préfectures sont présentées ensemble : Toyama, Ishikawa, Fukui, Gifu, Shizuoka et Aichi.
+
+Des rues bordées de tours à Nagoya et des localités pleines d’usines automobiles ; des hameaux de montagne et des champs de thé, des ports sur la mer du Japon et des montagnes couvertes de neige. À Chubu et Hokuriku, villes industrielles et nature généreuse se côtoient, avec des modes de vie très variés.
+
+Les personnes qui vivent dans des villes et des villages agricoles comme ceux-ci déménagent aussi, par exemple pour les études, pour un nouveau travail ou pour la vie de famille.
+
+Dans chacune de ces villes et de ces localités, d’où viennent les gens, et où vont-ils lorsqu’ils partent ?
+
+Et si vous suiviez la carte pour découvrir les mouvements de population dans les différentes parties de Chubu et Hokuriku ?
+
+## Pourquoi nous avons réalisé l’édition de Chubu/Hokuriku
+
+« Les habitants de tout Chubu et Hokuriku se rassemblent-ils à Tokyo, à Nagoya et à Kanazawa ? » Cette question nous a donné envie d’examiner de plus près les mouvements de population à l’intérieur de Chubu et Hokuriku.
+
+L’édition de Chubu/Hokuriku s’intéresse aux communes et permet de comparer 2019, 2021 et 2025.
+
+Je voulais aussi savoir quelles personnes déménagent ; la carte peut donc aussi être réglée par sexe, par nationalité et par groupe d’âge.
+
+## Explorer sur la carte les migrations intérieures de Chubu et Hokuriku
+
+Cette carte permet de comparer les migrations intérieures de Chubu et Hokuriku en 2019, 2021 et 2025.
+
+Passez du sexe à la nationalité ou au groupe d’âge pour voir, commune par commune, d’où les personnes sont arrivées et où elles sont parties. « Arrivée » signifie transférer son adresse enregistrée vers ce territoire ; « départ » signifie la transférer de ce territoire vers un autre.
+
+Inutile de connaître le nom des lieux de Chubu et Hokuriku. Choisissez un endroit de la carte qui attire votre regard et suivez les chiffres pour voir d’où les gens sont venus et où ils sont allés ensuite.
+
+Nagoya se trouve dans la préfecture d’Aichi et est l’une des principales villes de cette région. En quoi les localités qui l’entourent diffèrent-elles de celles du côté de la mer du Japon ou des montagnes ?
+
+【Carte des migrations intérieures : Chubu et Hokuriku】
+
+## Ce qui m’a frappé sur la carte
+
+Sur la carte de Chubu et Hokuriku, ce qui m’a frappé, c’est que la préfecture d’Aichi, où l’industrie manufacturière est prospère, a enregistré un solde migratoire négatif les trois années : 2019, 2021 et 2025.
+
+L’impression que les gens se rassemblent là où l’industrie est puissante ne suffit peut-être pas à saisir les mouvements de population.
+
+Cependant, un solde migratoire négatif pour l’ensemble de la préfecture ne signifie pas que les habitants quittent toutes les localités de la préfecture. En regardant les communes, on voit aussi apparaître des mouvements différents de ceux de la préfecture dans son ensemble.
+
+On voit aussi des liens entre des lieux que l’image d’un rassemblement général à Tokyo ne permet pas de saisir.
+
+En suivant les mouvements vers les grandes villes et les déménagements entre localités voisines, j’ai pris conscience que, même à l’intérieur de Chubu et Hokuriku, les mouvements de population sont très variés.
+
+Dans votre pays, quels mouvements existe-t-il dans les villes pleines d’usines et dans les localités qui les entourent ?
+
+Pensez à des lieux que vous connaissez et demandez-vous ce qu’ils ont en commun avec les mouvements de population de Chubu et Hokuriku, et en quoi ils en diffèrent.
+
+Quels mouvements de population voyez-vous sur cette carte ?
+
+## Solde migratoire de l’ensemble de Chubu et Hokuriku
+
+Comment la différence entre les arrivées et les départs a-t-elle évolué dans l’ensemble de Chubu et Hokuriku ?
+
+La fiche de données ci-dessous compare le solde migratoire de 2019, 2021 et 2025.
+
+【Fiche de données du solde migratoire : Chubu et Hokuriku】
+
+Le solde migratoire est le nombre de personnes arrivées moins le nombre de personnes parties. Une valeur positive signifie que plus de personnes sont arrivées que parties (solde migratoire positif) ; une valeur négative signifie que plus de personnes sont parties qu’arrivées (solde migratoire négatif).
+
+## À propos des données
+
+Les totaux et les soldes migratoires présentés ici concernent les déménagements à l’intérieur du Japon des personnes de nationalité japonaise et de nationalité étrangère, ensemble.
+
+L’affichage par âge de la carte utilise quatre groupes : 0–19 ans, 20–39 ans, 40–59 ans et 60 ans et plus. Les personnes dont l’âge est inconnu ne sont pas comprises dans ces quatre groupes.
+
+Cette page repose sur les données publiées par le Bureau des statistiques du Japon dans son « Rapport sur les migrations intérieures au Japon ». Visible World by Data a compilé et tabulé ces données pour en faire la carte et la fiche de données.
+
+Les années couvertes sont 2019, 2021 et 2025. L’édition de Chubu/Hokuriku de ce site couvre six préfectures : Toyama, Ishikawa, Fukui, Gifu, Shizuoka et Aichi.
+
+Les migrations présentées ici désignent les personnes qui ont changé leur adresse enregistrée à l’intérieur du Japon en franchissant les limites d’une commune ou d’une entité comparable. Elles ne montrent ni les entrées au Japon en provenance de l’étranger, ni les sorties du Japon vers l’étranger.
+
+Elles diffèrent aussi des déplacements domicile-travail ou domicile-études, de l’affluence des voyageurs et touristes, et de la variation de population qui inclut les naissances et les décès. Si une même personne a déménagé plusieurs fois pendant la période, chaque déménagement est compté.
+
+Les données par commune de la carte incluent les déménagements à l’intérieur d’une même préfecture. Dans certaines grandes villes dites villes désignées, les déménagements vers un autre arrondissement de la même ville sont également comptés.
+
+La fiche de données additionne les soldes migratoires des six préfectures couvertes. Les déménagements entre ces six préfectures s’annulent et totalisent zéro pour l’ensemble de la région ; la fiche montre donc la différence entre les arrivées et les départs par rapport aux lieux situés hors de la région. C’est une mesure différente du nombre d’arrivées par commune affiché sur la carte ou de la somme des classements.
+
+### Remarques pour lire les chiffres
+
+- Hamamatsu est tabulée selon ses sept anciens arrondissements en 2019 et 2021, et selon ses trois nouveaux arrondissements (Chuo, Hamana et Tenryu) en 2025. Les périmètres des arrondissements étant différents, les chiffres de chaque arrondissement ne peuvent pas être comparés directement d’une année à l’autre.
+- « Ce qui m’a frappé sur la carte » rassemble des impressions en regardant la carte et les chiffres. Ce n’est pas une conclusion vérifiée statistiquement sur les raisons des déménagements ni sur les tendances de la région.
+- Les migrations seules ne permettent pas de juger si la population totale d’une région a augmenté ou diminué.
+- Les classements portent sur les communes et arrondissements qui figurent individuellement dans le tableau officiel. Les zones regroupées dans des lignes de synthèse comme « autres » ne sont pas classées ; ce n’est donc pas un classement complet de toutes les communes.
+- Le total affiché est le total du tableau officiel, et non la somme du classement des 10 premiers.
+- Le sélecteur de nationalité présente les personnes qui ont déménagé à l’intérieur du Japon, selon leur nationalité. Il ne montre pas de déplacements à travers les frontières nationales.
+- Lorsque les limites ou les classements des communes ont changé, les comparaisons entre années demandent de la prudence.
+
+## Sources
+
+[Bureau des statistiques du Japon, « Rapport sur les migrations intérieures au Japon »](https://www.stat.go.jp/data/idou/)
+
+[Bureau des statistiques du Japon, « Rapport sur les migrations intérieures au Japon : explication des termes »](https://www.stat.go.jp/data/idou/2.html)
+
+Compilation, tabulation et visualisation des données : Visible World by Data
+
+Soldes migratoires par préfecture et base des fiches de données : vérifiés le 3 novembre 2026 avec le tableau 1 des rapports annuels de 2019, 2021 et 2025 (Bureau des statistiques du Japon / e-Stat).

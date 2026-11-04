@@ -9,29 +9,54 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
+      - name: Prepare evidence folder
+        run: mkdir -p results/overnight
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Run unit tests
         run: python -m unittest discover -s audit -p "test_*.py" -v
-
-      - name: Run full audit (read-only, every sitemap URL)
-        run: python audit/run_audit.py --full
-
-      - name: Run MAGI first-pass classification (A/B/C/D)
-        run: python audit/classify_magi.py
-
-      - name: Upload report
+      - name: Run full audit with bounded crawl and checkpoints
+        id: crawl
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          VWD_CHECKPOINT_DIR: results/overnight
+        run: |
+          set +e
+          timeout --signal=TERM --kill-after=20s 47m python audit/run_audit.py --full --max-minutes 25 --out results/overnight 2>&1 | tee results/crawl.log
+          result=${PIPESTATUS[0]}
+          printf '%s\n' "$result" > results/crawl-exit-code.txt
+          exit "$result"
+      - name: Run MAGI first-pass classification when report exists
+        id: magi
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          if [ -f results/overnight/report.json ]; then
+            timeout --signal=TERM --kill-after=10s 3m python audit/classify_magi.py --report-json results/overnight/report.json
+          else
+            echo 'MAGI not classified: no complete report.json. See checkpoint, pending URLs, failures and crawl.log.' | tee results/magi-not-completed.txt
+          fi
+      - name: Record run state in summary
+        if: ${{ always() }}
+        env:
+          CRAWL_OUTCOME: ${{ steps.crawl.outcome }}
+          MAGI_OUTCOME: ${{ steps.magi.outcome }}
+        run: |
+          mkdir -p results
+          printf 'Crawl outcome: %s\nMAGI step outcome: %s\n' "$CRAWL_OUTCOME" "$MAGI_OUTCOME" | tee results/run-state.txt >> "$GITHUB_STEP_SUMMARY"
+          echo 'A/B/C/D is an internal triage signal. Pending, failed or unscored items are not passes. Check report coverage and partial evidence.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload report and partial evidence
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: full-audit-report
           path: results/
+          if-no-files-found: warn
           retention-days: 30

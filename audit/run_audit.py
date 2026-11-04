@@ -312,6 +312,25 @@ def parse_page(html, url):
     }
 
 
+def save_crawl_checkpoint(sample, pages, failures):
+    """Optional atomic crawl evidence; never treat pending URLs as successful."""
+    directory = os.environ.get("VWD_CHECKPOINT_DIR")
+    if not directory:
+        return
+    done = {p["url"] for p in pages} | {f["url"] for f in failures}
+    checkpoint = {"phase": "crawl_only_not_magi_classified", "selected": len(sample),
+                  "pages": pages, "failures": failures,
+                  "pending": [p["url"] for p in sample if p["url"] not in done]}
+    try:
+        os.makedirs(directory, exist_ok=True)
+        path = os.path.join(directory, "crawl-checkpoint.json")
+        with open(path + ".tmp", "w", encoding="utf-8") as f:
+            json.dump(checkpoint, f, ensure_ascii=False)
+        os.replace(path + ".tmp", path)
+    except OSError as exc:
+        print(f"WARNING: checkpoint write failed: {exc}", file=sys.stderr)
+
+
 def crawl_pages(sample, disallow_prefixes, max_seconds=None):
     pages = []
     failures = []
@@ -341,7 +360,12 @@ def crawl_pages(sample, disallow_prefixes, max_seconds=None):
         elif resp.status_code != 200:
             failures.append({"url": url, "reason": f"http_{resp.status_code}"})
         else:
-            parsed = parse_page(resp.text, url)
+            try:
+                parsed = parse_page(resp.text, url)
+            except Exception as exc:
+                failures.append({"url": url, "reason": f"parse_error: {type(exc).__name__}: {exc}"})
+                save_crawl_checkpoint(sample, pages, failures)
+                continue
             pages.append({
                 "id": item["id"],
                 "theme": item.get("theme"),
@@ -353,11 +377,13 @@ def crawl_pages(sample, disallow_prefixes, max_seconds=None):
                 **parsed,
             })
 
+        save_crawl_checkpoint(sample, pages, failures)
         if i % PROGRESS_EVERY == 0 or i == len(sample):
             elapsed = round(time.time() - start, 1)
             print(f"      progress: {i}/{len(sample)} processed "
                   f"({len(pages)} ok, {len(failures)} failed) — {elapsed}s elapsed")
 
+    save_crawl_checkpoint(sample, pages, failures)
     return pages, failures, budget_exceeded
 
 

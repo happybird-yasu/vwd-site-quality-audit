@@ -1,62 +1,116 @@
-name: Full content quality audit (app-navi.biz)
+name: Exhaustive all-pairs full-text audit (app-navi.biz snapshot)
+
+# NOTE: on this audit branch only, this file (registered on the default branch as full-audit.yml)
+# is replaced so it can be dispatched with `--ref <branch>` without touching main.
+# No network access to the site, no API calls: pure stdlib string comparison of audit/data/snapshot.json.
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: "Number of shards (must match when resuming)"
+        default: "96"
+      max_minutes:
+        description: "Per-job compare budget in minutes (job limit is 360)"
+        default: "300"
+      resume_run_id:
+        description: "Optional: earlier run id whose shard artifacts are reused (same snapshot/metric/python only)"
+        default: ""
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
-  audit:
+  prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Prepare evidence folder
-        run: mkdir -p results/overnight
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run unit tests
-        run: python -m unittest discover -s audit -p "test_*.py" -v
-      - name: Run full audit with bounded crawl and checkpoints
-        id: crawl
-        if: ${{ !cancelled() }}
-        continue-on-error: true
+      - name: Unit tests
+        run: cd audit && python -m unittest -v test_allpairs
+      - id: m
         env:
-          VWD_CHECKPOINT_DIR: results/overnight
+          SHARDS: ${{ inputs.shards }}
         run: |
-          set +e
-          timeout --signal=TERM --kill-after=20s 47m python audit/run_audit.py --full --max-minutes 25 --out results/overnight 2>&1 | tee results/crawl.log
-          result=${PIPESTATUS[0]}
-          printf '%s\n' "$result" > results/crawl-exit-code.txt
-          exit "$result"
-      - name: Run MAGI first-pass classification when report exists
-        id: magi
-        if: ${{ always() }}
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          n = int(os.environ["SHARDS"])
+          print("matrix=" + json.dumps({"shard": list(range(n))}))
+          PY
+
+  compare:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch prior shard artifact (resume)
+        if: ${{ inputs.resume_run_id != '' }}
         continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: shard-${{ matrix.shard }}
+          path: resume/
+          run-id: ${{ inputs.resume_run_id }}
+          github-token: ${{ github.token }}
+      - name: Compare this shard
         run: |
-          if [ -f results/overnight/report.json ]; then
-            timeout --signal=TERM --kill-after=10s 3m python audit/classify_magi.py --report-json results/overnight/report.json
-          else
-            echo 'MAGI not classified: no complete report.json. See checkpoint, pending URLs, failures and crawl.log.' | tee results/magi-not-completed.txt
-          fi
-      - name: Record run state in summary
-        if: ${{ always() }}
-        env:
-          CRAWL_OUTCOME: ${{ steps.crawl.outcome }}
-          MAGI_OUTCOME: ${{ steps.magi.outcome }}
-        run: |
-          mkdir -p results
-          printf 'Crawl outcome: %s\nMAGI step outcome: %s\n' "$CRAWL_OUTCOME" "$MAGI_OUTCOME" | tee results/run-state.txt >> "$GITHUB_STEP_SUMMARY"
-          echo 'A/B/C/D is an internal triage signal. Pending, failed or unscored items are not passes. Check report coverage and partial evidence.' >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload report and partial evidence
+          mkdir -p out
+          args=""
+          if [ -d resume ]; then args="--resume-dir resume"; fi
+          python audit/allpairs.py shard --snapshot audit/data/snapshot.json \
+            --shard ${{ matrix.shard }} --shards ${{ inputs.shards }} --out out \
+            --max-seconds $(( ${{ inputs.max_minutes }} * 60 )) $args
+      - name: Upload shard result
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: full-audit-report
-          path: results/
+          name: shard-${{ matrix.shard }}
+          path: out/
           if-no-files-found: warn
+          retention-days: 30
+
+  aggregate:
+    needs: [prepare, compare]
+    if: ${{ always() && needs.prepare.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: shard-*
+          path: shards/
+      - name: Aggregate and verify expected == actual pair set (strict)
+        run: |
+          mkdir -p final
+          args=""
+          for d in shards/*/; do args="$args --results $d"; done
+          set +e
+          python audit/allpairs.py aggregate --snapshot audit/data/snapshot.json $args \
+            --shards ${{ inputs.shards }} --out final 2>&1 | tee final/aggregate.log
+          rc=${PIPESTATUS[0]}
+          echo "aggregate_exit=$rc compare_job_result=${{ needs.compare.result }}" | tee final/run-state.txt >> "$GITHUB_STEP_SUMMARY"
+          echo 'Incomplete/failed/uncompared pairs are NOT passes. See final/completeness.json.' >> "$GITHUB_STEP_SUMMARY"
+          exit $rc
+      - name: Upload final results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: exhaustive-final
+          path: final/
           retention-days: 30
